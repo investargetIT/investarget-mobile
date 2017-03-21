@@ -1,7 +1,13 @@
 import React from 'react'
+import TabBar from './TabBar'
 
 function Posts(props) {
-  return <h1>智库</h1>
+  return (
+    <div>
+      <h1>智库</h1>
+      <TabBar />
+    </div>
+  )
 }
 
 export default Posts

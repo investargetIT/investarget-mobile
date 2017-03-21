@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ProjectListCell from './ProjectListCell'
 import { connect } from 'react-redux'
 import { fetchContents } from '../actions'
+import TabBar from './TabBar'
 
 class App extends Component {
 
@@ -23,7 +24,10 @@ class App extends Component {
       )
     }, this)
     return (
-      <div>{rows}</div>
+      <div>
+        <div>{rows}</div>
+        <TabBar />
+      </div>
     )
   }
 }
