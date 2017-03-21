@@ -3,6 +3,7 @@ import axios from 'axios'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
+export const RECEIVE_LOGIN_RESULT = 'RECEIVE_LOGIN_RESULT'
 
 // const url = 'http://192.168.1.253:8082/api/'
 var url = 'https://api.investarget.com/api/'
@@ -20,6 +21,14 @@ function receiveContents(param, json) {
     param,
     contents: json,
     reveivedAt: Date.now()
+  }
+}
+
+function receiveLoginResult(token, id) {
+  return {
+    type: RECEIVE_LOGIN_RESULT,
+    token,
+    id
   }
 }
 
@@ -47,7 +56,13 @@ export function login(param) {
   return dispatch => {
     dispatch(requestContents(param))
     return axios.post(url + 'Account', param)
-      .then(response => console.log(response))
+      .then(response => {
+        if (response.data.success) {
+          dispatch(receiveLoginResult(response.data.result.access_token, response.data.result.id))
+        } else {
+          // Login failed
+        }
+      })
       .catch(error => console.error(error))
   }
 }

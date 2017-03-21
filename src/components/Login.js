@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { login } from '../actions'
 import { connect } from 'react-redux'
 
@@ -107,6 +107,11 @@ class Login extends React.Component {
   }
 
   render() {
+    if (this.props.isLogin) {
+      return (
+        <Redirect to="/" />
+      )
+    }
     return (
       <div style={container}>
 
@@ -147,4 +152,9 @@ class Login extends React.Component {
   }
 }
 
-export default connect()(Login)
+function mapStateToProps(state) {
+  const isLogin = state.isLogin
+  return {isLogin}
+}
+
+export default connect(mapStateToProps)(Login)

@@ -1,12 +1,15 @@
 import { combineReducers } from 'redux'
 import {
-  REQUEST_CONTENT, RECEIVE_CONTENT
+  REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_LOGIN_RESULT
 } from '../actions'
 
-function contents(state = {
+const initialState = {
+  isLogin: false,
   isFetching: false,
-  response: []
-}, action) {
+  projects: []
+}
+
+export default function contents(state = initialState, action) {
   switch (action.type) {
     case REQUEST_CONTENT:
       return Object.assign({}, state, {
@@ -15,16 +18,18 @@ function contents(state = {
     case RECEIVE_CONTENT:
       return Object.assign({}, state, {
         isFetching: false,
-        response: action.contents,
-        lastUpdated: action.receivedAt
+        projects: action.contents,
+      })
+    case RECEIVE_LOGIN_RESULT:
+      return Object.assign({}, state, {
+        isFetching: false,
+        isLogin: true,
+        userInfo: {
+          access_token: action.token,
+          user_id: action.id
+        }
       })
     default:
       return state
   }
 }
-
-const rootReducer = combineReducers({
-  contents
-})
-
-export default rootReducer

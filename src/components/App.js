@@ -33,7 +33,7 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  const projects = state.contents.response
+  const projects = state.projects
   return {projects}
 }
 
