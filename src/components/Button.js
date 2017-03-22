@@ -19,11 +19,16 @@ const transparentStyle = Object.assign({}, normalStyle, {
   color: '#2269D4'
 })
 
+const disabledStyle = Object.assign({}, normalStyle, {
+  background: 'gray',
+  border: '1px solid gray'
+})
+
 function Button(props) {
-  const buttonStyle = props.isTransparent ? transparentStyle : normalStyle
+  const buttonStyle = props.disabled ? disabledStyle : props.isTransparent ? transparentStyle : normalStyle
   return (
     <div style={buttonContainerStyle}>
-      <button style={buttonStyle} disabled={props.disabled} onClick={props.handleSubmit}>{props.value}</button>
+      <input type="button" value={props.value} name={props.name} style={buttonStyle} disabled={props.disabled} onClick={props.onClick} />
     </div>
   )
 }

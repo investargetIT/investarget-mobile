@@ -9,6 +9,7 @@ import Events from './components/Events'
 import User from './components/User'
 import LoadingAndToast from './components/LoadingAndToast'
 import Login from './components/Login'
+import Register from './components/Register'
 
 const Routes = () => (
   <Router>
@@ -21,6 +22,7 @@ const Routes = () => (
       <Route path="/events" component={Events} />
       <Route path="/user" component={User} />
       <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
 
     </div>
   </Router>

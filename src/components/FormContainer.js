@@ -48,8 +48,8 @@ function FormContainer(props) {
 
   return (
     <div style={container}>
-
-      <Link to="/user">
+    
+      <Link to={props.previousPage}>
         <div style={backIconContainerStyle}>
           <img style={backIconStyle} src="images/login/backButton@3x.png" alt="Back" />
         </div>

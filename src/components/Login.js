@@ -4,6 +4,12 @@ import { connect } from 'react-redux'
 import TextInput from './TextInput'
 import Button from './Button'
 import FormContainer from './FormContainer'
+import { Link } from 'react-router-dom'
+
+var showPasswordStyle = {
+  width: '20px',
+  height: '20px'
+}
 
 class Login extends React.Component {
 
@@ -40,22 +46,24 @@ class Login extends React.Component {
   }
 
   render() {
+
+    var showPassword = <img src="images/login/eyeClose@2x.png" style={showPasswordStyle} />
     var content = (
       <div>
 
         <TextInput iconUrl="images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
 
-        <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} />
+        <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
 
-        <Button disabled={this.state.username === '' || this.state.password === ''} handleSubmit={this.handleSubmit} value="登录" />
+        <Button disabled={this.state.username === '' || this.state.password === ''} onClick={this.handleSubmit} value="登录" />
 
-        <Button isTransparent="true" value="注册" />
+        <Link to="/register"><Button isTransparent="true" value="注册" /></Link>
 
         <p>忘记密码？</p>
 
       </div>
     )
-    return <div><FormContainer title="登录" innerHtml={content} /></div>
+    return <FormContainer title="登录" previousPage="/user" innerHtml={content} />
   }
 
 }
