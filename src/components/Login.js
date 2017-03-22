@@ -1,45 +1,9 @@
 import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
 import { login } from '../actions'
 import { connect } from 'react-redux'
 import TextInput from './TextInput'
 import Button from './Button'
-
-var container = {
-  position: 'fixed',
-  left: 0,
-  top: 0,
-  right: 0,
-  bottom: 0,
-  backgroundImage: 'url(images/login/backgroungImage@2x.png)',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-}
-
-var backIconContainerStyle = {
-  width: '36px',
-  height: '36px',
-  float: 'left',
-  textAlign: 'center'
-}
-
-var titleStyle = {
-  marginRight: '36px',
-  lineHeight: '36px',
-  textAlign: 'center'
-}
-
-var backIconStyle = {
-  marginTop: '8px',
-  width: '9px',
-  height: '15px'
-}
-
-var formContainer = {
-  width: '80%',
-  margin: '200px auto'
-}
+import FormContainer from './FormContainer'
 
 class Login extends React.Component {
 
@@ -76,44 +40,24 @@ class Login extends React.Component {
   }
 
   render() {
-    if (this.props.isLogin) {
-      return (
-        <Redirect to="/" />
-      )
-    }
-    return (
-      <div style={container}>
+    var content = (
+      <div>
 
-        <Link to="/user">
-          <div style={backIconContainerStyle}>
-            <img style={backIconStyle} src="images/login/backButton@3x.png" alt="Back" />
-          </div>
-        </Link>
+        <TextInput iconUrl="images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
 
-        <p style={titleStyle}>登录</p>
+        <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} />
 
-        <div style={formContainer}>
+        <Button disabled={this.state.username === '' || this.state.password === ''} handleSubmit={this.handleSubmit} value="登录" />
 
-          <TextInput iconUrl="images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
+        <Button isTransparent="true" value="注册" />
 
-          <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} />
-
-          <Button disabled={this.state.username==='' || this.state.password===''} handleSubmit={this.handleSubmit} value="登录" />
-
-          <Button isTransparent="true" value="注册" />
-
-          <p>忘记密码？</p>
-
-        </div>
+        <p>忘记密码？</p>
 
       </div>
     )
+    return <div><FormContainer title="登录" innerHtml={content} /></div>
   }
+
 }
 
-function mapStateToProps(state) {
-  const isLogin = state.isLogin
-  return {isLogin}
-}
-
-export default connect(mapStateToProps)(Login)
+export default connect()(Login)
