@@ -28,7 +28,7 @@ function Button(props) {
   const buttonStyle = props.disabled ? disabledStyle : props.isTransparent ? transparentStyle : normalStyle
   return (
     <div style={buttonContainerStyle}>
-      <input type="button" value={props.value} name={props.name} style={buttonStyle} disabled={props.disabled} onClick={props.onClick} />
+      <button type="button" name={props.name} style={buttonStyle} onClick={props.onClick} disabled={props.disabled}>{props.value}</button>
     </div>
   )
 }
