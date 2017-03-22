@@ -2,6 +2,8 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { login } from '../actions'
 import { connect } from 'react-redux'
+import TextInput from './TextInput'
+import Button from './Button'
 
 var container = {
   position: 'fixed',
@@ -34,43 +36,10 @@ var backIconStyle = {
   height: '15px'
 }
 
-var inputIconStyle = {
-  float: 'left',
-  width: '30px',
-  height: '30px'
-}
-
-var inputStyle = {
-  width: '80%',
-  marginLeft: '10px',
-  lineHeight: '30px',
-  fontSize: '16px',
-  backgroundColor: 'transparent',
-}
-
 var formContainer = {
   width: '80%',
   margin: '200px auto'
 }
-
-var buttonContainerStyle = {
-  marginTop: '10px'
-}
-
-var loginButtonStyle = {
-  width: '100%',
-  height: '38px',
-  background: '#2269D4',
-  fontSize: '16px',
-  borderRadius: '20px',
-  border: '1px solid #2269D4',
-  color: 'white'
-}
-
-var registerButtonStyle = Object.assign({}, loginButtonStyle, {
-  background: 'transparent',
-  color: '#2269D4'
-})
 
 class Login extends React.Component {
 
@@ -125,23 +94,13 @@ class Login extends React.Component {
 
         <div style={formContainer}>
 
-          <div>
-            <img src="images/login/User-copy@2x.png" alt="用户名" style={inputIconStyle} />
-            <input name="username" type="text" placeholder="请输入手机号/邮箱" style={inputStyle} onChange={this.handleInputChange} />
-          </div>
+          <TextInput iconUrl="images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
 
-          <div>
-            <img src="images/login/Locked@2x.png" alt="密码" style={inputIconStyle} />
-            <input name="password" type="text" placeholder="请输入密码" style={inputStyle} onChange={this.handleInputChange} />
-          </div>
+          <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} />
 
-          <div style={buttonContainerStyle}>
-            <button style={loginButtonStyle} disabled={this.state.username==='' || this.state.password===''} onClick={this.handleSubmit}>登录</button>
-          </div>
+          <Button disabled={this.state.username==='' || this.state.password===''} handleSubmit={this.handleSubmit} value="登录" />
 
-          <div style={buttonContainerStyle}>
-            <button style={registerButtonStyle}>注册</button>
-          </div>
+          <Button isTransparent="true" value="注册" />
 
           <p>忘记密码？</p>
 
