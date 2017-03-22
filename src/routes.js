@@ -7,14 +7,14 @@ import App from './components/App'
 import Posts from './components/Posts'
 import Events from './components/Events'
 import User from './components/User'
-import Loading from './components/Loading'
+import LoadingAndToast from './components/LoadingAndToast'
 import Login from './components/Login'
 
 const Routes = () => (
   <Router>
     <div>
 
-      <Loading />
+      <LoadingAndToast />
 
       <Route exact path="/" component={App} />
       <Route path="/posts" component={Posts} />

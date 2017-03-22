@@ -4,9 +4,11 @@ import axios from 'axios'
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
 export const RECEIVE_LOGIN_RESULT = 'RECEIVE_LOGIN_RESULT'
+export const RECEIVE_BUT_FAIL = 'RECEIVE_BUT_FAIL'
+export const DISMISS_ERROR_MESSAGE = 'DISMISS_ERROR_MESSAGE'
 
-// const url = 'http://192.168.1.253:8082/api/'
-var url = 'https://api.investarget.com/api/'
+const url = 'http://192.168.1.253:8082/api/'
+// var url = 'https://api.investarget.com/api/'
 
 function requestContents(param) {
   return {
@@ -29,6 +31,19 @@ function receiveLoginResult(token, id) {
     type: RECEIVE_LOGIN_RESULT,
     token,
     id
+  }
+}
+
+function receiveButFail(message) {
+  return {
+    type: RECEIVE_BUT_FAIL,
+    message
+  }
+}
+
+function dismissErrMsg() {
+  return {
+    type: DISMISS_ERROR_MESSAGE
   }
 }
 
@@ -61,6 +76,10 @@ export function login(param) {
           dispatch(receiveLoginResult(response.data.result.access_token, response.data.result.id))
         } else {
           // Login failed
+          dispatch(receiveButFail(response.data.error.details))
+          setTimeout(function () {
+            dispatch(dismissErrMsg())
+          }, 1000)
         }
       })
       .catch(error => console.error(error))

@@ -1,15 +1,15 @@
-import { combineReducers } from 'redux'
 import {
-  REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_LOGIN_RESULT
+  REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_LOGIN_RESULT, RECEIVE_BUT_FAIL, DISMISS_ERROR_MESSAGE
 } from '../actions'
 
 const initialState = {
   isLogin: false,
   isFetching: false,
+  isError: false,
   projects: []
 }
 
-export default function contents(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case REQUEST_CONTENT:
       return Object.assign({}, state, {
@@ -29,6 +29,18 @@ export default function contents(state = initialState, action) {
           user_id: action.id
         }
       })
+    case RECEIVE_BUT_FAIL:
+      return Object.assign({}, state, {
+        isFetching: false,
+        isError: true,
+        errorMsg: action.message
+      })
+    case DISMISS_ERROR_MESSAGE:
+      var newObj = Object.assign({}, state, {
+        isError: false
+      })
+      delete newObj.errorMsg
+      return newObj
     default:
       return state
   }
