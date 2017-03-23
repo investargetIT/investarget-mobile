@@ -20,7 +20,7 @@ class App extends Component {
           industrys={element.industrys.join('')}
           imgUrl={element.imgUrl}
           amount={element.amount}
-          key={element.imgUrl} />
+          key={element.title} />
       )
     }, this)
     return (

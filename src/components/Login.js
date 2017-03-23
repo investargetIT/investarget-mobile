@@ -47,7 +47,7 @@ class Login extends React.Component {
 
   render() {
 
-    var showPassword = <img src="images/login/eyeClose@2x.png" style={showPasswordStyle} />
+    var showPassword = <img src="images/login/eyeClose@2x.png" style={showPasswordStyle} alt="" />
     var content = (
       <div>
 
