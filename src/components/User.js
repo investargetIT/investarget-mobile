@@ -1,6 +1,8 @@
 import React from 'react'
 import TabBar from './TabBar'
 import LeftIconRightLabel from './LeftIconRightLabel'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 var blurBackgroundStyle = {
   position: 'absolute',
@@ -22,7 +24,8 @@ var headerContainerStyle = {
 
 var avatarStyle = {
   width: '90px',
-  height: '90px'
+  height: '90px',
+  borderRadius: '50%'
 }
 
 var orgNameStyle = {
@@ -40,14 +43,21 @@ var settingContainerStyle = {
 }
 
 function User(props) {
+
+  if (!props.isLogin) {
+    return (
+      <Redirect to="/login" />
+    )
+  }
+
   return (
     <div>
 
       <div style={blurBackgroundStyle}></div>
       <div style={headerContainerStyle}>
-        <img alt="" style={avatarStyle} src="images/userCenter/defaultAvatar@2x.png" />
-        <p style={orgNameStyle}>海拓</p>
-        <p><span style={nameAndTitleStyle}>军柯</span><span style={nameAndTitleStyle}>助理</span></p>
+        <img alt="" style={avatarStyle} src={props.userInfo.photoUrl} />
+        <p style={orgNameStyle}>{props.userInfo.company}</p>
+        <p><span style={nameAndTitleStyle}>{props.userInfo.name}</span><span style={nameAndTitleStyle}>{props.userInfo.title.titleName}</span></p>
       </div>
 
       <div style={settingContainerStyle}>
@@ -67,4 +77,10 @@ function User(props) {
   )
 }
 
-export default User
+function mapStateToProps(state) {
+  const isLogin = state.isLogin
+  const userInfo = state.userInfo
+  return { isLogin, userInfo }
+}
+
+export default connect(mapStateToProps)(User)

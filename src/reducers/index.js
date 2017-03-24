@@ -1,5 +1,9 @@
 import {
-  REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_LOGIN_RESULT, RECEIVE_BUT_FAIL, DISMISS_ERROR_MESSAGE
+  REQUEST_CONTENT, 
+  RECEIVE_CONTENT, 
+  RECEIVE_USER_INFO, 
+  SHOW_MSG, 
+  DISMISS_ERROR_MESSAGE
 } from '../actions'
 
 const initialState = {
@@ -20,20 +24,20 @@ export default function (state = initialState, action) {
         isFetching: false,
         projects: action.contents,
       })
-    case RECEIVE_LOGIN_RESULT:
+    case RECEIVE_USER_INFO:
+      const userInfo = Object.assign({}, action.object, {
+        token: action.token
+      })
       return Object.assign({}, state, {
         isFetching: false,
         isLogin: true,
-        userInfo: {
-          access_token: action.token,
-          user_id: action.id
-        }
+        userInfo: userInfo
       })
-    case RECEIVE_BUT_FAIL:
+    case SHOW_MSG:
       return Object.assign({}, state, {
         isFetching: false,
         isError: true,
-        errorMsg: action.message
+        errorMsg: action.msg
       })
     case DISMISS_ERROR_MESSAGE:
       var newObj = Object.assign({}, state, {

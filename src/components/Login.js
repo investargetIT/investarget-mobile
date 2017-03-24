@@ -63,7 +63,7 @@ class Login extends React.Component {
 
       </div>
     )
-    return <FormContainer title="登录" previousPage="/user" innerHtml={content} />
+    return <FormContainer title="登录" previousPage="/" innerHtml={content} />
   }
 
 }
