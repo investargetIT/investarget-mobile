@@ -10,22 +10,29 @@ import User from './components/User'
 import LoadingAndToast from './components/LoadingAndToast'
 import Login from './components/Login'
 import Register from './components/Register'
+import { connect } from 'react-redux'
+import { readUserInfoFromLocalStorage } from './actions'
 
-const Routes = () => (
-  <Router>
-    <div>
+const Routes = (props) => {
 
-      <LoadingAndToast />
+  props.dispatch(readUserInfoFromLocalStorage())
 
-      <Route exact path="/" component={App} />
-      <Route path="/posts" component={Posts} />
-      <Route path="/events" component={Events} />
-      <Route path="/user" component={User} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+  return (
+    <Router>
+      <div>
 
-    </div>
-  </Router>
-)
+        <LoadingAndToast />
 
-export default Routes
+        <Route exact path="/" component={App} />
+        <Route path="/posts" component={Posts} />
+        <Route path="/events" component={Events} />
+        <Route path="/user" component={User} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+
+      </div>
+    </Router>
+  )
+}
+
+export default connect()(Routes)

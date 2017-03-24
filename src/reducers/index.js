@@ -3,7 +3,8 @@ import {
   RECEIVE_CONTENT, 
   RECEIVE_USER_INFO, 
   SHOW_MSG, 
-  DISMISS_ERROR_MESSAGE
+  DISMISS_ERROR_MESSAGE,
+  READ_USER_INFO_FROM_LOCAL_STORAGE
 } from '../actions'
 
 const initialState = {
@@ -28,6 +29,9 @@ export default function (state = initialState, action) {
       const userInfo = Object.assign({}, action.object, {
         token: action.token
       })
+
+      localStorage.setItem('userInfo', JSON.stringify(userInfo))
+
       return Object.assign({}, state, {
         isFetching: false,
         isLogin: true,
@@ -45,6 +49,13 @@ export default function (state = initialState, action) {
       })
       delete newObj.errorMsg
       return newObj
+    case READ_USER_INFO_FROM_LOCAL_STORAGE:
+      var currentUserInfo = localStorage.getItem('userInfo')
+      var nextState = currentUserInfo ?  Object.assign({}, state, {
+          isLogin: true,
+          userInfo: JSON.parse(currentUserInfo)
+        }) : Object.assign({}, state)
+      return nextState
     default:
       return state
   }

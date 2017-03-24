@@ -7,6 +7,7 @@ export const RECEIVE_USER_INFO = 'RECEIVE_USER_INFO'
 export const SHOW_MSG = 'SHOW_MSG'
 export const DISMISS_ERROR_MESSAGE = 'DISMISS_ERROR_MESSAGE'
 export const REQUEST_CURRENT_USER_INFO = 'REQUEST_CURRENT_USER_INFO'
+export const READ_USER_INFO_FROM_LOCAL_STORAGE = 'READ_USER_INFO_FROM_LOCAL_STORAGE'
 
 const url = 'http://192.168.1.253:8082/api/'
 // var url = 'https://api.investarget.com/api/'
@@ -111,5 +112,11 @@ export function login(param) {
         }
       })
       .catch(error => dispatch(handleError(error)))
+  }
+}
+
+export function readUserInfoFromLocalStorage() {
+  return {
+    type: READ_USER_INFO_FROM_LOCAL_STORAGE
   }
 }
