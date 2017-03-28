@@ -8,9 +8,10 @@ export const SHOW_MSG = 'SHOW_MSG'
 export const DISMISS_ERROR_MESSAGE = 'DISMISS_ERROR_MESSAGE'
 export const REQUEST_CURRENT_USER_INFO = 'REQUEST_CURRENT_USER_INFO'
 export const READ_USER_INFO_FROM_LOCAL_STORAGE = 'READ_USER_INFO_FROM_LOCAL_STORAGE'
+export const APPEND_PROJECTS = 'APPEND_PROJECTS'
 
-const url = 'http://192.168.1.253:8082/api/'
-// var url = 'https://api.investarget.com/api/'
+// const url = 'http://192.168.1.253:8082/api/'
+var url = 'https://api.investarget.com/api/'
 
 function requestContents(param) {
   return {
@@ -19,7 +20,7 @@ function requestContents(param) {
   }
 }
 
-function receiveContents(param, json) {
+export function receiveContents(param, json) {
   return {
     type: RECEIVE_CONTENT,
     param,
@@ -27,6 +28,13 @@ function receiveContents(param, json) {
     reveivedAt: Date.now()
   }
 }
+
+export function appendProjects(projects) {
+  return {
+    type: APPEND_PROJECTS,
+    projects
+  }
+} 
 
 function receiveCurrentUserInfo(token, object) {
   return {
@@ -46,6 +54,15 @@ function showMsg(msg) {
 function dismissErrMsg() {
   return {
     type: DISMISS_ERROR_MESSAGE
+  }
+}
+
+export function showMsgAndAutoDismiss(msg) {
+  return dispatch => {
+    dispatch(showMsg(msg))
+    setTimeout(function () {
+      dispatch(dismissErrMsg())
+    }, 1000)
   }
 }
 

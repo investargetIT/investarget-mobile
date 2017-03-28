@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "alloytouch": "^0.2.3",
     "axios": "^0.15.3",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.4.2",

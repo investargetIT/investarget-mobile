@@ -11,7 +11,8 @@ var style = {
   backgroundColor: '#F7F7FA',
   position: 'fixed',
   bottom: 0,
-  borderTop: '1px solid #c0bfc4'
+  borderTop: '1px solid #c0bfc4',
+  zIndex: 99
 }
 
 class TabBar extends Component {

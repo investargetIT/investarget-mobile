@@ -4,7 +4,8 @@ import {
   RECEIVE_USER_INFO, 
   SHOW_MSG, 
   DISMISS_ERROR_MESSAGE,
-  READ_USER_INFO_FROM_LOCAL_STORAGE
+  READ_USER_INFO_FROM_LOCAL_STORAGE,
+  APPEND_PROJECTS
 } from '../actions'
 
 const initialState = {
@@ -24,6 +25,11 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         isFetching: false,
         projects: action.contents,
+      })
+    case APPEND_PROJECTS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        projects: state.projects.concat(action.projects),
       })
     case RECEIVE_USER_INFO:
       const userInfo = Object.assign({}, action.object, {
