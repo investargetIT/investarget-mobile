@@ -9,6 +9,7 @@ export const DISMISS_ERROR_MESSAGE = 'DISMISS_ERROR_MESSAGE'
 export const REQUEST_CURRENT_USER_INFO = 'REQUEST_CURRENT_USER_INFO'
 export const READ_USER_INFO_FROM_LOCAL_STORAGE = 'READ_USER_INFO_FROM_LOCAL_STORAGE'
 export const APPEND_PROJECTS = 'APPEND_PROJECTS'
+export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 
 // const url = 'http://192.168.1.253:8082/api/'
 var url = 'https://api.investarget.com/api/'
@@ -26,6 +27,13 @@ export function receiveContents(param, json) {
     param,
     contents: json,
     reveivedAt: Date.now()
+  }
+}
+
+export function receivePosts(posts) {
+  return {
+    type: RECEIVE_POSTS,
+    posts
   }
 }
 

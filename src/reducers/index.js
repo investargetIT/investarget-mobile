@@ -5,14 +5,16 @@ import {
   SHOW_MSG, 
   DISMISS_ERROR_MESSAGE,
   READ_USER_INFO_FROM_LOCAL_STORAGE,
-  APPEND_PROJECTS
+  APPEND_PROJECTS,
+  RECEIVE_POSTS
 } from '../actions'
 
 const initialState = {
   isLogin: false,
   isFetching: false,
   isError: false,
-  projects: []
+  projects: [],
+  posts: []
 }
 
 export default function (state = initialState, action) {
@@ -25,6 +27,10 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         isFetching: false,
         projects: action.contents,
+      })
+    case RECEIVE_POSTS: 
+      return Object.assign({}, state, {
+        posts: action.posts
       })
     case APPEND_PROJECTS:
       return Object.assign({}, state, {

@@ -126,10 +126,15 @@ class App extends Component {
         })
     }
 
-    document.addEventListener("touchmove", function (evt) {
+    document.ontouchmove = function (evt) {
       evt.preventDefault();
-    }, false);
+    }
 
+  }
+
+  componentWillUnmount() {
+    // You have to remove ontouchmove listener otherwise you can not scroll on other page
+    document.ontouchmove = null
   }
 
   render() {
