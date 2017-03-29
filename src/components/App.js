@@ -6,6 +6,7 @@ import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
 import fetch from 'isomorphic-fetch'
+import { Link } from 'react-router-dom'
 
 var loadmoreStyle = {
   height: '50px',
@@ -41,7 +42,8 @@ const headerIconStyle = {
 }
 
 const headerActionDoStyle = {
-  verticalAlign: 'middle'
+  verticalAlign: 'middle',
+  color: '#666666'
 }
 
 class App extends Component {
@@ -225,10 +227,12 @@ class App extends Component {
           <div style={headerLabelStyle}>
             <span style={headerLabelSpanStyle}>项目推荐</span>
           </div>
-          <div style={headerActionStyle}>
-            <img style={headerIconStyle} src="images/home/filter@2x.png" />
-            <span style={headerActionDoStyle}>筛选</span>
-          </div>
+          <Link to="/filter">
+            <div style={headerActionStyle}>
+              <img style={headerIconStyle} src="images/home/filter@2x.png" />
+              <span style={headerActionDoStyle}>筛选</span>
+            </div>
+          </Link>
         </div>
 
         <div id="wrapper">

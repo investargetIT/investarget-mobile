@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 var wrapper = {
   width: '100%',
@@ -12,7 +13,7 @@ var topNav = {
   top: 0,
   height: '60px',
   width: '100%',
-  backgroundColor: 'green'
+  backgroundColor: '#10458F'
 }
 
 var sideNav = {
@@ -55,6 +56,23 @@ var detailItemActiveStyle = {
   color: '#10458F',
   padding: '4px 0',
   borderBottom: '2px solid #10458F'
+}
+
+const backIconStyle = {
+  width: '9px',
+  height: '15px',
+  verticalAlign: 'middle'
+}
+
+const backLabelStyle = {
+  marginLeft: '10px',
+  color: 'white',
+  textDecoration: 'none',
+  verticalAlign: 'middle'
+}
+
+const backContainerStyle = {
+  padding: '20px'
 }
 
 var data = []
@@ -134,9 +152,15 @@ class MasterDetail extends Component {
     })
 
     return (
-      <div id="wrapper" style={wrapper}>
+      <div style={wrapper}>
 
-        <div id="top-nav" style={topNav}>Top nav</div>
+        <div id="top-nav" style={topNav}>
+          <Link to="/">
+          <div style={backContainerStyle}>
+            <img style={backIconStyle} src="images/login/backButton@3x.png" /><span style={backLabelStyle}>返回</span>
+            </div>
+          </Link>
+        </div>
 
         <div id="side-nav" style={sideNav}>
           <ul>{master}</ul>
