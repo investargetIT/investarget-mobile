@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 import TabBar from './TabBar'
 import LeftIconRightLabel from './LeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
+import { logout } from '../actions'
 
 var blurBackgroundStyle = {
   position: 'absolute',
@@ -42,39 +43,54 @@ var settingContainerStyle = {
   padding: '20px 0px'
 }
 
-function User(props) {
+class User extends Component {
 
-  if (!props.isLogin) {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick() {
+    if (confirm('确定退出？')) {
+      this.props.dispatch(logout())
+    }
+  }
+
+  render () {
+    if (!this.props.isLogin) {
+      return (
+        <Redirect to="/login" />
+      )
+    }
+
     return (
-      <Redirect to="/login" />
+      <div>
+
+        <div style={blurBackgroundStyle}></div>
+        <div style={headerContainerStyle}>
+          <img alt="" style={avatarStyle} src={this.props.userInfo.photoUrl} />
+          <p style={orgNameStyle}>{this.props.userInfo.company}</p>
+          <p><span style={nameAndTitleStyle}>{this.props.userInfo.name}</span><span style={nameAndTitleStyle}>{this.props.userInfo.title.titleName}</span></p>
+        </div>
+
+        <div style={settingContainerStyle}>
+          <ul>
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="关注的标签" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />      <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="退出登录" onClick={this.handleClick} />
+          </ul>
+        </div>
+
+        <TabBar />
+
+      </div>
     )
   }
 
-  return (
-    <div>
-
-      <div style={blurBackgroundStyle}></div>
-      <div style={headerContainerStyle}>
-        <img alt="" style={avatarStyle} src={props.userInfo.photoUrl} />
-        <p style={orgNameStyle}>{props.userInfo.company}</p>
-        <p><span style={nameAndTitleStyle}>{props.userInfo.name}</span><span style={nameAndTitleStyle}>{props.userInfo.title.titleName}</span></p>
-      </div>
-
-      <div style={settingContainerStyle}>
-        <ul>
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="关注的标签" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />        <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
-          <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="退出登录" />
-        </ul>
-      </div>
-
-      <TabBar />
-    </div>
-  )
 }
 
 function mapStateToProps(state) {

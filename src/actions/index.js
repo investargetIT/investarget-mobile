@@ -10,6 +10,7 @@ export const REQUEST_CURRENT_USER_INFO = 'REQUEST_CURRENT_USER_INFO'
 export const READ_USER_INFO_FROM_LOCAL_STORAGE = 'READ_USER_INFO_FROM_LOCAL_STORAGE'
 export const APPEND_PROJECTS = 'APPEND_PROJECTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
+export const LOGOUT = 'LOGOUT'
 
 // const url = 'http://192.168.1.253:8082/api/'
 var url = 'https://api.investarget.com/api/'
@@ -43,6 +44,12 @@ export function appendProjects(projects) {
     projects
   }
 } 
+
+export function logout() {
+  return {
+    type: LOGOUT
+  }
+}
 
 function receiveCurrentUserInfo(token, object) {
   return {

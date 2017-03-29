@@ -16,7 +16,7 @@ var iconContainerStyle = {
 
 function LeftIconRightLabel(props) {
   return (
-    <li style={itemContainerStyle}>
+    <li style={itemContainerStyle} onClick={props.onClick}>
       <div style={iconContainerStyle}><img alt="" style={iconStyle} src={props.icon} /></div>
       <div><span>{props.label}</span></div>
     </li>

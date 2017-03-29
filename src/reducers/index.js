@@ -6,7 +6,8 @@ import {
   DISMISS_ERROR_MESSAGE,
   READ_USER_INFO_FROM_LOCAL_STORAGE,
   APPEND_PROJECTS,
-  RECEIVE_POSTS
+  RECEIVE_POSTS,
+  LOGOUT
 } from '../actions'
 
 const initialState = {
@@ -61,6 +62,13 @@ export default function (state = initialState, action) {
       })
       delete newObj.errorMsg
       return newObj
+    case LOGOUT:
+      localStorage.removeItem('userInfo')
+      var newObj1 = Object.assign({}, state, {
+        isLogin: false
+      })
+      delete newObj1.userInfo
+      return newObj1
     case READ_USER_INFO_FROM_LOCAL_STORAGE:
       var currentUserInfo = localStorage.getItem('userInfo')
       var nextState = currentUserInfo ?  Object.assign({}, state, {
