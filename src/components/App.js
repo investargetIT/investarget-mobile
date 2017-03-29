@@ -17,6 +17,33 @@ var loadmoreStyle = {
   transform: 'scale(1, 1)'
 }
 
+const headerLabelStyle = {
+  float: 'left',
+  marginLeft: '14px'
+}
+
+const headerActionStyle = {
+  float: 'right',
+  marginRight: '14px',
+}
+
+const headerLabelSpanStyle = {
+  padding: '0px 7px',
+  borderLeft: '2px solid #10458F',
+  verticalAlign: 'middle'
+}
+
+const headerIconStyle = {
+  width: '14px',
+  height: '15px',
+  marginRight: '7px',
+  verticalAlign: 'middle'
+}
+
+const headerActionDoStyle = {
+  verticalAlign: 'middle'
+}
+
 class App extends Component {
 
   componentDidMount() {
@@ -194,7 +221,15 @@ class App extends Component {
 
         </div>
 
-        <div id="header">多维海拓</div>
+        <div id="header">
+          <div style={headerLabelStyle}>
+            <span style={headerLabelSpanStyle}>项目推荐</span>
+          </div>
+          <div style={headerActionStyle}>
+            <img style={headerIconStyle} src="images/home/filter@2x.png" />
+            <span style={headerActionDoStyle}>筛选</span>
+          </div>
+        </div>
 
         <div id="wrapper">
           <div id="scroller">

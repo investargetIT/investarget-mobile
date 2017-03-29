@@ -34,12 +34,11 @@ body {
   width: 100%;
   height: 45px;
   line-height: 45px;
-  background: #00ABEB;
+  background: #F4F4F4;
   padding: 0;
-  color: #eee;
-  font-size: 20px;
+  color: #666666;
+  font-size: 15px;
   text-align: center;
-  font-weight: bold;
 }
 #footer {
   position: absolute;
@@ -58,7 +57,7 @@ body {
   bottom: 48px;
   left: 0;
   width: 100%;
-  background: rgb(233, 230, 230);
+  background: white;
   overflow: hidden;
 }
 #scroller {
