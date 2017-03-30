@@ -33,9 +33,7 @@ var titleStyle = {
 }
 
 var backIconStyle = {
-  marginTop: '8px',
-  width: '9px',
-  height: '15px'
+  margin: '4px'
 }
 
 var formContainer = {
@@ -57,7 +55,7 @@ function FormContainer(props) {
       <div style={navbarStyle}>
         <Link to={props.previousPage}>
           <div style={backIconContainerStyle}>
-            <img style={backIconStyle} src="images/login/backButton@3x.png" alt="Back" />
+            <img style={backIconStyle} src="images/ic_navigate_before.svg" alt="Back" />
           </div>
         </Link>
 
