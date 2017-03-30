@@ -9,12 +9,19 @@ var blurBackgroundStyle = {
   position: 'absolute',
   width: '100%',
   height: '240px',
+  zIndex: -1,
+  overflow: 'hidden',
+}
+
+var blurImageStyle = {
+  width: '100%',
+  height: '240px',
   backgroundImage: 'url(images/userCenter/ht-usercenterheaderbg@2x.png)',
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
   filter: 'blur(5px)',
-  zIndex: -1
+  transform: 'scale(1.08)',
 }
 
 var headerContainerStyle = {
@@ -66,7 +73,9 @@ class User extends Component {
     return (
       <div>
 
-        <div style={blurBackgroundStyle}></div>
+        <div style={blurBackgroundStyle}>
+          <div style={blurImageStyle}></div>
+        </div>
         <div style={headerContainerStyle}>
           <img alt="" style={avatarStyle} src={this.props.userInfo.photoUrl} />
           <p style={orgNameStyle}>{this.props.userInfo.company}</p>
