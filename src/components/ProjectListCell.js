@@ -24,7 +24,7 @@ var titleStyle = {
 }
 
 var countryAndIndustrys = {
-  marginTop: '10px',
+  marginTop: '8px',
   fontSize: '13px',
   color: '#999999'
 }
@@ -36,7 +36,7 @@ var countryStyle = {
 }
 
 var amountContainerStyle = {
-  marginTop: '10px',
+  marginTop: '8px',
   fontSize: '13px',
   color: '#666666'
 }

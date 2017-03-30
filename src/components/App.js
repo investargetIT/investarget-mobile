@@ -18,6 +18,10 @@ var loadmoreStyle = {
   transform: 'scale(1, 1)'
 }
 
+const loadingStyle = {
+  width: '20px'
+}
+
 const headerLabelStyle = {
   float: 'left',
   marginLeft: '14px'
@@ -215,7 +219,7 @@ class App extends Component {
             <ul id="list" ref="listContainer">
               {rows}
             </ul>
-            <div className="loading-more" style={loadmoreStyle}>正在加载中，请稍后...</div>
+            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src="images/loading.svg" /></div>
           </div>
         </div>
 
