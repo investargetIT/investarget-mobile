@@ -16,6 +16,8 @@ body {
 }
 html {
   -ms-touch-action: none;
+  width: 100%;
+  height: 100%;
 }
 body, ul, li {
   padding: 0;
@@ -25,10 +27,27 @@ body, ul, li {
 body {
   font-size: 14px;
   font-family: ubuntu, helvetica, arial;
+  width: 100%;
+  min-width: 320px;
+  max-width: 540px; /* 1080p屏幕2倍像素密度 */
+  height: 100%;
+  color: #333;
 }
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
 a {
   text-decoration: none;
 }
+
+#container {
+  width: 100%;
+  height: 100%;
+}
+
 #header {
   position: absolute;
   z-index: 12;

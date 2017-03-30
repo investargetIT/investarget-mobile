@@ -2,16 +2,19 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-var container = {
-  position: 'fixed',
-  left: 0,
-  top: 0,
-  right: 0,
-  bottom: 0,
+var containerStyle = {
+  width: '100%',
+  minHeight: '100%',
   backgroundImage: 'url(images/login/backgroungImage@2x.png)',
-  backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
+  backgroundSize: '100% auto',
+  backgroundPosition: '50% 0',
+  overflow: 'hidden',
+}
+
+var navbarStyle = {
+  width: '100%',
+  height: '36px',
 }
 
 var backIconContainerStyle = {
@@ -24,7 +27,9 @@ var backIconContainerStyle = {
 var titleStyle = {
   marginRight: '36px',
   lineHeight: '36px',
-  textAlign: 'center'
+  textAlign: 'center',
+  fontSize: '20px',
+  fontWeight: '200',
 }
 
 var backIconStyle = {
@@ -34,8 +39,8 @@ var backIconStyle = {
 }
 
 var formContainer = {
-  width: '80%',
-  margin: '200px auto'
+  margin: '55% auto 35%',
+  width: '76.27%',
 }
 
 function FormContainer(props) {
@@ -47,15 +52,17 @@ function FormContainer(props) {
   }
 
   return (
-    <div style={container}>
+    <div style={containerStyle}>
     
-      <Link to={props.previousPage}>
-        <div style={backIconContainerStyle}>
-          <img style={backIconStyle} src="images/login/backButton@3x.png" alt="Back" />
-        </div>
-      </Link>
+      <div style={navbarStyle}>
+        <Link to={props.previousPage}>
+          <div style={backIconContainerStyle}>
+            <img style={backIconStyle} src="images/login/backButton@3x.png" alt="Back" />
+          </div>
+        </Link>
 
-      <p style={titleStyle}>{props.title}</p>
+        <p style={titleStyle}>{props.title}</p>
+      </div>
 
       <div style={formContainer}>
         {props.innerHtml}

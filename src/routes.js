@@ -20,7 +20,7 @@ const Routes = (props) => {
 
   return (
     <Router>
-      <div>
+      <div id="container">
 
         <LoadingAndToast />
 

@@ -1,18 +1,27 @@
 import React from 'react'
 
 var containerStyle = {
-  position: 'relative'
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
 }
 
 var inputIconStyle = {
-  float: 'left',
+  marginRight: '20px',
   width: '30px',
-  height: '30px'
+  height: '30px',
+}
+
+var inputWrapStyle = {
+  position: 'relative',
+  flexGrow: '1',
 }
 
 var inputStyle = {
-  width: '80%',
-  marginLeft: '10px',
+  width: '100%',
+  border: 'none',
+  borderBottom: '1px solid rgb(34, 105, 212)',
+  outline: 'none',
   lineHeight: '30px',
   fontSize: '16px',
   backgroundColor: 'transparent',
@@ -20,9 +29,10 @@ var inputStyle = {
 
 var rightContentStyle = {
   position: 'absolute',
-  right: 0,
-  top: 0
+  right: '0',
+  top: '0',
 }
+
 
 function TextInput(props) {
   
@@ -36,8 +46,10 @@ function TextInput(props) {
   return (
     <div style={containerStyle}>
       {icon}
-      <input name={props.name} type="text" placeholder={props.placeholder} style={inputStyle} onChange={props.handleInputChange} />
-      {rightContent}
+      <div style={inputWrapStyle}>
+        <input name={props.name} type="text" placeholder={props.placeholder} style={inputStyle} onChange={props.handleInputChange} />
+        {rightContent}
+      </div>
     </div>
   )
 }
