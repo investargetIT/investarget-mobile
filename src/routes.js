@@ -13,8 +13,28 @@ import Register from './components/Register'
 import { connect } from 'react-redux'
 import { readUserInfoFromLocalStorage } from './actions'
 import MasterDetail from './components/MasterDetail'
+import axios from 'axios'
+import { receivePosts } from './actions'
 
 const Routes = (props) => {
+
+  axios.get('http://192.168.1.253:8082/api/services/InvestargetApi/activityPicture/GetActivitypictures')
+    .then(response => {
+      if (response.data.success) {
+        var result = response.data.result.map(item => {
+          var obj = {}
+          obj['title'] = item.title
+          obj['imgUrl'] = item.url
+          obj['detailUrl'] = item.detailUrl
+          obj['isNews'] = item.isNews
+          return obj
+        })
+        props.dispatch(receivePosts(result))
+      } else {
+        throw response.data.error
+      }
+    })
+    .catch(error => console.error(error))
 
   props.dispatch(readUserInfoFromLocalStorage())
 

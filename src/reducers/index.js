@@ -15,7 +15,8 @@ const initialState = {
   isFetching: false,
   isError: false,
   projects: [],
-  posts: []
+  posts: [],
+  eventUrl: ''
 }
 
 export default function (state = initialState, action) {
@@ -30,8 +31,11 @@ export default function (state = initialState, action) {
         projects: action.contents,
       })
     case RECEIVE_POSTS: 
+      const events = action.posts.filter(post => !post.isNews)
+      const eventUrl = events.length > 0 ? events[0].detailUrl : initialState.eventUrl
       return Object.assign({}, state, {
-        posts: action.posts
+        posts: action.posts.filter(post => post.isNews),
+        eventUrl: eventUrl
       })
     case APPEND_PROJECTS:
       return Object.assign({}, state, {

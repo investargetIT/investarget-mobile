@@ -12,8 +12,8 @@ export const APPEND_PROJECTS = 'APPEND_PROJECTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const LOGOUT = 'LOGOUT'
 
-// const url = 'http://192.168.1.253:8082/api/'
-var url = 'https://api.investarget.com/api/'
+const url = 'http://192.168.1.253:8082/api/'
+// var url = 'https://api.investarget.com/api/'
 
 function requestContents(param) {
   return {

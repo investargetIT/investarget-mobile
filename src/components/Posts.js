@@ -1,31 +1,9 @@
 import React, { Component } from 'react'
 import TabBar from './TabBar'
 import PostListCell from './PostListCell'
-import axios from 'axios'
-import { receivePosts } from '../actions'
 import { connect } from 'react-redux'
 
 class Posts extends Component {
-
-  componentDidMount() {
-    axios.get('https://api.investarget.com/api/services/InvestargetApi/activityPicture/GetActivitypictures')
-    .then(response => {
-      if (response.data.success) {
-        console.log(response.data)
-        var result = response.data.result.map(item => {
-          var obj = {}
-          obj['title'] = item.title
-          obj['imgUrl'] = item.url
-          obj['detailUrl'] = item.detailUrl
-          return obj
-        })
-        this.props.dispatch(receivePosts(result))
-      } else {
-        throw response.data.error
-      }
-    })
-    .catch(error => console.error(error))
-  }
 
   render() {
 

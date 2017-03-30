@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TabBarItem from './TabBarItem'
+import { connect } from 'react-redux'
 
 var container = {
   height: '50px'
@@ -23,7 +24,7 @@ class TabBar extends Component {
         <div className="tab-bar" style={style}>
           <TabBarItem label="首页" route="/" />
           <TabBarItem label="智库" route="/posts" />
-          <TabBarItem label="活动" url="https://wy.guahao.com/education/detail/4008f583-7684-4739-ad8f-b8de1f44dbe2?_channel=/" />
+          <TabBarItem label="活动" url={this.props.eventUrl} />
           <TabBarItem label="个人中心" route="/user" />
         </div>
       </div>
@@ -31,4 +32,9 @@ class TabBar extends Component {
   }
 }
 
-export default TabBar;
+function mapStateToProps(state) {
+  const eventUrl = state.eventUrl
+  return { eventUrl }
+}
+
+export default connect(mapStateToProps)(TabBar)
