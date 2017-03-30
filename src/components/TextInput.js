@@ -15,12 +15,12 @@ var inputIconStyle = {
 var inputWrapStyle = {
   position: 'relative',
   flexGrow: '1',
+  borderBottom: '1px solid rgb(34, 105, 212)',  
 }
 
 var inputStyle = {
   width: '100%',
   border: 'none',
-  borderBottom: '1px solid rgb(34, 105, 212)',
   outline: 'none',
   lineHeight: '30px',
   fontSize: '16px',
