@@ -17,7 +17,7 @@ const PostListCell = (props) => {
     width: '100%',
     height: '200px',
     position: 'relative',
-    margin: '5px 0',
+    marginBottom: '2px',
     backgroundImage: 'url(' + props.imgUrl + ')',
     backgroundSize: 'cover',
     backgroundPosition: 'center',

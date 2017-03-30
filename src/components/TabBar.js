@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 import TabBarItem from './TabBarItem'
 import { connect } from 'react-redux'
 
-var container = {
-  height: '50px'
-}
-
 var style = {
+  padding: '3px',
+  height: '48px',
   display: 'flex',
   width: '100%',
   backgroundColor: '#F7F7FA',
@@ -20,14 +18,12 @@ class TabBar extends Component {
   
   render() {
     return (
-      <div style={container}>
         <div className="tab-bar" style={style}>
           <TabBarItem label="首页" route="/" />
           <TabBarItem label="智库" route="/posts" />
           <TabBarItem label="活动" url={this.props.eventUrl} />
           <TabBarItem label="个人中心" route="/user" />
         </div>
-      </div>
     )
   }
 }
