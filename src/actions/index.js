@@ -97,23 +97,34 @@ function requestCurrentUserInfo(token, id) {
   }
 }
 
+function shouldFetchContents(state) {
+  const contents = state.projects
+  if (contents.length > 0) {
+    return false
+  } else {
+    return true
+  }
+}
+
 export function fetchContents(param) {
-  return dispatch => {
-    dispatch(requestContents(param))
-    return fetch(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn')
-    .then(response => response.json())
-    .then(json => {
-      var result = json.result.items.map(item => {
-        var obj = {}
-        obj['title'] = item.titleC
-        obj['amount'] = item.financedAmount
-        obj['country'] = item.country.countryName
-        obj['imgUrl'] = item.industrys[0].imgUrl
-        obj['industrys'] = item.industrys.map(i => i.industryName)
-        return obj
-      })
-      dispatch(receiveContents(param, result))
-    })
+  return (dispatch, getState) => {
+    if (shouldFetchContents(getState())) {
+      dispatch(requestContents(param))
+      return fetch(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn')
+        .then(response => response.json())
+        .then(json => {
+          var result = json.result.items.map(item => {
+            var obj = {}
+            obj['title'] = item.titleC
+            obj['amount'] = item.financedAmount
+            obj['country'] = item.country.countryName
+            obj['imgUrl'] = item.industrys[0].imgUrl
+            obj['industrys'] = item.industrys.map(i => i.industryName)
+            return obj
+          })
+          dispatch(receiveContents(param, result))
+        })
+    }
   }
 }
 
