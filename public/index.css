@@ -122,7 +122,7 @@ a {
     
 .pull_refresh {
   text-align: center;
-  color: #00a9f2;
+  color: gray;
   position: absolute;
   z-index: 10;
   top: -10px;
@@ -133,10 +133,10 @@ a {
   margin-bottom: 5px;
 }
 .arrow:after {
-  content: "Pull to refresh";
+  content: "下拉可以刷新数据";
 }
 .arrow_up.arrow:after {
-  content: "Release to refresh";
+  content: "松开立即刷新";
 }
 .arrow_up img {
   transform: rotateZ(180deg);
