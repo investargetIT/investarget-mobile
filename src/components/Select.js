@@ -1,0 +1,166 @@
+import React from 'react'
+import Button from './Button'
+
+var containerStyle = {
+    position: 'fixed',
+    left: '0',
+    bottom: '0',
+    zIndex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    height: '50%',
+    backgroundColor: '#fff',
+}
+
+var titleStyle = {
+    padding: '15px',
+    width: '100%',
+    fontSize: '16px',
+}
+
+var selectWrapStyle = {
+    flexGrow: '1',
+    overflowY: 'scroll',
+    width: '100%',
+}
+
+var selectStyle = {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    padding: '10px',
+}
+
+var optionStyle = {
+    flexGrow: '1',
+    flexShrink: '0',
+    margin: '5px',
+    padding: '.7em 1em',
+    border: '1px solid #ccc',
+    borderRadius: '1.5em',
+    lineHeight: '1',
+    textAlign: 'center',
+    color: '#999',
+    fontSize: '12px',
+    backgroundColor: '#fff',
+    maxWidth: '50%',
+}
+
+var activeOptionStyle = Object.assign({}, optionStyle, {
+    border: '1px solid rgb(34, 105, 212)',
+    color: 'rgb(34, 105, 212)',
+})
+
+var actionStyle = {
+    flexShrink: '0',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+}
+
+var clearStyle = {
+    flexGrow: '1',
+    height: '50px',
+    lineHeight: '50px',
+    textAlign: 'center',
+    fontSize: '16px',
+    color: '#fff',
+    backgroundColor: '#ccc',
+}
+var confirmStyle = {
+    flexGrow: '1',
+    height: '50px',
+    lineHeight: '50px',
+    textAlign: 'center',
+    fontSize: '16px',
+    color: '#fff',
+    backgroundColor: 'rgb(34, 105, 212)',
+}
+
+
+class Select extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            selected: [],
+        }
+
+        if (props.multiple) {
+            this.handleSelect = this.handleMultipleSelect.bind(this)
+        } else {
+            this.handleSelect = this.handleSingleSelect.bind(this)
+        }
+        this.confirm = this.confirm.bind(this)
+        this.clear = this.clear.bind(this)
+    }
+
+    handleMultipleSelect(event) {
+        var target = event.target
+        var id = parseInt(target.dataset.id)
+
+        var array = this.state.selected.slice()
+        var index = array.indexOf(id)
+        if (index > -1) {
+            array.splice(index, 1)
+        } else {
+            array.push(id)
+        }
+
+        this.setState({
+            selected: array,
+        })
+
+    }
+
+    handleSingleSelect(event) {
+        var target = event.target
+        var id = parseInt(target.dataset.id)
+
+        if (this.state.selected.indexOf(id) == -1) {
+            this.setState({
+                selected: [id],
+            })
+        }
+    }
+
+    clear(event) {
+        this.setState({
+            selected: []
+        })
+    }
+
+    confirm(event) {
+        var selected = this.state.selected.slice()
+        this.props.onConfirm(selected)
+    }
+
+    // multiple, options, onChange
+
+    render() {
+        var items = this.props.options.map(option => {
+            var style = (this.state.selected.indexOf(option.id) == -1) ? optionStyle : activeOptionStyle
+            return <span style={style} key={option.id} data-id={option.id} onClick={this.handleSelect}>{option.name}</span>
+        })
+        
+        return <div style={containerStyle}>
+            <div style={titleStyle}>{this.props.title}</div>
+            <div style={selectWrapStyle}>
+                <div style={selectStyle}>
+                    {items}
+                </div>
+            </div>
+            <div style={actionStyle}>
+                <div style={clearStyle} onClick={this.clear}>重置</div>
+                <div style={confirmStyle} onClick={this.confirm}>确定</div>
+            </div>
+        </div>
+    }
+}
+
+export default Select
