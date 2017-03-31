@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ProjectListCell from './ProjectListCell'
 import { connect } from 'react-redux'
-import { fetchContents, receiveContents, appendProjects, showMsgAndAutoDismiss } from '../actions'
+import { requestContents, receiveContents, appendProjects, showMsgAndAutoDismiss, handleError } from '../actions'
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
@@ -53,8 +53,14 @@ const headerActionDoStyle = {
 class App extends Component {
 
   componentDidMount() {
-    
-    this.props.dispatch(fetchContents(''))
+
+    if (this.props.projects.length === 0) {
+      this.props.dispatch(requestContents(''))
+      api.getProjects(
+        projects => this.props.dispatch(receiveContents('', projects)),
+        error => this.props.dispatch(handleError(error))
+      )
+    }
 
     var scroller = document.querySelector("#scroller"),
       arrow = document.querySelector("#arrow"),
@@ -119,6 +125,7 @@ class App extends Component {
             react.props.dispatch(showMsgAndAutoDismiss('没有结果'))
           }
         },
+        error => react.props.dispatch(handleError(error)),
         react.props.projects.length
       )
 
@@ -128,14 +135,15 @@ class App extends Component {
 
       pull_refresh.classList.add("refreshing");
 
-      api.getProjects(projects => {
-
-        arrow.classList.remove("arrow_up");
-        pull_refresh.classList.remove("refreshing");
-        at.to(at.initialValue);
-
-        react.props.dispatch(receiveContents('', projects))
-      })
+      api.getProjects(
+        projects => {
+          arrow.classList.remove("arrow_up");
+          pull_refresh.classList.remove("refreshing");
+          at.to(at.initialValue);
+          react.props.dispatch(receiveContents('', projects))
+        },
+        error => react.props.dispatch(handleError(error))
+      )
     }
 
     document.ontouchmove = function (evt) {

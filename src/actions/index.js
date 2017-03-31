@@ -1,5 +1,3 @@
-import api from '../api'
-
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
 export const RECEIVE_USER_INFO = 'RECEIVE_USER_INFO'
@@ -10,7 +8,7 @@ export const APPEND_PROJECTS = 'APPEND_PROJECTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const LOGOUT = 'LOGOUT'
 
-function requestContents(param) {
+export function requestContents(param) {
   return {
     type: REQUEST_CONTENT,
     param
@@ -46,7 +44,7 @@ export function logout() {
   }
 }
 
-function receiveCurrentUserInfo(token, object) {
+export function receiveCurrentUserInfo(token, object) {
   return {
     type: RECEIVE_USER_INFO,
     token,
@@ -76,41 +74,12 @@ export function showMsgAndAutoDismiss(msg) {
   }
 }
 
-function handleError(error) {
+export function handleError(error) {
   return dispatch => {
-    dispatch(showMsg(error.details))
+    dispatch(showMsg(error.message))
     setTimeout(function () {
       dispatch(dismissErrMsg())
     }, 1000)
-  }
-}
-
-function shouldFetchContents(state) {
-  const contents = state.projects
-  if (contents.length > 0) {
-    return false
-  } else {
-    return true
-  }
-}
-
-export function fetchContents(param) {
-  return (dispatch, getState) => {
-    if (shouldFetchContents(getState())) {
-      dispatch(requestContents(param))
-      return api.getProjects(projects => dispatch(receiveContents(param, projects)))
-    }
-  }
-}
-
-export function login(param) {
-  return dispatch => {
-    dispatch(requestContents(param))
-    return api.loginAndGetUserInfo(
-      param,
-      (authToken, userInfo) => dispatch(receiveCurrentUserInfo(authToken, userInfo)),
-      error => dispatch(handleError(error))
-    )
   }
 }
 

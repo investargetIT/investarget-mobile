@@ -5,7 +5,7 @@ const url = 'http://192.168.1.253:8082/api/'
 
 export default {
   
-  getProjects(cb, skipCount = 0) {
+  getProjects(cb, errCb, skipCount = 0) {
     axios.get(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn&input.skipCount=' + skipCount)
     .then(response => {
       const projects = response.data.result.items.map(item => {
@@ -19,19 +19,21 @@ export default {
       })
       cb(projects)
     })
-    .catch(e => console.error(e))
+    .catch(error => errCb(error))
   },
 
   loginAndGetUserInfo(param, cb, errCb) {
     var authToken = ''
     axios.post(url + 'Account', param)
     .then(response => {
-      if (response.data.success) {
+      if (response.data.success && response.data.result.access_token) {
         var id = response.data.result.id
         authToken = response.data.result.access_token
         return axios.get(url + 'services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + id, {
           headers: { 'Authorization': 'Bearer ' + authToken }
         })
+      } else if (response.data.success && !response.data.result.access_token) {
+        throw new Error(response.data.result.msg)
       } else {
         // Login failed
         throw response.data.error
@@ -48,7 +50,7 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getPostsAndEvent(cb) {
+  getPostsAndEvent(cb, errCb) {
     axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
     .then(response => {
       if (response.data.success) {
@@ -65,7 +67,7 @@ export default {
         throw response.data.error
       }
     })
-    .catch(error => console.error(error))
+    .catch(error => errCb(error))
   }
 
 }

@@ -12,14 +12,17 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Register2 from './components/Register2'
 import { connect } from 'react-redux'
-import { readUserInfoFromLocalStorage } from './actions'
+import { readUserInfoFromLocalStorage, handleError } from './actions'
 import MasterDetail from './components/MasterDetail'
 import { receivePosts } from './actions'
 import api from './api'
 
 const Routes = (props) => {
 
-  api.getPostsAndEvent(posts => props.dispatch(receivePosts(posts)))
+  api.getPostsAndEvent(
+    posts => props.dispatch(receivePosts(posts)),
+    error => props.dispatch(handleError(error))
+  )
   props.dispatch(readUserInfoFromLocalStorage())
 
   return (

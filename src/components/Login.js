@@ -1,10 +1,11 @@
 import React from 'react'
-import { login } from '../actions'
+import { requestContents, receiveCurrentUserInfo, handleError } from '../actions'
 import { connect } from 'react-redux'
 import TextInput from './TextInput'
 import Button from './Button'
 import FormContainer from './FormContainer'
 import { Link } from 'react-router-dom'
+import api from '../api'
 
 
 var usernameInputStyle = {
@@ -71,13 +72,20 @@ class Login extends React.Component {
   }
 
   handleSubmit(event) {
-    this.props.dispatch(
-      login({
-        mobileOrEmailAddress: this.state.username,
-        password: this.state.password,
-        app: 1
-      })
+
+    const param = {
+      mobileOrEmailAddress: this.state.username,
+      password: this.state.password,
+      app: 1
+    }
+
+    this.props.dispatch(requestContents(''))
+    api.loginAndGetUserInfo(
+      param,
+      (authToken, userInfo) => this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo)),
+      error => this.props.dispatch(handleError(error))
     )
+
   }
 
   togglePassword(event) {
