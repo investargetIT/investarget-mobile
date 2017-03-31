@@ -65,15 +65,6 @@ function dismissErrMsg() {
   }
 }
 
-export function showMsgAndAutoDismiss(msg) {
-  return dispatch => {
-    dispatch(showMsg(msg))
-    setTimeout(function () {
-      dispatch(dismissErrMsg())
-    }, 1000)
-  }
-}
-
 export function handleError(error) {
   return dispatch => {
     dispatch(showMsg(error.message))

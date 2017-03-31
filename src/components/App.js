@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ProjectListCell from './ProjectListCell'
 import { connect } from 'react-redux'
-import { requestContents, receiveContents, appendProjects, showMsgAndAutoDismiss, handleError } from '../actions'
+import { requestContents, receiveContents, appendProjects, handleError } from '../actions'
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
@@ -122,7 +122,7 @@ class App extends Component {
             react.props.dispatch(appendProjects(projects))
           } else {
             alloyTouch.to(alloyTouch.min + 50)
-            react.props.dispatch(showMsgAndAutoDismiss('没有结果'))
+            react.props.dispatch(handleError(new Error('没有结果')))
           }
         },
         error => react.props.dispatch(handleError(error)),
