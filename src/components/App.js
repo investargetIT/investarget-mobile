@@ -5,8 +5,8 @@ import { fetchContents, receiveContents, appendProjects, showMsgAndAutoDismiss }
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
-import fetch from 'isomorphic-fetch'
 import { Link } from 'react-router-dom'
+import api from '../api.js'
 
 var loadmoreStyle = {
   height: '50px',
@@ -107,56 +107,35 @@ class App extends Component {
     }
 
     function loadMore() {
-      fetch('http://192.168.1.253:8082/api/' + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn&input.skipCount=' + react.props.projects.length)
-        .then(response => response.json())
-        .then(json => {
 
-          loading = false;
-          resetMin();
-
-          if (json.result.items.length > 0) {
-            var result = json.result.items.map(item => {
-              var obj = {}
-              obj['title'] = item.titleC
-              obj['amount'] = item.financedAmount
-              obj['country'] = item.country.countryName
-              obj['imgUrl'] = item.industrys[0].imgUrl
-              obj['industrys'] = item.industrys.map(i => i.industryName)
-              return obj
-            })
-            react.props.dispatch(appendProjects(result))
+      api.getProjects(
+        projects => {
+          loading = false
+          resetMin()
+          if (projects.length > 0) {
+            react.props.dispatch(appendProjects(projects))
           } else {
             alloyTouch.to(alloyTouch.min + 50)
             react.props.dispatch(showMsgAndAutoDismiss('没有结果'))
           }
-
-        })
+        },
+        react.props.projects.length
+      )
 
     }
 
     function mockRequest(at) {
+
       pull_refresh.classList.add("refreshing");
 
-      fetch('http://192.168.1.253:8082/api/' + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn')
-        .then(response => response.json())
-        .then(json => {
+      api.getProjects(projects => {
 
-          arrow.classList.remove("arrow_up");
-          pull_refresh.classList.remove("refreshing");
-          at.to(at.initialValue);
+        arrow.classList.remove("arrow_up");
+        pull_refresh.classList.remove("refreshing");
+        at.to(at.initialValue);
 
-          var result = json.result.items.map(item => {
-            var obj = {}
-            obj['title'] = item.titleC
-            obj['amount'] = item.financedAmount
-            obj['country'] = item.country.countryName
-            obj['imgUrl'] = item.industrys[0].imgUrl
-            obj['industrys'] = item.industrys.map(i => i.industryName)
-            return obj
-          })
-
-          react.props.dispatch(receiveContents('', result))
-        })
+        react.props.dispatch(receiveContents('', projects))
+      })
     }
 
     document.ontouchmove = function (evt) {
