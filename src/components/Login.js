@@ -35,7 +35,7 @@ var forgetPasswordLinkStyle = {
 }
 
 var showPasswordStyle = {
-  paddiing: '5px',
+  padding: '5px',
 }
 
 var showPasswordIconStyle = {

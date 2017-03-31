@@ -1,43 +1,45 @@
 import React from 'react'
 
 var containerStyle = {
+  position: 'relative',
   display: 'flex',
   justifyContent: 'flex-start',
   alignItems: 'center',
 }
 
-var inputIconStyle = {
+var iconStyle = {
+  flexShrink: '0',
   marginRight: '20px',
   width: '30px',
   height: '30px',
 }
 
 var inputWrapStyle = {
-  position: 'relative',
   flexGrow: '1',
-  borderBottom: '1px solid rgb(34, 105, 212)',  
 }
 
 var inputStyle = {
   width: '100%',
   border: 'none',
+  borderBottom: '1px solid rgb(34, 105, 212)',      
   outline: 'none',
-  lineHeight: '30px',
   fontSize: '16px',
+  lineHeight: '30px',
   backgroundColor: 'transparent',
 }
 
 var rightContentStyle = {
   position: 'absolute',
-  right: '0',
   top: '0',
+  right: '0',
+  height: '100%',
 }
 
 
 function TextInput(props) {
   
   if (props.iconUrl) {
-    var icon = <img src={props.iconUrl} alt={props.iconAlt} style={inputIconStyle} />
+    var icon = <img style={iconStyle} src={props.iconUrl} alt={props.iconAlt} />
   }
 
   if (props.rightContent) {
@@ -47,9 +49,9 @@ function TextInput(props) {
     <div style={containerStyle}>
       {icon}
       <div style={inputWrapStyle}>
-        <input name={props.name} type="text" placeholder={props.placeholder} style={inputStyle} onChange={props.handleInputChange} />
-        {rightContent}
+        <input style={inputStyle} type="text" name={props.name} placeholder={props.placeholder} onChange={props.handleInputChange} />
       </div>
+      {rightContent}
     </div>
   )
 }
