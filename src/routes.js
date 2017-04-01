@@ -18,6 +18,7 @@ import { readUserInfoFromLocalStorage, handleError } from './actions'
 import MasterDetail from './components/MasterDetail'
 import { receivePosts } from './actions'
 import api from './api'
+import TimelineManagement from './components/TimelineManagement'
 
 const Routes = (props) => {
 
