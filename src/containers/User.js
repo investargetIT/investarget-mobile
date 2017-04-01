@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TabBar from './TabBar'
-import LeftIconRightLabel from './LeftIconRightLabel'
+import LeftIconRightLabel from '../components/LeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { logout } from '../actions'

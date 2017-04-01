@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TabBar from './TabBar'
-import PostListCell from './PostListCell'
+import PostListCell from '../components/PostListCell'
 import { connect } from 'react-redux'
 
 class Posts extends Component {

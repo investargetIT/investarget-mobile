@@ -1,9 +1,9 @@
 import React from 'react'
 import FormContainer from './FormContainer'
-import TextInput from './TextInput'
-import Button from './Button'
+import TextInput from '../components/TextInput'
+import Button from '../components/Button'
 import { Link } from 'react-router-dom'
-import Select from './Select'
+import Select from '../components/Select'
 
 
 var inputStyle = {

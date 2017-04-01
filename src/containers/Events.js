@@ -1,6 +1,6 @@
 import React from 'react'
 import TabBar from './TabBar'
-import MasterDetail from './MasterDetail'
+import MasterDetail from '../components/MasterDetail'
 
 function Events(props) {
   return (

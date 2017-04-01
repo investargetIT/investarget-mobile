@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import TabBarItem from './TabBarItem'
+import TabBarItem from '../components/TabBarItem'
 import { connect } from 'react-redux'
 
 const containerStyle = {

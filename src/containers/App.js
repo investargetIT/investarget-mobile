@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ProjectListCell from './ProjectListCell'
+import ProjectListCell from '../components/ProjectListCell'
 import { connect } from 'react-redux'
 import { requestContents, receiveContents, appendProjects, handleError } from '../actions'
 import TabBar from './TabBar'
