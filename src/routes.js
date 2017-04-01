@@ -11,6 +11,7 @@ import LoadingAndToast from './components/LoadingAndToast'
 import Login from './components/Login'
 import Register from './components/Register'
 import Register2 from './components/Register2'
+import ProjectDetail from  './components/ProjectDetail'
 import { connect } from 'react-redux'
 import { readUserInfoFromLocalStorage, handleError } from './actions'
 import MasterDetail from './components/MasterDetail'
@@ -39,6 +40,7 @@ const Routes = (props) => {
         <Route path="/register" component={Register} />
         <Route path="/register2" component={Register2} />
         <Route path="/filter" component={MasterDetail} />
+        <Route path="/project" component={ProjectDetail} />
 
       </div>
     </Router>
