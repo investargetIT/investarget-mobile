@@ -8,6 +8,7 @@ import Posts from './components/Posts'
 import Events from './components/Events'
 import User from './components/User'
 import LoadingAndToast from './components/LoadingAndToast'
+import HandleError from './components/HandleError'
 import Login from './components/Login'
 import Register from './components/Register'
 import Register2 from './components/Register2'
@@ -31,6 +32,7 @@ const Routes = (props) => {
       <div id="container">
 
         <LoadingAndToast />
+        <HandleError />
 
         <Route exact path="/" component={App} />
         <Route path="/posts" component={Posts} />

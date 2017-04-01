@@ -58,8 +58,8 @@ function LoadingAndToast(props) {
 }
 
 function mapStateToProps(state) {
-  const { isFetching, isError, errorMsg } = state
-  return { isFetching, isError, errorMsg }
+  const { isFetching } = state
+  return { isFetching }
 }
 
 export default connect(mapStateToProps)(LoadingAndToast)

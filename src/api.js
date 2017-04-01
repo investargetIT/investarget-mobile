@@ -3,6 +3,16 @@ import axios from 'axios'
 const url = 'http://192.168.1.253:8082/api/'
 // const url = 'https://api.investarget.com/api/'
 
+function ApiError(object) {
+  this.name = 'ApiError'
+  this.message = object.message || 'Default Message'
+  this.code = object.code
+  this.detail = object.details || 'Default Detail'
+  this.stack = (new Error()).stack
+}
+ApiError.prototype = Object.create(Error.prototype)
+ApiError.prototype.constructor = ApiError
+
 export default {
   
   getProjects(cb, errCb, skipCount = 0) {
@@ -33,10 +43,10 @@ export default {
           headers: { 'Authorization': 'Bearer ' + authToken }
         })
       } else if (response.data.success && !response.data.result.access_token) {
-        throw new Error(response.data.result.msg)
+        throw new ApiError({code: 100, message: response.data.result.msg})
       } else {
         // Login failed
-        throw response.data.error
+        throw new ApiError(response.data.error)
       }
     })
     .then(response => {

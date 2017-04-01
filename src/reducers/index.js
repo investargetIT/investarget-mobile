@@ -2,12 +2,12 @@ import {
   REQUEST_CONTENT, 
   RECEIVE_CONTENT, 
   RECEIVE_USER_INFO, 
-  SHOW_MSG, 
   DISMISS_ERROR_MESSAGE,
   READ_USER_INFO_FROM_LOCAL_STORAGE,
   APPEND_PROJECTS,
   RECEIVE_POSTS,
-  LOGOUT
+  LOGOUT,
+  HANDLE_ERROR
 } from '../actions'
 
 const initialState = {
@@ -54,12 +54,6 @@ export default function (state = initialState, action) {
         isLogin: true,
         userInfo: userInfo
       })
-    case SHOW_MSG:
-      return Object.assign({}, state, {
-        isFetching: false,
-        isError: true,
-        errorMsg: action.msg
-      })
     case DISMISS_ERROR_MESSAGE:
       var newObj = Object.assign({}, state, {
         isError: false
@@ -80,6 +74,12 @@ export default function (state = initialState, action) {
           userInfo: JSON.parse(currentUserInfo)
         }) : Object.assign({}, state)
       return nextState
+    case HANDLE_ERROR:
+      return Object.assign({}, state, {
+        isFetching: false,
+        isError: true,
+        error: action.error
+      })
     default:
       return state
   }

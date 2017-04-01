@@ -122,10 +122,15 @@ class App extends Component {
             react.props.dispatch(appendProjects(projects))
           } else {
             alloyTouch.to(alloyTouch.min + 50)
-            react.props.dispatch(handleError(new Error('没有结果')))
+            react.props.dispatch(handleError(new Error('No More Projects')))
           }
         },
-        error => react.props.dispatch(handleError(error)),
+        error => {
+          loading = false
+          resetMin()
+          alloyTouch.to(alloyTouch.min + 50)
+          react.props.dispatch(handleError(error))
+        },
         react.props.projects.length
       )
 
