@@ -19,6 +19,8 @@ import MasterDetail from './components/MasterDetail'
 import { receivePosts } from './actions'
 import api from './api'
 import TimelineManagement from './components/TimelineManagement'
+import ChatInvestor from './containers/ChatInvestor'
+import ChatTrader from './containers/ChatTrader'
 import UserInfo from './containers/UserInfo'
 
 const Routes = (props) => {
@@ -46,6 +48,8 @@ const Routes = (props) => {
         <Route path="/filter" component={MasterDetail} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
+        <Route path="/chat_investor" component={ChatInvestor} />
+        <Route path="/chat_trader" component={ChatTrader} />
         <Route path="/user_info" component={UserInfo} />
 
       </div>
