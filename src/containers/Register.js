@@ -7,6 +7,8 @@ import api from '../api'
 import { handleError } from '../actions'
 import { connect } from 'react-redux'
 
+const REGISTER_BASIC_INFO = 'REGISTER_BASIC_INFO'
+const VERIFICATION_CODE_TOKEN = 'VERIFICATION_CODE_TOKEN'
 
 var phoneInputStyle = {
   margin: '30px 10px',
@@ -76,6 +78,18 @@ class Register extends React.Component {
     this.handleSendVerificationCode = this.handleSendVerificationCode.bind(this)
   }
 
+  componentDidMount() {
+    
+    const registerBasicInfo = JSON.parse(localStorage.getItem(REGISTER_BASIC_INFO))
+    if (registerBasicInfo) {
+      this.setState({
+        mobile: registerBasicInfo.mobile,
+        code: registerBasicInfo.code,
+        email: registerBasicInfo.email
+      })
+    }
+  }
+
   handleInputChange(event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -93,7 +107,7 @@ class Register extends React.Component {
       this.state.mobile,
       token => {
 
-        localStorage.setItem('verification_code_token', token)
+        localStorage.setItem(VERIFICATION_CODE_TOKEN, token)
 
         react.setState({ 
           fetchCodeWaitingTime: 60,
@@ -114,12 +128,12 @@ class Register extends React.Component {
   handleSubmit(event) {
     console.log(event.target.name)
 
-    const token = localStorage.getItem('verification_code_token')
+    const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
     if (!token) {
       this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
       return
     }
-    
+
     const param = {
       mobile: this.state.mobile,
       token: token,
@@ -127,7 +141,14 @@ class Register extends React.Component {
     }
     api.checkVerificationCode(
       param,
-      () => this.props.history.push('/register2'),
+      () => {
+        var registerBasicInfo = Object.assign({}, param, {
+          email: this.state.email
+        })
+        delete registerBasicInfo.token
+        localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
+        this.props.history.push('/register2')
+      },
       error => this.props.dispatch(handleError(error))
     )
     
