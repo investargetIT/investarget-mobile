@@ -19,6 +19,7 @@ import MasterDetail from './components/MasterDetail'
 import { receivePosts } from './actions'
 import api from './api'
 import TimelineManagement from './components/TimelineManagement'
+import UserInfo from './containers/UserInfo'
 
 const Routes = (props) => {
 
@@ -45,6 +46,7 @@ const Routes = (props) => {
         <Route path="/filter" component={MasterDetail} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
+        <Route path="/user_info" component={UserInfo} />
 
       </div>
     </Router>
