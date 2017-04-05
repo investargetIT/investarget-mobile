@@ -43,7 +43,7 @@ const Routes = (props) => {
         <Route path="/register" component={Register} />
         <Route path="/register2" component={Register2} />
         <Route path="/filter" component={MasterDetail} />
-        <Route path="/project" component={ProjectDetail} />
+        <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
 
       </div>

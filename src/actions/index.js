@@ -7,6 +7,7 @@ export const APPEND_PROJECTS = 'APPEND_PROJECTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const LOGOUT = 'LOGOUT'
 export const HANDLE_ERROR = 'HANDLE_ERROR'
+export const HIDE_LOADING = 'HIDE_LOADING'
 
 export function requestContents(param) {
   return {
@@ -69,4 +70,8 @@ export function readUserInfoFromLocalStorage() {
   return {
     type: READ_USER_INFO_FROM_LOCAL_STORAGE
   }
+}
+
+export function hideLoading() {
+  return { type: HIDE_LOADING }
 }

@@ -7,7 +7,8 @@ import {
   APPEND_PROJECTS,
   RECEIVE_POSTS,
   LOGOUT,
-  HANDLE_ERROR
+  HANDLE_ERROR,
+  HIDE_LOADING
 } from '../actions'
 
 const initialState = {
@@ -79,6 +80,10 @@ export default function (state = initialState, action) {
         isFetching: false,
         isError: true,
         error: action.error
+      })
+    case HIDE_LOADING:
+      return Object.assign({}, state, {
+        isFetching: false
       })
     default:
       return state

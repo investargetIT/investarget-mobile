@@ -1,6 +1,8 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 var containerStyle = {
+  position: 'relative',
   padding: '7px',
   marginBottom: '2px',
   backgroundColor: 'white'
@@ -45,6 +47,14 @@ var amount = {
   color: '#FF8F40'
 }
 
+const placeholderStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+}
+
 function ProjectListCell(props) {
   return (
     <div style={containerStyle}>
@@ -61,6 +71,8 @@ function ProjectListCell(props) {
       </div>
 
       <img style={imgWrapper} src={props.imgUrl} alt={props.title} />
+
+      <div style={placeholderStyle} data-id={props.id}></div>
 
     </div>
   )

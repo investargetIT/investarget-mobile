@@ -105,9 +105,13 @@ class App extends Component {
           mockRequest(this);
           return false;
         }
+      },
+      tap: (evt, value) => {
+        const projectID = evt.target.dataset.id
+        this.props.history.push('/project/' + projectID);
       }
     })
-
+    
     function resetMin() {
       alloyTouch.min = -1 * parseInt(getComputedStyle(scroller).height) + window.innerHeight - 45 - 48;
     }
@@ -173,7 +177,8 @@ class App extends Component {
           industrys={element.industrys.join('')}
           imgUrl={element.imgUrl}
           amount={element.amount}
-          key={element.title} />
+          key={element.id}
+          id={element.id} />
       )
     }, this)
 

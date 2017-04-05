@@ -13,6 +13,17 @@ function ApiError(object) {
 ApiError.prototype = Object.create(Error.prototype)
 ApiError.prototype.constructor = ApiError
 
+
+function getToken() {
+  var token
+  var userInfoStr = localStorage.getItem('userInfo')
+  if (userInfoStr) {
+    const userInfo = JSON.parse(userInfoStr)
+    token = userInfo.token
+  }
+  return token
+}
+
 export default {
   
   getProjects(cb, errCb, skipCount = 0) {
@@ -20,6 +31,7 @@ export default {
     .then(response => {
       const projects = response.data.result.items.map(item => {
         var obj = {}
+        obj['id'] = item.id
         obj['title'] = item.titleC
         obj['amount'] = item.financedAmount
         obj['country'] = item.country.countryName
@@ -78,6 +90,20 @@ export default {
       }
     })
     .catch(error => errCb(error))
-  }
+  },
+
+  getSingleProject(id, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
 
 }
