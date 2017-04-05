@@ -3,6 +3,9 @@ import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import { Link } from 'react-router-dom'
+import api from '../api'
+import { handleError } from '../actions'
+import { connect } from 'react-redux'
 
 
 var phoneInputStyle = {
@@ -24,6 +27,11 @@ var sendCodeButtonStyle = {
   height: '26px',
   borderRadius: '13px',
 }
+
+var sendCodeButtonDisabledStyle = Object.assign({}, sendCodeButtonStyle, {
+  background: 'grey',
+  border: '1px solid grey',
+})
 
 var emailInputStyle = {
   margin: '30px 10px',
@@ -59,10 +67,13 @@ class Register extends React.Component {
       code: '',
       email: '',
       liscense: true,
+      fetchCodeWaitingTime: 0,
+      timer: null
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSendVerificationCode = this.handleSendVerificationCode.bind(this)
   }
 
   handleInputChange(event) {
@@ -75,15 +86,64 @@ class Register extends React.Component {
     })
   }
 
+  handleSendVerificationCode(event) {
+    const react = this
+
+    api.sendVerificationCode(
+      this.state.mobile,
+      token => {
+
+        localStorage.setItem('verification_code_token', token)
+
+        react.setState({ 
+          fetchCodeWaitingTime: 60,
+          token: token
+        })
+
+        var timer = setInterval(
+          () => react.setState({ fetchCodeWaitingTime: react.state.fetchCodeWaitingTime - 1 }),
+          1000
+        )
+
+        react.setState({ timer: timer })
+      },
+      error => this.props.dispatch(handleError(error))
+    )
+  }
+
   handleSubmit(event) {
-    alert(event.target.name)
-    console.log(this.state)
+    console.log(event.target.name)
+
+    const token = localStorage.getItem('verification_code_token')
+    if (!token) {
+      this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
+      return
+    }
+    
+    const param = {
+      mobile: this.state.mobile,
+      token: token,
+      code: this.state.code
+    }
+    api.checkVerificationCode(
+      param,
+      () => this.props.history.push('/register2'),
+      error => this.props.dispatch(handleError(error))
+    )
+    
   }
 
   render() {
-    var disabled = this.state.mobile === '' || this.state.code === '' || this.state.email === ''
-    var sendCode = <button style={sendCodeButtonStyle}>发送验证码</button>
     
+    if (this.state.fetchCodeWaitingTime === 0) {
+      clearInterval(this.state.timer)
+    }
+    const isMobileInvalid = /^1[34578]\d{9}$/.test(this.state.mobile) ? false : true
+    const sendCodeStyle = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0 ? sendCodeButtonDisabledStyle : sendCodeButtonStyle
+    const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
+    var sendCode = <button disabled={isMobileInvalid} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
+    
+    var disabled = isMobileInvalid || this.state.code === '' || this.state.email === ''
     
     var content = (
       <div>
@@ -120,4 +180,4 @@ class Register extends React.Component {
 
 }
 
-export default Register
+export default connect()(Register)

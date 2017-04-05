@@ -106,4 +106,31 @@ export default {
     .catch(error => errCb(error))
   },
 
+  sendVerificationCode(mobile, cb, errCb) {
+    const param = { rec_num: mobile }
+    axios.post(url + 'services/InvestargetApi/smsService/SendVerificationCode', param)
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result.token)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  checkVerificationCode(param, cb, errCb) {
+    axios.post(url + 'services/InvestargetApi/smsService/CheckVerificationCode', param)
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError({
+          code: 110, 
+          message: response.data.error.message
+        })
+      }
+    })
+    .catch(error => errCb(error))
+  }
 }

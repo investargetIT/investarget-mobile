@@ -38,6 +38,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '没有结果'
           break
+        case 'Please fetch SMS code first':
+          showError = true
+          errMsg = '请获取短信验证码'
+          break
         default:
           console.error(error)
       }
@@ -52,6 +56,10 @@ class HandleError extends Component {
         case 100:
           showError = true
           errMsg = '账号还未通过审核，请耐心等待，相关工作人员会尽快完成审核流程。'
+          break
+        case 110:
+          showError = true
+          errMsg = '验证码错误'
           break
         default:
           console.error(error)
