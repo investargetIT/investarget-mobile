@@ -2,7 +2,7 @@ import React from 'react'
 import api from '../api'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import NavigationBar from '../components/NavigationBar'
 
 var firstStyle = {
     position: 'absolute',
@@ -24,10 +24,6 @@ var dateStyle = {
 }
 var fyStyle = {
     marginRight: '5px',
-}
-
-var dataContainerStyle = {
-    
 }
 var dataSetStyle = {
     padding: '10px 20px',
@@ -165,6 +161,9 @@ class ProjectDetail extends React.Component {
 
         return (
             <div>
+
+                <NavigationBar title="项目详情" backIconClicked={this.props.history.goBack}/>
+
                 <div style={bgImageStyle}>
                     <div style={firstStyle}>
                         <p style={titleStyle} >{ info.titleC }</p>
@@ -256,7 +255,7 @@ function moneySplit(money){
     return money;
 }
 
-var reg = new RegExp("\n", "g");
+var reg = new RegExp("\\n", "g");
 function changeToEnter(text) {
     if (text) {
         text = text.replace(reg, "<br>");
