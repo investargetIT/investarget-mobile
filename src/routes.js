@@ -15,7 +15,7 @@ import Register2 from './containers/Register2'
 import ProjectDetail from  './containers/ProjectDetail'
 import { connect } from 'react-redux'
 import { readUserInfoFromLocalStorage, handleError } from './actions'
-import MasterDetail from './components/MasterDetail'
+import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
 import TimelineManagement from './components/TimelineManagement'
@@ -45,7 +45,7 @@ const Routes = (props) => {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/register2" component={Register2} />
-        <Route path="/filter" component={MasterDetail} />
+        <Route path="/filter" component={Filter} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
         <Route path="/chat_investor" component={ChatInvestor} />

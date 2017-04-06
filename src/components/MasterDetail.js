@@ -1,19 +1,8 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
 var wrapper = {
   width: '100%',
   backgroundColor: '#fff'
-}
-
-var topNav = {
-  position: 'fixed',
-  left: 0,
-  right: 0,
-  top: 0,
-  height: '60px',
-  width: '100%',
-  backgroundColor: '#10458F'
 }
 
 var sideNav = {
@@ -23,17 +12,15 @@ var sideNav = {
   left: 0,
   right: 0,
   overflowY: 'scroll',
-  backgroundColor: '#F6F6F6',
-  top: '60px'
+  backgroundColor: '#F6F6F6'
 }
 
 var contentWrapper = {
-  margin: '60px 0 0 50%',
+  marginLeft: '50%',
   padding: '0 30px',
   overflowY: 'scroll',
   position: 'fixed',
   left: 0,
-  top: 0,
   right: 0,
   height: '100vh',
   backgroundColor: 'white'
@@ -58,22 +45,6 @@ var detailItemActiveStyle = {
   borderBottom: '2px solid #10458F'
 }
 
-const backIconStyle = {
-  width: '9px',
-  height: '15px',
-  verticalAlign: 'middle'
-}
-
-const backLabelStyle = {
-  marginLeft: '10px',
-  color: 'white',
-  textDecoration: 'none',
-  verticalAlign: 'middle'
-}
-
-const backContainerStyle = {
-  padding: '20px'
-}
 
 var data = []
 var northAmerica = {
@@ -153,14 +124,6 @@ class MasterDetail extends Component {
 
     return (
       <div style={wrapper}>
-
-        <div id="top-nav" style={topNav}>
-          <Link to="/">
-          <div style={backContainerStyle}>
-            <img style={backIconStyle} src="images/login/backButton@3x.png" /><span style={backLabelStyle}>返回</span>
-            </div>
-          </Link>
-        </div>
 
         <div id="side-nav" style={sideNav}>
           <ul>{master}</ul>
