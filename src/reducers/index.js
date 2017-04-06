@@ -8,7 +8,8 @@ import {
   RECEIVE_POSTS,
   LOGOUT,
   HANDLE_ERROR,
-  HIDE_LOADING
+  HIDE_LOADING,
+  RECEIVE_CONTINENTS_AND_COUNTRIES
 } from '../actions'
 
 const initialState = {
@@ -17,7 +18,8 @@ const initialState = {
   isError: false,
   projects: [],
   posts: [],
-  eventUrl: ''
+  eventUrl: '',
+  continentsAndCountries: []
 }
 
 export default function (state = initialState, action) {
@@ -84,6 +86,10 @@ export default function (state = initialState, action) {
     case HIDE_LOADING:
       return Object.assign({}, state, {
         isFetching: false
+      })
+    case RECEIVE_CONTINENTS_AND_COUNTRIES:
+      return Object.assign({}, state, {
+        continentsAndCountries: action.continentsAndCountries
       })
     default:
       return state

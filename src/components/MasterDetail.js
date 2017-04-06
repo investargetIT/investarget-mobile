@@ -8,7 +8,7 @@ var wrapper = {
 var sideNav = {
   width: '50%',
   position: 'fixed',
-  height: '100vh',
+  height: (window.innerHeight - 48*3 - 60) + 'px',
   left: 0,
   right: 0,
   overflowY: 'scroll',
@@ -17,12 +17,12 @@ var sideNav = {
 
 var contentWrapper = {
   marginLeft: '50%',
-  padding: '0 30px',
+  padding: '0 20px',
   overflowY: 'scroll',
   position: 'fixed',
   left: 0,
   right: 0,
-  height: '100vh',
+  height: (window.innerHeight - 48*3 - 60) + 'px',
   backgroundColor: 'white'
 }
 
@@ -44,24 +44,6 @@ var detailItemActiveStyle = {
   padding: '4px 0',
   borderBottom: '2px solid #10458F'
 }
-
-
-var data = []
-var northAmerica = {
-  name: '北美洲',
-  countries: [
-    { id: 1, name: '美国' },
-    { id: 2, name: '加拿大' },
-    { id: 3, name: '墨西哥' },
-    { id: 4, name: '其他' }
-  ]
-}
-var southAmerica = {
-  name: '南美洲',
-  countries: [{ id: 5, name: '巴西' }, { id: 6, name: '阿根廷' }, { id: 7, name: '智利' }, { id: 8, name: '秘鲁' }, { id: 9, name: '乌拉圭' }, { id: 10, name: '其他' }]
-}
-  data.push(northAmerica)
-  data.push(southAmerica)
 
 class MasterDetail extends Component {
 
@@ -104,20 +86,24 @@ class MasterDetail extends Component {
 
   render() {
 
-    const master = data.map((element, index) => {
+    if (this.props.data.length === 0) {
+      return null
+    }
+
+    const master = this.props.data.map((element, index) => {
 
       const masterItemStyle = index === this.state.activeIndex ? masterItemActiveStyle : masterItemBasicStyle
 
-      return <li style={masterItemStyle} key={index} data-index={index} onClick={this.handleMasterItemClick}>{element.name}</li>
+      return <li style={masterItemStyle} key={index} data-index={index} onClick={this.handleMasterItemClick}>{element[this.props.masterName]}</li>
 
     })
 
-    const detail = data[this.state.activeIndex].countries.map((element, index) => {
+    const detail = this.props.data[this.state.activeIndex][this.props.masterDetail].map((element, index) => {
 
       var style1 = this.state.chosenItem.indexOf(element.id) > -1 ? detailItemActiveStyle : null
 
       return <li style={detailItemBasicStyle} key={index} data-countryid={element.id} onClick={this.handleDetailItemClick}>
-        <span data-countryid={element.id} style={style1}>{element.name}</span>
+        <span data-countryid={element.id} style={style1}>{element[this.props.detailName]}</span>
       </li>
 
     })

@@ -1,6 +1,7 @@
 import React from 'react'
 import NavigationBar from '../components/NavigationBar'
 import MasterDetail from '../components/MasterDetail'
+import { connect } from 'react-redux'
 
 const cateogryStyle = {
   position: 'fixed',
@@ -101,7 +102,7 @@ const Filter = (props) => {
 
       </div>
 
-      <MasterDetail />
+      <MasterDetail data={props.continentsAndCountries} masterName="continentName" detailName="countryName" masterDetail="countries" />
 
       <div style={selectedContainerStyle}>
         <p style={selectedLabelStyle}>已选条件：</p>
@@ -118,4 +119,9 @@ const Filter = (props) => {
   
 }
 
-export default Filter
+function mapStateToProps(state) {
+  const continentsAndCountries = state.continentsAndCountries
+  return { continentsAndCountries }
+}
+
+export default connect(mapStateToProps)(Filter)

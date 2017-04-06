@@ -132,5 +132,47 @@ export default {
       }
     })
     .catch(error => errCb(error))
+  },
+
+  getContinentsAndCountries(cb, errCb) {
+
+    var continents = []
+
+    axios.get(url + 'services/InvestargetApi/location/GetContinents?input.lang=cn')
+    .then(response => {
+
+      if (response.data.success) {
+        continents = response.data.result
+        const all = continents.map(
+          item => axios.get(url + 'services/InvestargetApi/location/GetCountryies?input.lang=cn&input.continentId=' + item.id)
+        )
+        return Promise.all(all)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+
+    })
+    .then(values => {
+      
+      const countries = values.map(item => {
+        if (item.data.success) {
+          return {
+            continentId: item.data.result[0].continentId,
+            result: item.data.result
+          }
+        } else {
+          throw new ApiError(item.data.error)
+        }
+      })
+
+      const continentsAndCountries = continents.map(item => {
+        item['countries'] = countries.find(country => country.continentId === item.id).result
+        return item
+      })
+
+      cb(continentsAndCountries)
+    })
+    .catch(error => errCb(error))
   }
+
 }
