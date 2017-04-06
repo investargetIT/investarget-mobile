@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import NavigationBar from './NavigationBar'
 
 
 var containerStyle = {
@@ -91,18 +93,22 @@ class TimelineManagement extends React.Component {
                     <span style={nameSpanStyle}>电眼项目</span>
                 </div>
                 <div style={detailStyle}>
-                    <div style={rowStyle}>
-                        <span style={leftColStyle}>投资人：</span>
-                        <span style={rightColStyle}>杨海滨</span>
-                    </div>
+                    <Link to="chat_investor">
+                        <div style={rowStyle}>
+                            <span style={leftColStyle}>投资人：</span>
+                            <span style={rightColStyle}>杨海滨</span>
+                        </div>
+                    </Link>
                     <div style={rowStyle}>
                         <span style={leftColStyle}>投资人所属机构：</span>
                         <span style={rightColStyle}>平安信托直投</span>
                     </div>
-                    <div style={rowStyle}>
-                        <span style={leftColStyle}>交易师：</span>
-                        <span style={rightColStyle}>赵鹏云</span>
-                    </div>
+                    <Link to="user_info">
+                        <div style={rowStyle}>
+                            <span style={leftColStyle}>交易师：</span>
+                            <span style={rightColStyle}>赵鹏云</span>
+                        </div>
+                    </Link>
                     <div style={rowStyle}>
                         <span style={leftColStyle}>当前状态：</span>
                         <span style={rightColStyle}>以获取项目概要</span>
@@ -115,10 +121,12 @@ class TimelineManagement extends React.Component {
                         <span style={leftColStyle}>剩余天数：</span>
                         <span style={rightColStyle}>7</span>
                     </div>
-                    <div style={rowNoBorderStyle}>
-                        <span style={leftColStyle}>最新备注：</span>
-                        <span style={rightColStyle}>The proposed time of 14:00, 18th Jan is confirmed. Roy, Toy and Desiry will join the metting.</span>
-                    </div>
+                    <Link to="edit_timeline">
+                        <div style={rowNoBorderStyle}>
+                            <span style={leftColStyle}>最新备注：</span>
+                            <span style={rightColStyle}>The proposed time of 14:00, 18th Jan is confirmed. Roy, Toy and Desiry will join the metting.</span>
+                        </div>
+                    </Link>
                 </div>
             </div>
         )
@@ -126,6 +134,7 @@ class TimelineManagement extends React.Component {
 
         return (
             <div style={containerStyle}>
+                <NavigationBar title="项目进程" backIconClicked={this.props.history.goBack} />
                 <div style={scrollStyle}>
                     <div style={pageStyle}>
                         <div style={countStyle}>

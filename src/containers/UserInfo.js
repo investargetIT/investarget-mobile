@@ -1,4 +1,5 @@
 import React from 'react'
+import NavigationBar from '../components/NavigationBar'
 
 
 var containerStyle = {}
@@ -56,6 +57,7 @@ class UserInfo extends React.Component {
     render() {
         return (
             <div style={containerStyle}>
+                <NavigationBar title="个人信息" backIconClicked={this.props.history.goBack} />
                 <div style={backgroundStyle}>
                     <div style={headStyle}>
                         <img style={imageStyle} src="/images/userCenter/defaultAvatar@2x.png"></img>

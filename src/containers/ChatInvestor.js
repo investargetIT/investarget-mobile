@@ -1,5 +1,6 @@
 import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
+import NavigationBar from '../components/NavigationBar'
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',
@@ -85,6 +86,7 @@ class ChatInvestor extends React.Component {
 
         return (
             <div style={containerStyle}>
+                <NavigationBar title="投资人" backIconClicked={this.props.history.goBack} />
                 <div style={scrollStyle}>
                 <div style={tabsStyle}>
                     <span style={this.state.activeTab == 'interest' ? activeTabStyle : tabStyle} data-id="interest" onClick={this.selectTab}>Ta感兴趣</span>

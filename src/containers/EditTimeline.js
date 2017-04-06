@@ -2,6 +2,7 @@ import React from 'react'
 import NoteModal from '../components/NoteModal'
 import SwipeCell from '../components/SwipeCell'
 import PickerView from '../components/PickerView'
+import NavigationBar from '../components/NavigationBar'
 
 var containerStyle = {
     fontSize: '14px',
@@ -160,6 +161,7 @@ class EditTimeline extends React.Component {
     render() {
         return (
             <div style={containerStyle}>
+                <NavigationBar title="编辑进程" backIconClicked={this.props.history.goBack} />
                 <div style={wrapStyle}>
                     <div style={rowStyle}>
                         <div style={colLeftStyle}>当前状态</div>

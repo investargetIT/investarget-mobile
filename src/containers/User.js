@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TabBar from './TabBar'
 import LeftIconRightLabel from '../components/LeftIconRightLabel'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { logout } from '../actions'
 
 var blurBackgroundStyle = {
@@ -85,7 +85,9 @@ class User extends Component {
         <div style={settingContainerStyle}>
           <ul>
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="关注的标签" />
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
+            <Link to="timeline_management">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
+            </Link>
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
