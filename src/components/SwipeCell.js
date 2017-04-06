@@ -1,0 +1,84 @@
+import React from 'react'
+import Transform from '../transform'
+import AlloyTouch from 'alloytouch/alloy_touch.css'
+
+
+var containerStyle = {
+    width: '100%',
+    overflow: 'hidden',
+}
+var wrapStyle = {
+    width: '125%',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+}
+var cellStyle = {
+    flexShrink: '0',
+    width: '80%',
+}
+var rightStyle = {
+    flexShrink: '0',
+    width: '20%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    color: '#fff',
+}
+
+class SwipeCell extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
+    componentDidMount() {
+        var containerEl = this.refs.container
+        var scrollerEl = this.refs.scroller
+        var rightEl = this.refs.right
+        var RIGHT_WIDTH = rightEl.clientWidth
+
+        Transform(scrollerEl)
+        this.alloyTouch = new AlloyTouch({
+            touch: containerEl,
+            vertical: false,
+            target: scrollerEl,
+            property: 'translateX',
+            min: -RIGHT_WIDTH,
+            max: 0,
+            step: RIGHT_WIDTH,
+            spring: true,
+            inertia: false,
+            touchEnd: function(evt, v, index) {
+                if (v <= -RIGHT_WIDTH/2) {
+                    this.to(this.min)
+                } else {
+                    this.to(this.max)
+                }
+                
+                return false
+            },
+        })
+    }
+    
+    componentWillUnmount() {
+        this.alloyTouch.destroy()
+        this.alloyTouch = null
+    }
+
+    render() {
+        return (
+            <div style={containerStyle} ref="container">
+                <div style={wrapStyle} ref="scroller">
+                    <div style={cellStyle}>
+                        {this.props.children}
+                    </div>
+                    <div style={rightStyle} ref="right" onClick={this.props.delete}>删除</div>
+                </div>
+            </div>
+        )
+    }
+}
+
+
+export default SwipeCell
