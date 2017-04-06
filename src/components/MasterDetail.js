@@ -69,7 +69,10 @@ class MasterDetail extends Component {
 
   handleDetailItemClick(event) {
     const target = event.target
-    const id = parseInt(target.dataset.countryid, 10)
+    const detailItem = JSON.parse(target.dataset.country)
+    const id = parseInt(detailItem.id, 10)
+
+    this.props.handleDetailItemClicked(detailItem)
 
     var array = this.state.chosenItem.slice()
     var itemIndex = array.indexOf(id)
@@ -102,8 +105,8 @@ class MasterDetail extends Component {
 
       var style1 = this.state.chosenItem.indexOf(element.id) > -1 ? detailItemActiveStyle : null
 
-      return <li style={detailItemBasicStyle} key={index} data-countryid={element.id} onClick={this.handleDetailItemClick}>
-        <span data-countryid={element.id} style={style1}>{element[this.props.detailName]}</span>
+      return <li style={detailItemBasicStyle} key={index} data-country={JSON.stringify(element)} onClick={this.handleDetailItemClick}>
+        <span data-country={JSON.stringify(element)} style={style1}>{element[this.props.detailName]}</span>
       </li>
 
     })

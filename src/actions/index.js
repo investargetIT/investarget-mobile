@@ -9,6 +9,7 @@ export const LOGOUT = 'LOGOUT'
 export const HANDLE_ERROR = 'HANDLE_ERROR'
 export const HIDE_LOADING = 'HIDE_LOADING'
 export const RECEIVE_CONTINENTS_AND_COUNTRIES = 'RECEIVE_CONTINENTS_AND_COUNTRIES'
+export const TOGGLE_FILTER = 'TOGGLE_FILTER'
 
 export function requestContents(param) {
   return {
@@ -81,5 +82,12 @@ export function receiveContinentsAndCountries(continentsAndCountries) {
   return { 
     type: RECEIVE_CONTINENTS_AND_COUNTRIES,
     continentsAndCountries
+  }
+}
+
+export function toggleFilter(filter) {
+  return {
+    type: TOGGLE_FILTER,
+    filter
   }
 }

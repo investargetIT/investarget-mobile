@@ -9,7 +9,8 @@ import {
   LOGOUT,
   HANDLE_ERROR,
   HIDE_LOADING,
-  RECEIVE_CONTINENTS_AND_COUNTRIES
+  RECEIVE_CONTINENTS_AND_COUNTRIES,
+  TOGGLE_FILTER
 } from '../actions'
 
 const initialState = {
@@ -19,7 +20,8 @@ const initialState = {
   projects: [],
   posts: [],
   eventUrl: '',
-  continentsAndCountries: []
+  continentsAndCountries: [],
+  filter: []
 }
 
 export default function (state = initialState, action) {
@@ -91,6 +93,20 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         continentsAndCountries: action.continentsAndCountries
       })
+    case TOGGLE_FILTER:
+      const itemIndex = state.filter.map(item => item.type + item.id).indexOf(action.filter.type + action.filter.id)
+      if (itemIndex > -1) {
+        var newFilter = state.filter.slice()
+        newFilter.splice(itemIndex, 1)
+        return Object.assign({}, state, {
+          filter: newFilter
+        })
+      } else {
+        return Object.assign({}, state, {
+          filter: state.filter.concat(action.filter)
+        })
+      }
+
     default:
       return state
   }
