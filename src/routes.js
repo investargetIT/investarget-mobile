@@ -22,6 +22,7 @@ import TimelineManagement from './components/TimelineManagement'
 import ChatInvestor from './containers/ChatInvestor'
 import ChatTrader from './containers/ChatTrader'
 import UserInfo from './containers/UserInfo'
+import EditTimeline from './containers/EditTimeline'
 
 const Routes = (props) => {
 
@@ -57,6 +58,7 @@ const Routes = (props) => {
         <Route path="/chat_investor" component={ChatInvestor} />
         <Route path="/chat_trader" component={ChatTrader} />
         <Route path="/user_info" component={UserInfo} />
+        <Route path="/edit_timeline" component={EditTimeline} />
 
       </div>
     </Router>
