@@ -10,7 +10,8 @@ import {
   HANDLE_ERROR,
   HIDE_LOADING,
   RECEIVE_CONTINENTS_AND_COUNTRIES,
-  TOGGLE_FILTER
+  TOGGLE_FILTER,
+  RECEIVE_INDUSTRIES
 } from '../actions'
 
 const initialState = {
@@ -21,7 +22,8 @@ const initialState = {
   posts: [],
   eventUrl: '',
   continentsAndCountries: [],
-  filter: []
+  filter: [],
+  industries: []
 }
 
 export default function (state = initialState, action) {
@@ -106,7 +108,10 @@ export default function (state = initialState, action) {
           filter: state.filter.concat(action.filter)
         })
       }
-
+    case RECEIVE_INDUSTRIES:
+      return Object.assign({}, state, {
+        industries: action.industries
+      })
     default:
       return state
   }

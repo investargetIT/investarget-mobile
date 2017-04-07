@@ -4,6 +4,8 @@ import MasterDetail from '../components/MasterDetail'
 import { connect } from 'react-redux'
 import { toggleFilter } from '../actions'
 
+const CATEGORY_1 = 'area', CATEGORY_2 = 'industry', CATEGORY_3 = 'tag'
+
 const cateogryStyle = {
   position: 'fixed',
   left: 0,
@@ -29,12 +31,6 @@ const categoryIconStyle = {
   height: '5px',
   marginLeft: '7px',
   verticalAlign: 'middle'
-}
-
-const categoryTitleStyle = {
-  fontSize: '16px',
-  verticalAlign: 'middle',
-  color: '#5B5B5B'
 }
 
 const selectedContainerStyle = {
@@ -78,22 +74,80 @@ const actionConfirmStyle = Object.assign({}, actionResetStyle, {
   backgroundColor: '#10458F'
 })
 
+function FilterCategory(props) {
+
+  var categoryTitleStyle = {
+    fontSize: '16px',
+    verticalAlign: 'middle',
+    color: '#5B5B5B'
+  }
+
+  var icon = "/images/home/filterDown@2x.png"
+
+  if (props.isActive) {
+    categoryTitleStyle.color = '#10458F'
+    icon = "/images/home/filterUp@2x.png"
+  }
+
+  return (
+    <div style={categoryItemContainer} onClick={props.onClick}>
+      <span style={categoryTitleStyle}>{props.name}</span>
+      <img style={categoryIconStyle} src={icon} alt="" />
+    </div>
+  )
+
+}
+
 class Filter extends Component {
 
   constructor(props) {
     super(props)
 
+    this.state = { activeCategory: CATEGORY_1 }
+
     this.handleCountryClicked = this.handleCountryClicked.bind(this)
+    this.handleAreaCategoryClicked = this.handleAreaCategoryClicked.bind(this)
+    this.handleIndustryCategoryClicked = this.handleIndustryCategoryClicked.bind(this)
+    this.handleTagCategoryClicked = this.handleTagCategoryClicked.bind(this)
   }
 
-  handleCountryClicked(country) {
-    this.props.dispatch(toggleFilter(Object.assign({}, country, {
-      type: 'country',
-      name: country.countryName
+  handleCountryClicked(type, item) {
+    var filterType, filterName
+    switch (type) {
+      case CATEGORY_1:
+        filterType = CATEGORY_1
+        filterName = item.countryName
+        break
+      case CATEGORY_2:
+        filterType = CATEGORY_2
+        filterName = item.industryName
+        break
+    }
+
+    this.props.dispatch(toggleFilter(Object.assign({}, item, {
+      type: filterType,
+      name: filterName
     })))
   }
 
+  handleAreaCategoryClicked() {
+    this.setState({activeCategory: CATEGORY_1})
+  }
+
+  handleIndustryCategoryClicked() {
+    this.setState({activeCategory: CATEGORY_2})
+  }
+
+  handleTagCategoryClicked() {
+    this.setState({activeCategory: CATEGORY_3})
+  }
+
   render() {
+
+    const area = <MasterDetail name={CATEGORY_1} data={this.props.continentsAndCountries} masterName="continentName" detailName="countryName" masterDetail="countries" handleDetailItemClicked={this.handleCountryClicked} chosenItem={this.props.filter.filter(item => item.type === CATEGORY_1).map(item => item.id)} />
+
+    const industry = <MasterDetail name={CATEGORY_2} data={this.props.industries} masterName="industryName" detailName="industryName" masterDetail="subIndustries" handleDetailItemClicked={this.handleCountryClicked} chosenItem={this.props.filter.filter(item => item.type === CATEGORY_2).map(item => item.id)} />
+
     return (
       <div>
 
@@ -102,24 +156,16 @@ class Filter extends Component {
         <div style={categoryPlaceholderStyle}></div>
         <div style={cateogryStyle}>
 
-          <div style={categoryItemContainer}>
-            <span style={categoryTitleStyle}>地区</span>
-            <img style={categoryIconStyle} src="/images/home/filterDown@2x.png" alt="" />
-          </div>
+          <FilterCategory name="地区" onClick={this.handleAreaCategoryClicked} isActive={this.state.activeCategory === CATEGORY_1} />
 
-          <div style={categoryItemContainer}>
-            <span style={categoryTitleStyle}>行业</span>
-            <img style={categoryIconStyle} src="/images/home/filterDown@2x.png" alt="" />
-          </div>
+          <FilterCategory name="行业" onClick={this.handleIndustryCategoryClicked} isActive={this.state.activeCategory === CATEGORY_2} />
 
-          <div style={categoryItemContainer}>
-            <span style={categoryTitleStyle}>标签</span>
-            <img style={categoryIconStyle} src="/images/home/filterDown@2x.png" alt="" />
-          </div>
+          <FilterCategory name="标签" onClick={this.handleTagCategoryClicked} isActive={this.state.activeCategory === CATEGORY_3} />
 
         </div>
 
-        <MasterDetail data={this.props.continentsAndCountries} masterName="continentName" detailName="countryName" masterDetail="countries" handleDetailItemClicked={this.handleCountryClicked} />
+        {this.state.activeCategory == CATEGORY_1 ? area : null}
+        {this.state.activeCategory == CATEGORY_2 ? industry : null}
 
         <div style={selectedContainerStyle}>
           <p style={selectedLabelStyle}>已选条件：</p>
@@ -140,7 +186,8 @@ class Filter extends Component {
 function mapStateToProps(state) {
   const continentsAndCountries = state.continentsAndCountries
   const filter = state.filter
-  return { continentsAndCountries, filter }
+  const industries = state.industries
+  return { continentsAndCountries, filter, industries }
 }
 
 export default connect(mapStateToProps)(Filter)

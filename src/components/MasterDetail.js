@@ -52,7 +52,7 @@ class MasterDetail extends Component {
 
     this.state = {
       activeIndex: 0,
-      chosenItem: []
+      chosenItem: props.chosenItem ? props.chosenItem : []
     }
 
     this.handleMasterItemClick = this.handleMasterItemClick.bind(this)
@@ -72,7 +72,7 @@ class MasterDetail extends Component {
     const detailItem = JSON.parse(target.dataset.country)
     const id = parseInt(detailItem.id, 10)
 
-    this.props.handleDetailItemClicked(detailItem)
+    this.props.handleDetailItemClicked(this.props.name, detailItem)
 
     var array = this.state.chosenItem.slice()
     var itemIndex = array.indexOf(id)

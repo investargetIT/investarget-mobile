@@ -14,7 +14,7 @@ import Register from './containers/Register'
 import Register2 from './containers/Register2'
 import ProjectDetail from  './containers/ProjectDetail'
 import { connect } from 'react-redux'
-import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries } from './actions'
+import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries } from './actions'
 import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
@@ -36,6 +36,11 @@ const Routes = (props) => {
   api.getContinentsAndCountries(
     continentsAndCountries => props.dispatch(receiveContinentsAndCountries(continentsAndCountries)),
     error => console.error(error) 
+  )
+
+  api.getIndustries(
+    industries => props.dispatch(receiveIndustries(industries)),
+    error => console.error(error)
   )
 
   return (

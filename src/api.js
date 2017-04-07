@@ -173,6 +173,50 @@ export default {
       cb(continentsAndCountries)
     })
     .catch(error => errCb(error))
+  },
+
+  getIndustries(cb, errCb) {
+
+    var parentIndustries = []
+
+    axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=P&input.lang=cn')
+    .then(response => {
+
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+
+      parentIndustries = response.data.result
+      const all = parentIndustries.map(
+        item => axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=S&input.lang=cn&input.pid=' + item.id)
+      )
+
+      return Promise.all(all)
+
+    })
+    .then(values => {
+
+      const subIndustries = values.map(item => {
+        if (!item.data.success) {
+          throw new ApiError(item.data.error)
+        }
+        return {
+          pIndustryId: item.data.result[0].pIndustryId,
+          result: item.data.result
+        }
+      })
+
+      const industries = parentIndustries.map(item => {
+        item['subIndustries'] = subIndustries.find(
+          subIndustry => subIndustry.pIndustryId === item.id
+        ).result
+        return item
+      })
+
+      cb(industries)
+
+    })
+    .catch(error => errCb(error))
   }
 
 }

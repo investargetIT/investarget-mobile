@@ -10,6 +10,7 @@ export const HANDLE_ERROR = 'HANDLE_ERROR'
 export const HIDE_LOADING = 'HIDE_LOADING'
 export const RECEIVE_CONTINENTS_AND_COUNTRIES = 'RECEIVE_CONTINENTS_AND_COUNTRIES'
 export const TOGGLE_FILTER = 'TOGGLE_FILTER'
+export const RECEIVE_INDUSTRIES = 'RECEIVE_INDUSTRIES'
 
 export function requestContents(param) {
   return {
@@ -90,4 +91,12 @@ export function toggleFilter(filter) {
     type: TOGGLE_FILTER,
     filter
   }
+}
+
+export function receiveIndustries(industries) {
+  return {
+    type: RECEIVE_INDUSTRIES,
+    industries
+  }
+  
 }
