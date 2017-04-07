@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import MasterDetail from '../components/MasterDetail'
 import { connect } from 'react-redux'
-import { toggleFilter } from '../actions'
+import { toggleFilter, searchProject } from '../actions'
 
 const CATEGORY_1 = 'area', CATEGORY_2 = 'industry', CATEGORY_3 = 'tag'
 
@@ -184,6 +184,7 @@ class Filter extends Component {
     this.handleAreaCategoryClicked = this.handleAreaCategoryClicked.bind(this)
     this.handleIndustryCategoryClicked = this.handleIndustryCategoryClicked.bind(this)
     this.handleTagCategoryClicked = this.handleTagCategoryClicked.bind(this)
+    this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
   }
 
   handleCountryClicked(type, item) {
@@ -201,6 +202,7 @@ class Filter extends Component {
         filterType = CATEGORY_3
         filterName = item.tagName
         break
+      default: 
     }
 
     this.props.dispatch(toggleFilter(Object.assign({}, item, {
@@ -219,6 +221,11 @@ class Filter extends Component {
 
   handleTagCategoryClicked() {
     this.setState({activeCategory: CATEGORY_3})
+  }
+
+  handleActionButtonClicked(event) {
+    this.props.dispatch(searchProject())
+    this.props.history.goBack()
   }
 
   render() {
@@ -274,7 +281,7 @@ class Filter extends Component {
 
         <div style={actionContainerStyle}>
           <button style={actionResetStyle}>清空</button>
-          <button style={actionConfirmStyle}>完成</button>
+          <button style={actionConfirmStyle} onClick={this.handleActionButtonClicked}>完成</button>
         </div>
 
       </div>

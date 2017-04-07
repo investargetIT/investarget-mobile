@@ -12,7 +12,8 @@ import {
   RECEIVE_CONTINENTS_AND_COUNTRIES,
   TOGGLE_FILTER,
   RECEIVE_INDUSTRIES,
-  RECEIVE_TAGS
+  RECEIVE_TAGS,
+  SEARCH_PROJECT
 } from '../actions'
 
 const initialState = {
@@ -25,7 +26,9 @@ const initialState = {
   continentsAndCountries: [],
   filter: [],
   industries: [],
-  tags: []
+  tags: [],
+  trueFilter: [],
+  needRefresh: false
 }
 
 export default function (state = initialState, action) {
@@ -38,6 +41,7 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         isFetching: false,
         projects: action.contents,
+        needRefresh: false
       })
     case RECEIVE_POSTS: 
       const events = action.posts.filter(post => !post.isNews)
@@ -117,6 +121,11 @@ export default function (state = initialState, action) {
     case RECEIVE_TAGS:
       return Object.assign({}, state, {
         tags: action.tags
+      })
+    case SEARCH_PROJECT:
+      return Object.assign({}, state, {
+        trueFilter: state.filter,
+        needRefresh: true
       })
     default:
       return state

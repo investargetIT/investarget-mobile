@@ -26,8 +26,8 @@ function getToken() {
 
 export default {
   
-  getProjects(cb, errCb, skipCount = 0) {
-    axios.get(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn&input.skipCount=' + skipCount)
+  getProjects(params, cb, errCb, skipCount = 0) {
+    axios.get(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount)
     .then(response => {
       const projects = response.data.result.items.map(item => {
         var obj = {}

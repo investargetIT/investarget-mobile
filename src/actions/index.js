@@ -12,6 +12,7 @@ export const RECEIVE_CONTINENTS_AND_COUNTRIES = 'RECEIVE_CONTINENTS_AND_COUNTRIE
 export const TOGGLE_FILTER = 'TOGGLE_FILTER'
 export const RECEIVE_INDUSTRIES = 'RECEIVE_INDUSTRIES'
 export const RECEIVE_TAGS = 'RECEIVE_TAGS'
+export const SEARCH_PROJECT = 'SEARCH_PROJECT'
 
 export function requestContents(param) {
   return {
@@ -106,4 +107,8 @@ export function receiveTags(tags) {
     type: RECEIVE_TAGS,
     tags
   }
+}
+
+export function searchProject() {
+  return { type: SEARCH_PROJECT }
 }

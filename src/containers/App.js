@@ -53,10 +53,10 @@ const headerActionDoStyle = {
 class App extends Component {
 
   componentDidMount() {
-
-    if (this.props.projects.length === 0) {
+    if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
       api.getProjects(
+        filterToParams(this.props.filter),
         projects => this.props.dispatch(receiveContents('', projects)),
         error => this.props.dispatch(handleError(error))
       )
@@ -113,12 +113,13 @@ class App extends Component {
     })
     
     function resetMin() {
-      alloyTouch.min = -1 * parseInt(getComputedStyle(scroller).height) + window.innerHeight - 45 - 48;
+      alloyTouch.min = -1 * parseInt(getComputedStyle(scroller).height, 10) + window.innerHeight - 45 - 48;
     }
 
     function loadMore() {
 
       api.getProjects(
+        filterToParams(react.props.filter),
         projects => {
           loading = false
           resetMin()
@@ -145,6 +146,7 @@ class App extends Component {
       pull_refresh.classList.add("refreshing");
 
       api.getProjects(
+        filterToParams(react.props.filter),
         projects => {
           arrow.classList.remove("arrow_up");
           pull_refresh.classList.remove("refreshing");
@@ -189,12 +191,12 @@ class App extends Component {
 
           <div className="pull">
             <div id="arrow" className="arrow">
-              <img src="images/ic_arrow_down.svg" alt="" /><br />
+              <img src="/images/ic_arrow_down.svg" alt="" /><br />
             </div>
           </div>
 
           <div className="loading">
-            <img src="images/loading.svg" />
+            <img src="/images/loading.svg" alt="" />
           </div>
 
         </div>
@@ -205,7 +207,7 @@ class App extends Component {
           </div>
           <Link to="/filter">
             <div style={headerActionStyle}>
-              <img style={headerIconStyle} src="images/home/filter@2x.png" />
+              <img style={headerIconStyle} src="/images/home/filter@2x.png" alt="" />
               <span style={headerActionDoStyle}>筛选</span>
             </div>
           </Link>
@@ -216,7 +218,7 @@ class App extends Component {
             <ul id="list" ref="listContainer">
               {rows}
             </ul>
-            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src="images/loading.svg" /></div>
+            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src="/images/loading.svg" alt="" /></div>
           </div>
         </div>
 
@@ -229,7 +231,30 @@ class App extends Component {
 
 function mapStateToProps(state) {
   const projects = state.projects
-  return {projects}
+  const needRefresh = state.needRefresh
+  const filter = state.trueFilter
+  return { projects, filter, needRefresh }
+}
+
+function filterToParams(data) {
+  var params = ''
+
+  const countryIdsArr = data.filter(item => item.type === 'area').map(item => item.id)
+  if(countryIdsArr.length > 0) {
+    params = params + '&input.countryIds=' + countryIdsArr.join(',')
+  }
+
+  const industryIdsArr = data.filter(item => item.type === 'industry').map(item => item.id)
+  if(industryIdsArr.length > 0) {
+    params = params + '&input.industryIds=' + industryIdsArr.join(',')
+  }
+
+  const tagIdsArr = data.filter(item => item.type === 'tag').map(item => item.id)
+  if(tagIdsArr.length > 0) {
+    params = params + '&input.tagIds=' + tagIdsArr.join(',')
+  }
+
+  return params
 }
 
 export default connect(mapStateToProps)(App);
