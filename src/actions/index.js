@@ -11,6 +11,7 @@ export const HIDE_LOADING = 'HIDE_LOADING'
 export const RECEIVE_CONTINENTS_AND_COUNTRIES = 'RECEIVE_CONTINENTS_AND_COUNTRIES'
 export const TOGGLE_FILTER = 'TOGGLE_FILTER'
 export const RECEIVE_INDUSTRIES = 'RECEIVE_INDUSTRIES'
+export const RECEIVE_TAGS = 'RECEIVE_TAGS'
 
 export function requestContents(param) {
   return {
@@ -98,5 +99,11 @@ export function receiveIndustries(industries) {
     type: RECEIVE_INDUSTRIES,
     industries
   }
-  
+}
+
+export function receiveTags(tags) {
+  return {
+    type: RECEIVE_TAGS,
+    tags
+  }
 }

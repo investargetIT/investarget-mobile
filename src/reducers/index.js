@@ -11,7 +11,8 @@ import {
   HIDE_LOADING,
   RECEIVE_CONTINENTS_AND_COUNTRIES,
   TOGGLE_FILTER,
-  RECEIVE_INDUSTRIES
+  RECEIVE_INDUSTRIES,
+  RECEIVE_TAGS
 } from '../actions'
 
 const initialState = {
@@ -23,7 +24,8 @@ const initialState = {
   eventUrl: '',
   continentsAndCountries: [],
   filter: [],
-  industries: []
+  industries: [],
+  tags: []
 }
 
 export default function (state = initialState, action) {
@@ -111,6 +113,10 @@ export default function (state = initialState, action) {
     case RECEIVE_INDUSTRIES:
       return Object.assign({}, state, {
         industries: action.industries
+      })
+    case RECEIVE_TAGS:
+      return Object.assign({}, state, {
+        tags: action.tags
       })
     default:
       return state

@@ -217,6 +217,17 @@ export default {
 
     })
     .catch(error => errCb(error))
+  },
+
+  getTags(cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/tag/GetTags?input.lang=cn')
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      cb(response.data.result)
+    })
+    .catch(error => errCb(error))
   }
 
 }

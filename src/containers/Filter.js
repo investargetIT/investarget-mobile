@@ -98,6 +98,81 @@ function FilterCategory(props) {
 
 }
 
+const floatContainerStyle = {
+  padding: '8px 0px',
+  backgroundColor: '#F6F6F6',
+  height: (window.innerHeight - 48*3 - 60) + 'px',
+  overflowY: 'scroll',
+  position: 'fixed',
+  left: 0,
+  right: 0
+}
+
+const itemStyle = {
+  float: 'left',
+  width: 100/375*100+'%',
+  margin: '8px ' + 75/375/6*100+'%',
+  textAlign: 'center',
+  border: '1px solid #CCCCCC',
+  color: '#555555',
+  fontSize: '14px',
+  lineHeight: 1.8,
+  borderRadius: '5px'
+}
+
+const itemActiveStyle = Object.assign({}, itemStyle, {
+  color: 'white',
+  backgroundColor: '#10458F',
+  border: '1px solid #10458F'
+})
+
+class TableView extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = { chosenItem: props.chosenItem ? props.chosenItem : [] }
+
+    this.handleItemClicked = this.handleItemClicked.bind(this)
+  }
+
+  handleItemClicked(event) {
+    const target = event.target
+    const detailItem = JSON.parse(target.dataset.item)
+    const id = parseInt(detailItem.id, 10)
+
+    this.props.handleTableItemClicked(this.props.name, detailItem)
+
+    var array = this.state.chosenItem.slice()
+    var itemIndex = array.indexOf(id)
+    if (itemIndex > -1) {
+      array.splice(itemIndex, 1)
+    } else {
+      array.push(id)
+    }
+
+    this.setState({
+      chosenItem: array
+    })
+  }
+
+  render() {
+
+    const content = this.props.data.map(item => {
+      const style = this.state.chosenItem.indexOf(item.id) > -1 ? itemActiveStyle : itemStyle
+      return <div style={style} onClick={this.handleItemClicked} data-item={JSON.stringify(item)} key={item.id}>{item.tagName}</div>
+    })
+
+    return (
+      <div style={floatContainerStyle}>
+        {content}
+      </div>
+    )
+
+  }
+  
+}
+
 class Filter extends Component {
 
   constructor(props) {
@@ -122,6 +197,10 @@ class Filter extends Component {
         filterType = CATEGORY_2
         filterName = item.industryName
         break
+      case CATEGORY_3:
+        filterType = CATEGORY_3
+        filterName = item.tagName
+        break
     }
 
     this.props.dispatch(toggleFilter(Object.assign({}, item, {
@@ -144,9 +223,29 @@ class Filter extends Component {
 
   render() {
 
-    const area = <MasterDetail name={CATEGORY_1} data={this.props.continentsAndCountries} masterName="continentName" detailName="countryName" masterDetail="countries" handleDetailItemClicked={this.handleCountryClicked} chosenItem={this.props.filter.filter(item => item.type === CATEGORY_1).map(item => item.id)} />
+    const area = <MasterDetail
+      name={CATEGORY_1}
+      data={this.props.continentsAndCountries}
+      masterName="continentName"
+      detailName="countryName"
+      masterDetail="countries"
+      handleDetailItemClicked={this.handleCountryClicked}
+      chosenItem={this.props.filter.filter(item => item.type === CATEGORY_1).map(item => item.id)} />
 
-    const industry = <MasterDetail name={CATEGORY_2} data={this.props.industries} masterName="industryName" detailName="industryName" masterDetail="subIndustries" handleDetailItemClicked={this.handleCountryClicked} chosenItem={this.props.filter.filter(item => item.type === CATEGORY_2).map(item => item.id)} />
+    const industry = <MasterDetail
+      name={CATEGORY_2}
+      data={this.props.industries}
+      masterName="industryName"
+      detailName="industryName"
+      masterDetail="subIndustries"
+      handleDetailItemClicked={this.handleCountryClicked}
+      chosenItem={this.props.filter.filter(item => item.type === CATEGORY_2).map(item => item.id)} />
+
+    const tag = <TableView
+      name={CATEGORY_3}
+      data={this.props.tags}
+      handleTableItemClicked={this.handleCountryClicked}
+      chosenItem={this.props.filter.filter(item => item.type === CATEGORY_3).map(item => item.id)} />
 
     return (
       <div>
@@ -164,8 +263,9 @@ class Filter extends Component {
 
         </div>
 
-        {this.state.activeCategory == CATEGORY_1 ? area : null}
-        {this.state.activeCategory == CATEGORY_2 ? industry : null}
+        {this.state.activeCategory === CATEGORY_1 ? area : null}
+        {this.state.activeCategory === CATEGORY_2 ? industry : null}
+        {this.state.activeCategory === CATEGORY_3 ? tag : null}
 
         <div style={selectedContainerStyle}>
           <p style={selectedLabelStyle}>已选条件：</p>
@@ -187,7 +287,8 @@ function mapStateToProps(state) {
   const continentsAndCountries = state.continentsAndCountries
   const filter = state.filter
   const industries = state.industries
-  return { continentsAndCountries, filter, industries }
+  const tags = state.tags
+  return { continentsAndCountries, filter, industries, tags }
 }
 
 export default connect(mapStateToProps)(Filter)
