@@ -28,18 +28,19 @@ var selectWrapStyle = {
 }
 
 var selectStyle = {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    // display: 'flex',
+    // justifyContent: 'flex-start',
+    // alignItems: 'flex-start',
+    // flexWrap: 'wrap',
     padding: '10px',
 }
 
 var optionStyle = {
-    flexGrow: '1',
-    flexShrink: '0',
+    float: 'left',
+    // flexGrow: '1',
+    // flexShrink: '0',
     margin: '5px',
-    padding: '.7em 1em',
+    padding: '.5em 1em',
     border: '1px solid #ccc',
     borderRadius: '1.5em',
     lineHeight: '1',
@@ -151,7 +152,7 @@ class Select extends React.Component {
         return <div style={containerStyle}>
             <div style={titleStyle}>{this.props.title}</div>
             <div style={selectWrapStyle}>
-                <div style={selectStyle}>
+                <div style={selectStyle} className="clearfix">
                     {items}
                 </div>
             </div>

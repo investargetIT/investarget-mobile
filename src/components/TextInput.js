@@ -49,7 +49,7 @@ function TextInput(props) {
     <div style={containerStyle}>
       {icon}
       <div style={inputWrapStyle}>
-        <input style={inputStyle} type="text" name={props.name} placeholder={props.placeholder} onChange={props.handleInputChange} value={props.value} />
+        <input style={inputStyle} type={props.type ? props.type : 'text'} name={props.name} placeholder={props.placeholder} onChange={props.handleInputChange} value={props.value} />
       </div>
       {rightContent}
     </div>

@@ -2,11 +2,14 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import TransparetnNavigationBar from '../components/TransparentNavigationBar'
+
+
 var containerStyle = {
   width: '100%',
   minHeight: '100%',
   backgroundImage: 'url(images/login/backgroungImage@2x.png)',
-  backgroundRepeat: 'no-repeat',
+  backgroundRepeat: 'repeat-y',
   backgroundSize: '100% auto',
   backgroundPosition: '50% 0',
   overflow: 'hidden',
@@ -52,16 +55,8 @@ function FormContainer(props) {
   return (
     <div style={containerStyle}>
     
-      <div style={navbarStyle}>
-        <Link to={props.previousPage}>
-          <div style={backIconContainerStyle}>
-            <img style={backIconStyle} src="images/ic_navigate_before.svg" alt="Back" />
-          </div>
-        </Link>
-
-        <p style={titleStyle}>{props.title}</p>
-      </div>
-
+      <TransparetnNavigationBar title={props.title} previousPage={props.previousPage} />
+      
       <div style={formContainer}>
         {props.innerHtml}
       </div>
