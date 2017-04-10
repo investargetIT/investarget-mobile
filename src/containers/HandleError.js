@@ -1,10 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import LoadingAndToast from './LoadingAndToast'
 import { connect } from 'react-redux'
 import { dismissErrMsg, logout } from '../actions'
-import { Redirect } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 class HandleError extends Component {
+
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.isError) {
@@ -12,6 +18,7 @@ class HandleError extends Component {
         this.props.dispatch(dismissErrMsg())
         if (this.props.error.message === 'Request failed with status code 401') {
           this.props.dispatch(logout())
+          this.props.history.push('/login')
         }
       }, 1000)
     }
@@ -76,22 +83,14 @@ class HandleError extends Component {
       }
     }
 
-    if (!this.props.isLogin) {
-      return (
-        <Redirect to="/login" />
-      )
-    }
-
     return <LoadingAndToast isError={showError} errorMsg={errMsg} />
   }
 
 }
 
 function mapStateToProps(state) {
-  const isError = state.isError
-  const error = state.error
-  const isLogin = state.isLogin
-  return { isError, error, isLogin }
+  const { isError, error } = state
+  return { isError, error }
 }
 
-export default connect(mapStateToProps)(HandleError)
+export default withRouter(connect(mapStateToProps)(HandleError))
