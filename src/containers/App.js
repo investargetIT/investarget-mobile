@@ -254,6 +254,11 @@ function filterToParams(data) {
     params = params + '&input.tagIds=' + tagIdsArr.join(',')
   }
 
+  const titleArr = data.filter(item => item.type === 'title').map(item => item.title)
+  if (titleArr.length > 0) {
+    params = params + '&input.title=' + titleArr[0]
+  }
+
   return params
 }
 

@@ -1,13 +1,26 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import LoadingAndToast from './LoadingAndToast'
 import { connect } from 'react-redux'
-import { dismissErrMsg } from '../actions'
+import { dismissErrMsg, logout } from '../actions'
+import { withRouter } from 'react-router-dom'
 
 class HandleError extends Component {
 
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.isError) {
-      setTimeout(() => this.props.dispatch(dismissErrMsg()), 1000)
+      setTimeout(() => {
+        this.props.dispatch(dismissErrMsg())
+        if (this.props.error.message === 'Request failed with status code 401') {
+          this.props.dispatch(logout())
+          this.props.history.push('/login')
+        }
+      }, 1000)
     }
   }
 
@@ -42,6 +55,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '请获取短信验证码'
           break
+        case 'Request failed with status code 401':
+          showError = true
+          errMsg = '验证失败，请重新登录'
+          break
         default:
           console.error(error)
       }
@@ -72,9 +89,8 @@ class HandleError extends Component {
 }
 
 function mapStateToProps(state) {
-  const isError = state.isError
-  const error = state.error
+  const { isError, error } = state
   return { isError, error }
 }
 
-export default connect(mapStateToProps)(HandleError)
+export default withRouter(connect(mapStateToProps)(HandleError))

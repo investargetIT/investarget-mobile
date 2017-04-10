@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import MasterDetail from '../components/MasterDetail'
 import { connect } from 'react-redux'
-import { toggleFilter, searchProject } from '../actions'
+import { toggleFilter, searchProject, clearFilter, cloneTrueFilter } from '../actions'
 
 const CATEGORY_1 = 'area', CATEGORY_2 = 'industry', CATEGORY_3 = 'tag'
 
@@ -173,18 +173,72 @@ class TableView extends Component {
   
 }
 
+const searchContainerStyle = {
+  width: '70%',
+  height: '30px',
+  margin: '9px auto',
+  backgroundColor: 'white',
+  lineHeight: 'normal',
+  borderRadius: '13px'
+}
+const searchInputStyle = {
+  fontSize: '16px',
+  backgroundColor: 'white',
+  border: 'none',
+  height: '100%',
+  width: '96px',
+  verticalAlign: 'middle'
+}
+const searchIconStyle = {
+  width: '20px',
+  height: '20px',
+  marginRight: '8px',
+  verticalAlign: 'middle'
+}
+
+class Search extends Component {
+  constructor(props) {
+    super(props)
+
+    this.onblur = this.onblur.bind(this)
+  }
+
+  onblur(event) {
+    this.props.handleSearchOnBlur(event.target.value)
+  }
+
+  render() {
+  return (
+    <div style={searchContainerStyle}>
+      <img style={searchIconStyle} src="/images/home/ic_search.svg" />
+      <input style={searchInputStyle} type="text" placeholder="搜索项目标题" onBlur={this.onblur} />
+    </div>
+  )
+  }
+
+}
+
+
 class Filter extends Component {
 
   constructor(props) {
     super(props)
 
-    this.state = { activeCategory: CATEGORY_1 }
+    this.state = { 
+      activeCategory: CATEGORY_1,
+      searchTitle: ''
+    }
 
     this.handleCountryClicked = this.handleCountryClicked.bind(this)
     this.handleAreaCategoryClicked = this.handleAreaCategoryClicked.bind(this)
     this.handleIndustryCategoryClicked = this.handleIndustryCategoryClicked.bind(this)
     this.handleTagCategoryClicked = this.handleTagCategoryClicked.bind(this)
     this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
+    this.handleSearchOnBlur = this.handleSearchOnBlur.bind(this)
+  }
+
+  componentDidMount() {
+    this.props.dispatch(cloneTrueFilter())
   }
 
   handleCountryClicked(type, item) {
@@ -224,8 +278,19 @@ class Filter extends Component {
   }
 
   handleActionButtonClicked(event) {
-    this.props.dispatch(searchProject())
-    this.props.history.goBack()
+
+    const action = event.target.name
+
+    if (action === 'search') {
+      this.props.dispatch(searchProject(this.state.searchTitle))
+      this.props.history.goBack()
+    } else if (action === 'reset') {
+      this.props.dispatch(clearFilter())
+    }
+  }
+
+  handleSearchOnBlur(value) {
+    this.setState({searchTitle: value})
   }
 
   render() {
@@ -254,10 +319,12 @@ class Filter extends Component {
       handleTableItemClicked={this.handleCountryClicked}
       chosenItem={this.props.filter.filter(item => item.type === CATEGORY_3).map(item => item.id)} />
 
+    const search = <Search handleSearchOnBlur={this.handleSearchOnBlur} />
+
     return (
       <div>
 
-        <NavigationBar title="筛选" backIconClicked={this.props.history.goBack} />
+        <NavigationBar title={search} backIconClicked={this.props.history.goBack} />
 
         <div style={categoryPlaceholderStyle}></div>
         <div style={cateogryStyle}>
@@ -280,8 +347,8 @@ class Filter extends Component {
         </div>
 
         <div style={actionContainerStyle}>
-          <button style={actionResetStyle}>清空</button>
-          <button style={actionConfirmStyle} onClick={this.handleActionButtonClicked}>完成</button>
+          <button name="reset" style={actionResetStyle} onClick={this.handleActionButtonClicked}>清空</button>
+          <button name="search" style={actionConfirmStyle} onClick={this.handleActionButtonClicked}>完成</button>
         </div>
 
       </div>

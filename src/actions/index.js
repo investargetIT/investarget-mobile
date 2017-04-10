@@ -14,6 +14,8 @@ export const RECEIVE_INDUSTRIES = 'RECEIVE_INDUSTRIES'
 export const RECEIVE_TITLES = 'RECEIVE_TITLES'
 export const RECEIVE_TAGS = 'RECEIVE_TAGS'
 export const SEARCH_PROJECT = 'SEARCH_PROJECT'
+export const CLEAR_FILTER = 'CLEAR_FILTER'
+export const CLONE_TRUE_FILTER = 'CLONE_TRUE_FILTER'
 
 export function requestContents(param) {
   return {
@@ -110,7 +112,6 @@ export function receiveTags(tags) {
   }
 }
 
-
 export function receiveTitles(titles) {
   return {
     type: RECEIVE_TITLES,
@@ -118,6 +119,18 @@ export function receiveTitles(titles) {
   }
 }
 
-export function searchProject() {
-  return { type: SEARCH_PROJECT }
+
+export function searchProject(title) {
+  return { 
+    type: SEARCH_PROJECT,
+    title
+  }
+}
+
+export function clearFilter() {
+  return { type: CLEAR_FILTER }
+}
+
+export function cloneTrueFilter() {
+  return { type: CLONE_TRUE_FILTER }
 }

@@ -49,7 +49,7 @@ class MasterDetail extends Component {
 
   constructor(props) {
     super(props)
-
+    
     this.state = {
       activeIndex: 0,
       chosenItem: props.chosenItem ? props.chosenItem : []
@@ -103,7 +103,7 @@ class MasterDetail extends Component {
 
     const detail = this.props.data[this.state.activeIndex][this.props.masterDetail].map((element, index) => {
 
-      var style1 = this.state.chosenItem.indexOf(element.id) > -1 ? detailItemActiveStyle : null
+      var style1 = this.props.chosenItem.indexOf(element.id) > -1 ? detailItemActiveStyle : null
 
       return <li style={detailItemBasicStyle} key={index} data-country={JSON.stringify(element)} onClick={this.handleDetailItemClick}>
         <span data-country={JSON.stringify(element)} style={style1}>{element[this.props.detailName]}</span>

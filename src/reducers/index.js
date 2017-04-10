@@ -14,7 +14,9 @@ import {
   RECEIVE_INDUSTRIES,
   RECEIVE_TAGS,
   RECEIVE_TITLES,
-  SEARCH_PROJECT
+  SEARCH_PROJECT,
+  CLEAR_FILTER,
+  CLONE_TRUE_FILTER
 } from '../actions'
 
 const initialState = {
@@ -130,8 +132,21 @@ export default function (state = initialState, action) {
       })
     case SEARCH_PROJECT:
       return Object.assign({}, state, {
-        trueFilter: state.filter,
+        trueFilter: state.filter.concat({
+          type: 'title',
+          title: action.title
+        }),
         needRefresh: true
+      })
+    case CLEAR_FILTER:
+      return Object.assign({}, state, {
+        filter: []
+      })
+    case CLONE_TRUE_FILTER:
+      var filter = state.trueFilter.filter(item => item.type !== 'title')
+      return Object.assign({}, state, {
+        trueFilter: filter,
+        filter: filter
       })
     default:
       return state
