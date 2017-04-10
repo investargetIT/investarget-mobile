@@ -13,7 +13,9 @@ import {
   TOGGLE_FILTER,
   RECEIVE_INDUSTRIES,
   RECEIVE_TAGS,
-  SEARCH_PROJECT
+  SEARCH_PROJECT,
+  CLEAR_FILTER,
+  CLONE_TRUE_FILTER
 } from '../actions'
 
 const initialState = {
@@ -126,6 +128,14 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         trueFilter: state.filter,
         needRefresh: true
+      })
+    case CLEAR_FILTER:
+      return Object.assign({}, state, {
+        filter: []
+      })
+    case CLONE_TRUE_FILTER:
+      return Object.assign({}, state, {
+        filter: state.trueFilter
       })
     default:
       return state

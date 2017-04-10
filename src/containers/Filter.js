@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import MasterDetail from '../components/MasterDetail'
 import { connect } from 'react-redux'
-import { toggleFilter, searchProject } from '../actions'
+import { toggleFilter, searchProject, clearFilter, cloneTrueFilter } from '../actions'
 
 const CATEGORY_1 = 'area', CATEGORY_2 = 'industry', CATEGORY_3 = 'tag'
 
@@ -187,6 +187,10 @@ class Filter extends Component {
     this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
   }
 
+  componentDidMount() {
+    this.props.dispatch(cloneTrueFilter())
+  }
+
   handleCountryClicked(type, item) {
     var filterType, filterName
     switch (type) {
@@ -224,8 +228,16 @@ class Filter extends Component {
   }
 
   handleActionButtonClicked(event) {
-    this.props.dispatch(searchProject())
-    this.props.history.goBack()
+
+    const action = event.target.name
+
+    if (action === 'search') {
+      this.props.dispatch(searchProject())
+      this.props.history.goBack()
+    } else if (action === 'reset') {
+      this.props.dispatch(clearFilter())
+    }
+    
   }
 
   render() {
@@ -280,8 +292,8 @@ class Filter extends Component {
         </div>
 
         <div style={actionContainerStyle}>
-          <button style={actionResetStyle}>清空</button>
-          <button style={actionConfirmStyle} onClick={this.handleActionButtonClicked}>完成</button>
+          <button name="reset" style={actionResetStyle} onClick={this.handleActionButtonClicked}>清空</button>
+          <button name="search" style={actionConfirmStyle} onClick={this.handleActionButtonClicked}>完成</button>
         </div>
 
       </div>
