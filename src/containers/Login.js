@@ -110,7 +110,7 @@ class Login extends React.Component {
         </div>
 
         <div style={passwordInputStyle}>
-          <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
+          <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
         <div style={loginButtonStyle}>
@@ -122,7 +122,7 @@ class Login extends React.Component {
         </div>
 
         <div style={forgetPasswordStyle}>
-          <Link to="/" style={forgetPasswordLinkStyle}>忘记密码？</Link>
+          <Link to="/retrieve_password" style={forgetPasswordLinkStyle}>忘记密码？</Link>
         </div>
 
       </div>

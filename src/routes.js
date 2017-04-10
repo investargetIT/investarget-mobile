@@ -14,7 +14,7 @@ import Register from './containers/Register'
 import Register2 from './containers/Register2'
 import ProjectDetail from  './containers/ProjectDetail'
 import { connect } from 'react-redux'
-import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries, receiveTags } from './actions'
+import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries, receiveTags, receiveTitles } from './actions'
 import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
@@ -23,6 +23,9 @@ import ChatInvestor from './containers/ChatInvestor'
 import ChatTrader from './containers/ChatTrader'
 import UserInfo from './containers/UserInfo'
 import EditTimeline from './containers/EditTimeline'
+import RetrievePassword from './containers/RetrievePassword'
+import Agreement from './containers/Agreement'
+import SetPassword from './containers/SetPassword'
 
 const Routes = (props) => {
 
@@ -48,6 +51,11 @@ const Routes = (props) => {
     error => console.error(error)
   )
 
+  api.getTitles(
+    titles => props.dispatch(receiveTitles(titles)),
+    error => console.error(error)
+  )
+
   return (
     <Router>
       <div id="container">
@@ -62,6 +70,7 @@ const Routes = (props) => {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/register2" component={Register2} />
+        <Route path="/agreement" component={Agreement} />
         <Route path="/filter" component={Filter} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
@@ -69,6 +78,8 @@ const Routes = (props) => {
         <Route path="/chat_trader" component={ChatTrader} />
         <Route path="/user_info" component={UserInfo} />
         <Route path="/edit_timeline" component={EditTimeline} />
+        <Route path="/retrieve_password" component={RetrievePassword} />
+        <Route path="/set_password" component={SetPassword} />
 
       </div>
     </Router>

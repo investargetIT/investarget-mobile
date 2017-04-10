@@ -11,6 +11,7 @@ export const HIDE_LOADING = 'HIDE_LOADING'
 export const RECEIVE_CONTINENTS_AND_COUNTRIES = 'RECEIVE_CONTINENTS_AND_COUNTRIES'
 export const TOGGLE_FILTER = 'TOGGLE_FILTER'
 export const RECEIVE_INDUSTRIES = 'RECEIVE_INDUSTRIES'
+export const RECEIVE_TITLES = 'RECEIVE_TITLES'
 export const RECEIVE_TAGS = 'RECEIVE_TAGS'
 export const SEARCH_PROJECT = 'SEARCH_PROJECT'
 
@@ -106,6 +107,14 @@ export function receiveTags(tags) {
   return {
     type: RECEIVE_TAGS,
     tags
+  }
+}
+
+
+export function receiveTitles(titles) {
+  return {
+    type: RECEIVE_TITLES,
+    titles
   }
 }
 

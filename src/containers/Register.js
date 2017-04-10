@@ -16,6 +16,11 @@ var phoneInputStyle = {
 
 var codeInputStyle = {
   margin: '30px 10px',
+  visibility: 'visible',
+}
+var hideCodeInputStyle = {
+  margin: '30px 10px',
+  visibility: 'hidden',
 }
 
 var sendCodeButtonStyle = {
@@ -37,6 +42,11 @@ var sendCodeButtonDisabledStyle = Object.assign({}, sendCodeButtonStyle, {
 
 var emailInputStyle = {
   margin: '30px 10px',
+  visibility: 'visible',
+}
+var hideEmailInputStyle = {
+  margin: '30px 10px',
+  visibility: 'hidden',
 }
 
 var buttonStyle = {
@@ -65,6 +75,7 @@ class Register extends React.Component {
     super(props)
 
     this.state = {
+      userExist: null,
       mobile: '',
       code: '',
       email: '',
@@ -98,6 +109,10 @@ class Register extends React.Component {
     this.setState({
       [name]: value
     })
+
+    if (name == 'mobile') {
+      this.setState({ userExist: null })
+    }
   }
 
   handleSendVerificationCode(event) {
@@ -125,33 +140,49 @@ class Register extends React.Component {
     )
   }
 
-  handleSubmit(event) {
-    console.log(event.target.name)
+  handleSubmit(userType) {
 
-    const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
-    if (!token) {
-      this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
-      return
+    if (this.state.userExist === null) {
+      api.checkMobileOrEmailExist(
+        this.state.mobile,
+        (result) => {
+          if (result) {
+            this.props.history.push('/set_password')
+          } else {
+            this.setState({userExist: false})
+          }
+        },
+        (error) => this.props.dispatch(handleError(error)))
+    } else if (this.state.userExist === false) {
+      const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
+      if (!token) {
+        this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
+        return
+      }
+      const param = {
+        mobile: this.state.mobile,
+        token: token,
+        code: this.state.code
+      }
+      api.checkVerificationCode(
+        param,
+        () => {
+          var registerBasicInfo = Object.assign({}, param, {
+            email: this.state.email,
+            userType: userType
+          })
+          delete registerBasicInfo.token
+          localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
+          this.props.history.push('/register2')
+        },
+        error => this.props.dispatch(handleError(error))
+      )
     }
-
-    const param = {
-      mobile: this.state.mobile,
-      token: token,
-      code: this.state.code
-    }
-    api.checkVerificationCode(
-      param,
-      () => {
-        var registerBasicInfo = Object.assign({}, param, {
-          email: this.state.email
-        })
-        delete registerBasicInfo.token
-        localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
-        this.props.history.push('/register2')
-      },
-      error => this.props.dispatch(handleError(error))
-    )
     
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.timer)
   }
 
   render() {
@@ -164,7 +195,19 @@ class Register extends React.Component {
     const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
     var sendCode = <button disabled={isMobileInvalid} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
     
-    var disabled = isMobileInvalid || this.state.code === '' || this.state.email === ''
+
+    var disabled;
+    if (isMobileInvalid) {
+      disabled = true
+    } else {
+      if (this.state.userExist === false) {
+        disabled = this.state.mobile === '' || this.state.code === '' || this.state.email === ''
+      } else {
+        disabled = false
+      }
+    }
+
+
     
     var content = (
       <div>
@@ -173,25 +216,25 @@ class Register extends React.Component {
           <TextInput name="mobile" placeholder="请输入手机号" value={this.state.mobile} handleInputChange={this.handleInputChange} />
         </div>
 
-        <div style={codeInputStyle}>
+        <div style={this.state.userExist === false ? codeInputStyle : hideCodeInputStyle}>
           <TextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
         </div>
 
-        <div style={emailInputStyle}>
+        <div style={this.state.userExist === false ? emailInputStyle : hideEmailInputStyle}>
           <TextInput name="email" placeholder="请输入邮箱" value={this.state.email} handleInputChange={this.handleInputChange} />
         </div>
 
         <div style={buttonStyle}>
-          <Button name="transaction" type="primary" disabled={disabled} onClick={this.handleSubmit} value="我是交易师" />
+          <Button name="transaction" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 3)} value="我是交易师" />
         </div>
 
         <div style={buttonStyle}>
-          <Button name="investor" type="primary" disabled={disabled} onClick={this.handleSubmit} value="我是投资人" />
+          <Button name="investor" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 1)} value="我是投资人" />
         </div>
 
         <div style={liscenseStyle}>
           <input name="liscense" style={liscenseCheckStyle} type="checkbox" checked={this.state.liscense} onChange={this.handleInputChange} />
-          <Link style={liscenseLinkStyle} to="/">用户协议</Link>
+          <Link style={liscenseLinkStyle} to="/agreement">用户协议</Link>
         </div>
 
       </div>

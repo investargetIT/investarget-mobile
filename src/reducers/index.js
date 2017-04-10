@@ -13,6 +13,7 @@ import {
   TOGGLE_FILTER,
   RECEIVE_INDUSTRIES,
   RECEIVE_TAGS,
+  RECEIVE_TITLES,
   SEARCH_PROJECT
 } from '../actions'
 
@@ -27,6 +28,7 @@ const initialState = {
   filter: [],
   industries: [],
   tags: [],
+  titles: [],
   trueFilter: [],
   needRefresh: false
 }
@@ -121,6 +123,10 @@ export default function (state = initialState, action) {
     case RECEIVE_TAGS:
       return Object.assign({}, state, {
         tags: action.tags
+      })
+    case RECEIVE_TITLES:
+      return Object.assign({}, state, {
+        titles: action.titles
       })
     case SEARCH_PROJECT:
       return Object.assign({}, state, {

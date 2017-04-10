@@ -161,3 +161,13 @@ a {
 .pull_refresh .loading {
   display: none;
 }
+
+
+.clearfix:before, .clearfix:after {
+  content: '';
+  display: table;
+  height: 0;
+}
+.clearfix:after {
+  clear: both;
+}

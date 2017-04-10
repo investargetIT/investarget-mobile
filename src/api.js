@@ -228,6 +228,53 @@ export default {
       cb(response.data.result)
     })
     .catch(error => errCb(error))
-  }
+  },
+
+  getTitles(cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/title/GetTitles?input.lang=cn')
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      cb(response.data.result)
+    })
+    .catch(error => errCb(error))
+  },
+
+  retrievePassword(param, cb, errCb) {
+    axios.post(url + '/services/InvestargetApi/user/RetrievePassword', param)
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  createUser(param, cb, errCb) {
+    axios.post(url + 'services/InvestargetApi/user/CreateUser', param)
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  checkMobileOrEmailExist(account, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account)
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
 
 }

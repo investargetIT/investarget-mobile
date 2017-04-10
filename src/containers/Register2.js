@@ -1,10 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { requestContents, receiveCurrentUserInfo, handleError } from '../actions'
+import api from '../api'
+
 import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
-import { Link } from 'react-router-dom'
 import Select from '../components/Select'
 
+
+const REGISTER_BASIC_INFO = 'REGISTER_BASIC_INFO'
 
 var inputStyle = {
   margin: '30px 10px',
@@ -46,31 +52,18 @@ class Register2 extends React.Component {
         name: '',
         company: '',
         title: null, // 职位
-        industry: [],
+        tags: [],
         password: '',
-        industryOptions: [
-          {id: 0, name: '制造业和工业'},
-          {id: 1, name: '新能源'},
-          {id: 2, name: '农业'},
-          {id: 3, name: '互联网移动互联网'},
-          {id: 4, name: '医疗'},
-        ],
-        titleOptions: [
-          {id: 0, name: 'CEO'},
-          {id: 1, name: 'CTO'},
-          {id: 2, name: 'CIO'},
-          {id: 3, name: 'COO'},
-        ],
-        showIndustry: false,
         showTitle: false,
+        showTags: false,
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleSelectTitle = this.handleSelectTitle.bind(this)
     this.showTitleSelect = this.showTitleSelect.bind(this)
-    this.handleSelectIndustry = this.handleSelectIndustry.bind(this)
-    this.showIndustrySelect = this.showIndustrySelect.bind(this)
+    this.handleSelectTags = this.handleSelectTags.bind(this)
+    this.showTagsSelect = this.showTagsSelect.bind(this)
   }
 
   handleInputChange(event) {
@@ -82,9 +75,9 @@ class Register2 extends React.Component {
     })
   }
 
-  showIndustrySelect() {
+  showTagsSelect() {
     this.setState({
-      showIndustry: true
+      showTags: true
     })
   }
 
@@ -94,10 +87,10 @@ class Register2 extends React.Component {
     })
   }
 
-  handleSelectIndustry(ids) {
+  handleSelectTags(ids) {
     this.setState({
-      industry: ids,
-      showIndustry: false
+      tags: ids,
+      showTags: false
     })
   }
 
@@ -111,6 +104,38 @@ class Register2 extends React.Component {
   }
 
   handleSubmit() {
+    var registerBasicInfo = JSON.parse(localStorage.getItem(REGISTER_BASIC_INFO))
+    var param = {
+      'name': this.state.name,
+      'emailAddress': registerBasicInfo.email,
+      'mobile': registerBasicInfo.mobile,
+      'password': this.state.password,
+      'cardBucket': 'image',
+      'cardKey': '',
+      'gender': 0,
+      'company': this.state.company,
+      'titleId': this.state.title,
+      'registerSource': 2,
+      'userType': registerBasicInfo.userType,
+      'userTagses': this.state.tags,
+      'mobileAreaCode': 86,
+      'countryId': 42,
+      'auditStatus': 1,
+    }
+
+    this.props.dispatch(requestContents(''))
+    api.createUser(
+      param,
+      (result) => {
+        // TODO: 注册后，显示审核通知
+        // '账号注册成功，工作人员会尽快审核，审核通过后可以正常使用。'
+        // 等一会儿，跳转到主页
+        localStorage.removeItem('REGISTER_BASIC_INFO')
+        localStorage.removeItem('VERIFICATION_CODE_TOKEN')
+        this.props.history.push('/')
+      },
+      error => this.props.dispatch(handleError(error))
+    )
 
   }
 
@@ -118,28 +143,25 @@ class Register2 extends React.Component {
     var disabled =  this.state.name == '' ||
                     this.state.company == '' ||
                     this.state.title == null ||
-                    this.state.industry.length == 0 ||
+                    this.state.tags.length == 0 ||
                     this.state.password == ''
 
-    var titleText
-    if (this.state.title != null) {
-      var titleOption = this.state.titleOptions.filter(option => {
-        return this.state.title == option.id
-      })[0]
-      titleText = titleOption.name
-    } else {
-      titleText = '请选择职位'
-    }
+    console.log(this.props)
+    var titleOptions = this.props.titles.map(item => {
+      return {id: item.id, name: item.titleName}
+    })
+    var titleText = this.state.title != null
+                    ? titleOptions.filter(option => this.state.title == option.id)[0].name
+                    : '请选择职位'
 
-    var industryText
-    if (this.state.industry.length) {
-      var industryOptions = this.state.industryOptions.filter(option => {
-        return this.state.industry.indexOf(option.id) > -1
-      })
-      industryText = industryOptions.map(option => option.name).join('，')
-    } else {
-      industryText = '请选择关注的行业'
-    }
+    var tagsOptions = this.props.tags.map(item => {
+      return {id: item.id, name: item.tagName}
+    })
+    var tagsText = this.state.tags.length
+                        ? tagsOptions.filter(option => this.state.tags.indexOf(option.id) > -1)
+                                         .map(option => option.name)
+                                         .join('，')
+                        : '请选择关注的行业'
 
     var content =
       <div>
@@ -153,20 +175,18 @@ class Register2 extends React.Component {
         </div>
 
         <div style = {selectStyle}>
-            {/*点击选择职位*/}
             <div style = { this.state.title != null ? selectTextStyle : unselectTextStyle } onClick={this.showTitleSelect} >{ titleText || '请选择职位' }</div>
 
             <div style={{ display: this.state.showTitle ? 'block' : 'none' }}>
-              <Select title="请选择职位" multiple={false} options={this.state.titleOptions} onConfirm={this.handleSelectTitle} />
+              <Select title="请选择职位" multiple={false} options={titleOptions} onConfirm={this.handleSelectTitle} />
             </div>
         </div>
 
         <div style = {selectStyle}>
-            {/*点击选择关注的行业*/}
-            <div style = { this.state.industry.length ? selectTextStyle : unselectTextStyle } onClick={this.showIndustrySelect} >{ industryText || '请选择关注的行业' }</div>
+            <div style = { this.state.tags.length ? selectTextStyle : unselectTextStyle } onClick={this.showTagsSelect} >{ tagsText || '请选择关注的行业' }</div>
 
-            <div style={{ display: this.state.showIndustry ? 'block' : 'none' }}>
-              <Select title="请选择关注的行业" multiple={true} options={this.state.industryOptions} onConfirm={this.handleSelectIndustry} />
+            <div style={{ display: this.state.showTags ? 'block' : 'none' }}>
+              <Select title="请选择关注的行业" multiple={true} options={tagsOptions} onConfirm={this.handleSelectTags} />
             </div>
         </div>
 
@@ -185,4 +205,10 @@ class Register2 extends React.Component {
 
 }
 
-export default Register2
+function mapStateToProps(state) {
+  const tags = state.tags
+  const titles = state.titles
+  return {tags, titles}
+}
+
+export default connect(mapStateToProps)(Register2)
