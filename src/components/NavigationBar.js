@@ -40,7 +40,7 @@ const NavigationBar = (props) => {
 
       <div style={containerStyle}>
         <img style={backIconStyle} src="/images/login/backButton@3x.png" alt="Back" onClick={props.backIconClicked} />
-        <p style={titleStyle}>{props.title}</p>
+        <div style={titleStyle}>{props.title}</div>
       </div>
 
     </div>

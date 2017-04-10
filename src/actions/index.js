@@ -111,8 +111,11 @@ export function receiveTags(tags) {
   }
 }
 
-export function searchProject() {
-  return { type: SEARCH_PROJECT }
+export function searchProject(title) {
+  return { 
+    type: SEARCH_PROJECT,
+    title
+  }
 }
 
 export function clearFilter() {

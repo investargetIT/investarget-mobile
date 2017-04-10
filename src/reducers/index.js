@@ -126,7 +126,10 @@ export default function (state = initialState, action) {
       })
     case SEARCH_PROJECT:
       return Object.assign({}, state, {
-        trueFilter: state.filter,
+        trueFilter: state.filter.concat({
+          type: 'title',
+          title: action.title
+        }),
         needRefresh: true
       })
     case CLEAR_FILTER:
@@ -134,8 +137,10 @@ export default function (state = initialState, action) {
         filter: []
       })
     case CLONE_TRUE_FILTER:
+      var filter = state.trueFilter.filter(item => item.type !== 'title')
       return Object.assign({}, state, {
-        filter: state.trueFilter
+        trueFilter: filter,
+        filter: filter
       })
     default:
       return state
