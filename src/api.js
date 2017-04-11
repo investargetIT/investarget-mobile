@@ -407,4 +407,17 @@ export default {
     .catch(error => errCb(error))
   },
 
+  getUserMessages(cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      cb(response.data.result)
+    })
+    .catch(error => errCb(error))
+  }
+
 }

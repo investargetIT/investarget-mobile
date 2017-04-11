@@ -90,7 +90,7 @@ class User extends Component {
             </Link>
 
             <Link to="/notification">
-              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="通知消息" />
+              <LeftIconRightLabel icon="images/notifyMessage@2x.png" label="通知消息" />
             </Link>
 
             <Link to="/my_tag">
