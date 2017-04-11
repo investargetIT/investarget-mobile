@@ -24,6 +24,16 @@ function getToken() {
   return token
 }
 
+function getCurrentUserId() {
+  var id
+  var userInfoStr = localStorage.getItem('userInfo')
+  if (userInfoStr) {
+    const userInfo = JSON.parse(userInfoStr)
+    id = userInfo.id
+  }
+  return id
+}
+
 export default {
   
   getProjects(params, cb, errCb, skipCount = 0) {
@@ -380,6 +390,19 @@ export default {
       } else {
         throw new ApiError(response.data.error)
       }
+    })
+    .catch(error => errCb(error))
+  },
+
+  getUsers(cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/user/GetUsers?input.lang=cn&input.partnerId=' + getCurrentUserId(), {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      cb(response.data.result)
     })
     .catch(error => errCb(error))
   },
