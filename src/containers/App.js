@@ -8,15 +8,6 @@ import AlloyTouch from 'alloytouch'
 import { Link } from 'react-router-dom'
 import api from '../api.js'
 
-var loadmoreStyle = {
-  height: '50px',
-  lineHeight: '50px',
-  textAlign: 'center',
-  display: 'block',
-  transformOrigin: '0px 0px 0px',
-  opacity: 1,
-  transform: 'scale(1, 1)'
-}
 
 const loadingStyle = {
   width: '20px'
@@ -52,12 +43,23 @@ const headerActionDoStyle = {
 
 class App extends Component {
 
+  constructor(props) {
+    super(props)
+
+    this.state = { isLoadingMore: false }
+  }
+
   componentDidMount() {
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
       api.getProjects(
         filterToParams(this.props.filter),
-        projects => this.props.dispatch(receiveContents('', projects)),
+        projects => {
+          this.props.dispatch(receiveContents('', projects))
+          if (projects.length === 0) {
+            this.props.dispatch(handleError(new Error('No More Projects')))
+          }
+        },
         error => this.props.dispatch(handleError(error))
       )
     }
@@ -108,7 +110,9 @@ class App extends Component {
       },
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
-        this.props.history.push('/project/' + projectID);
+        if (projectID) {
+          this.props.history.push('/project/' + projectID);
+        }
       }
     })
     
@@ -117,11 +121,12 @@ class App extends Component {
     }
 
     function loadMore() {
-
+      react.setState({ isLoadingMore: true })
       api.getProjects(
         filterToParams(react.props.filter),
         projects => {
           loading = false
+          react.setState({ isLoadingMore: false })
           resetMin()
           if (projects.length > 0) {
             react.props.dispatch(appendProjects(projects))
@@ -184,6 +189,16 @@ class App extends Component {
       )
     }, this)
 
+var loadmoreStyle = {
+  height: '50px',
+  lineHeight: '50px',
+  textAlign: 'center',
+  transformOrigin: '0px 0px 0px',
+  opacity: 1,
+  transform: 'scale(1, 1)'
+}
+
+  loadmoreStyle.visibility = this.state.isLoadingMore ? 'visible' : 'hidden'
     return (
       <div>
 
