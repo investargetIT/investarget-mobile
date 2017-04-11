@@ -26,6 +26,10 @@ import EditTimeline from './containers/EditTimeline'
 import RetrievePassword from './containers/RetrievePassword'
 import Agreement from './containers/Agreement'
 import SetPassword from './containers/SetPassword'
+import MyInvestor from './containers/MyInvestor'
+import Notification from './containers/Notification'
+import MyTag from './containers/MyTag'
+import MyFavoriteProject from './containers/MyFavoriteProject'
 
 const Routes = (props) => {
 
@@ -80,6 +84,10 @@ const Routes = (props) => {
         <Route path="/edit_timeline" component={EditTimeline} />
         <Route path="/retrieve_password" component={RetrievePassword} />
         <Route path="/set_password" component={SetPassword} />
+        <Route path="/my_investor" component={MyInvestor} />
+        <Route path="/notification" component={Notification} />
+        <Route path="/my_tag" component={MyTag} />
+        <Route path="/my_favorite_project" component={MyFavoriteProject} />
 
       </div>
     </Router>

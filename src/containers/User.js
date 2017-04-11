@@ -84,11 +84,27 @@ class User extends Component {
 
         <div style={settingContainerStyle}>
           <ul>
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="关注的标签" />
-            <Link to="timeline_management">
+
+            <Link to="/my_investor">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的投资人" />
+            </Link>
+
+            <Link to="/notification">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="通知消息" />
+            </Link>
+
+            <Link to="/my_tag">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="关注的标签" />
+            </Link>
+
+            <Link to="/timeline_management">
               <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
             </Link>
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
+
+            <Link to="/my_favorite_project">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
+            </Link>
+            
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />      <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
