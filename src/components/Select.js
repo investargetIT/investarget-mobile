@@ -2,16 +2,11 @@ import React from 'react'
 import Button from './Button'
 
 var containerStyle = {
-    position: 'fixed',
-    left: '0',
-    bottom: '0',
-    zIndex: '1',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
-    height: '50%',
+    height: '100%',
     backgroundColor: '#fff',
 }
 

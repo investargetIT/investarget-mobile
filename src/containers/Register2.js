@@ -44,6 +44,15 @@ var unselectTextStyle = {
 }
 
 
+const tagContainerStyle = {
+  position: 'fixed',
+  left: '0',
+  bottom: '0',
+  width: '100%',
+  height: '50%',
+  zIndex: '1',
+}
+
 class Register2 extends React.Component {
   constructor(props) {
     super(props)
@@ -179,7 +188,9 @@ class Register2 extends React.Component {
             <div style = { this.state.title != null ? selectTextStyle : unselectTextStyle } onClick={this.showTitleSelect} >{ titleText || '请选择职位' }</div>
 
             <div style={{ display: this.state.showTitle ? 'block' : 'none' }}>
-              <Select title="请选择职位" multiple={false} options={titleOptions} onConfirm={this.handleSelectTitle} />
+              <div style={tagContainerStyle}>
+                <Select title="请选择职位" multiple={false} options={titleOptions} onConfirm={this.handleSelectTitle} />
+              </div>
             </div>
         </div>
 
@@ -187,7 +198,9 @@ class Register2 extends React.Component {
             <div style = { this.state.tags.length ? selectTextStyle : unselectTextStyle } onClick={this.showTagsSelect} >{ tagsText || '请选择关注的行业' }</div>
 
             <div style={{ display: this.state.showTags ? 'block' : 'none' }}>
-              <Select title="请选择关注的行业" multiple={true} options={tagsOptions} onConfirm={this.handleSelectTags} />
+              <div style={tagContainerStyle}>
+                <Select title="请选择关注的行业" multiple={true} options={tagsOptions} onConfirm={this.handleSelectTags} />
+              </div>
             </div>
         </div>
 
