@@ -30,6 +30,9 @@ import MyInvestor from './containers/MyInvestor'
 import Notification from './containers/Notification'
 import MyTag from './containers/MyTag'
 import MyFavoriteProject from './containers/MyFavoriteProject'
+import ModifyPassword from './containers/ModifyPassword'
+import ModifyBusinessCard from './containers/ModifyBusinessCard'
+import Contact from './containers/Contact'
 
 const Routes = (props) => {
 
@@ -88,6 +91,9 @@ const Routes = (props) => {
         <Route path="/notification" component={Notification} />
         <Route path="/my_tag" component={MyTag} />
         <Route path="/my_favorite_project" component={MyFavoriteProject} />
+        <Route path="/modify_password" component={ModifyPassword} />
+        <Route path="/modify_business_card" component={ModifyBusinessCard} />
+        <Route path="/contact" component={Contact} />
 
       </div>
     </Router>

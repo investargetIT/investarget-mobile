@@ -105,10 +105,22 @@ class User extends Component {
               <LeftIconRightLabel icon="images/userCenter/ht-usercenter-3@2x.png" label="收藏的项目" />
             </Link>
             
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />      <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
+            <Link to="/modify_password">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-5@2x.png" label="修改密码" />
+            </Link>
+
+            <Link to="/modify_business_card">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
+            </Link>
+
+            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />
+            
+            <Link to="/contact">
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
+            </Link>
+
             <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="退出登录" onClick={this.handleClick} />
+
           </ul>
         </div>
 

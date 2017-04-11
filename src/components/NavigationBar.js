@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 
 const containerStyle = {
   position: 'fixed',
@@ -39,7 +40,7 @@ const NavigationBar = (props) => {
       <div style={navigationBarPlaceholderStyle}></div>
 
       <div style={containerStyle}>
-        <img style={backIconStyle} src="/images/login/backButton@3x.png" alt="Back" onClick={props.backIconClicked} />
+        <img style={backIconStyle} src="/images/login/backButton@3x.png" alt="Back" onClick={props.history.goBack} />
         <div style={titleStyle}>{props.title}</div>
       </div>
 
@@ -47,4 +48,4 @@ const NavigationBar = (props) => {
   )
 }
 
-export default NavigationBar
+export default withRouter(NavigationBar)
