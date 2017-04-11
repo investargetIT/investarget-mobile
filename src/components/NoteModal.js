@@ -116,7 +116,7 @@ class Modal extends React.Component {
                     <div style={modalStyle}>
                         <div style={headStyle}>
                             <div style={titleStyle}>备注信息</div>
-                            <img style={closeStyle} src="images/closeView@2x.png" onClick={this.handleClose}></img>
+                            <img style={closeStyle} src="/images/closeView@2x.png" onClick={this.handleClose}></img>
                         </div>
                         <div style={bodyStyle}>
                             <textarea style={textareaStyle} placeholder="新备注" value={this.state.note} onChange={this.handleInputChange}></textarea>

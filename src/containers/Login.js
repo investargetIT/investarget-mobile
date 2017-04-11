@@ -99,18 +99,18 @@ class Login extends React.Component {
 
     var showPassword = 
       <div style={showPasswordStyle} onClick={this.togglePassword}>
-        <img src={ this.state.showPassword ? "images/login/eyeOpen@2x.png" : "images/login/eyeClose@2x.png"} style={showPasswordIconStyle} alt="" />
+        <img src={ this.state.showPassword ? "/images/login/eyeOpen@2x.png" : "/images/login/eyeClose@2x.png"} style={showPasswordIconStyle} alt="" />
       </div>
     
     var content = (
       <div>
 
         <div style={usernameInputStyle}>
-          <TextInput iconUrl="images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
+          <TextInput iconUrl="/images/login/User-copy@2x.png" iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
         </div>
 
         <div style={passwordInputStyle}>
-          <TextInput iconUrl="images/login/Locked@2x.png" iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
+          <TextInput iconUrl="/images/login/Locked@2x.png" iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
         <div style={loginButtonStyle}>

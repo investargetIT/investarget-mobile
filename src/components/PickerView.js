@@ -169,8 +169,8 @@ class PickerView extends React.Component {
             <div style={this.props.show ? containerStyle : hiddenStyle}>
                 <div style={titleStyle}>
                     {this.props.title}
-                    <img style={cancelIconStyle} src="images/x@2x.png" onClick={this.cancel}></img>
-                    <img style={confirmIconStyle} src="images/v@2x.png" onClick={this.confirm}></img>
+                    <img style={cancelIconStyle} src="/images/x@2x.png" onClick={this.cancel}></img>
+                    <img style={confirmIconStyle} src="/images/v@2x.png" onClick={this.confirm}></img>
                 </div>
                 <div style={scrollStyle} ref="container">
                     <div style={maskStyle}></div>
