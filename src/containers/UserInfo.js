@@ -1,11 +1,13 @@
 import React from 'react'
 import NavigationBar from '../components/NavigationBar'
-
+import api from '../api'
+import { requestContents, hideLoading, handleError } from '../actions'
+import { connect } from 'react-redux'
 
 var containerStyle = {}
 var backgroundStyle  = {
     height: '180px',
-    backgroundImage: 'url(images/userInfoBG@2x.png)',
+    backgroundImage: 'url(/images/userInfoBG@2x.png)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
@@ -52,27 +54,44 @@ var rowStyle = {
 class UserInfo extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            user: {}
+        }
+    }
+
+    componentDidMount() {
+        var userId = this.props.match.params.id
+        this.props.dispatch(requestContents(''))
+        api.getUserBasic(userId, 
+            user => {
+                this.setState({'user': user})
+                this.props.dispatch(hideLoading())
+            },
+            error => this.props.dispatch(handleError(error))
+        )
     }
 
     render() {
+        var user = this.state.user;
         return (
             <div style={containerStyle}>
                 <NavigationBar title="个人信息" backIconClicked={this.props.history.goBack} />
                 <div style={backgroundStyle}>
                     <div style={headStyle}>
-                        <img style={imageStyle} src="/images/userCenter/defaultAvatar@2x.png"></img>
+                        <img style={imageStyle} src={user.photoUrl || '/images/userCenter/defaultAvatar@2x.png'}></img>
                     </div>
                     <div style={nameWrapStyle}>
-                        <span style={nameStyle}>junke</span>
+                        <span style={nameStyle}>{user.name}</span>
                     </div>
                 </div>
                 <div style={infoStyle}>
                     <h3 style={titleStyle}>个人信息</h3>
                     <div style={detailStyle}>
-                        <div style={rowStyle}>公司：海拓</div>
-                        <div style={rowStyle}>职位：首席运营官</div>
-                        <div style={rowStyle}>手机号码：<a href="tel:18637760716">18637760716</a></div>
-                        <div style={rowStyle}>电子邮箱：<a href="mailto:wjk1397@126.com">wjk1397@126.com</a></div>
+                        <div style={rowStyle}>公司：{user.company}</div>
+                        <div style={rowStyle}>职位：{user.title && user.title.titleName}</div>
+                        <div style={rowStyle}>手机号码：<a href="tel:18637760716">{user.mobile}</a></div>
+                        <div style={rowStyle}>电子邮箱：<a href="mailto:wjk1397@126.com">{user.emailAddress}</a></div>
                     </div>
                 </div>
             </div>
@@ -80,4 +99,4 @@ class UserInfo extends React.Component {
     }
 }
 
-export default UserInfo
+export default connect()(UserInfo)
