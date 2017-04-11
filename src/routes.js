@@ -33,6 +33,7 @@ import MyFavoriteProject from './containers/MyFavoriteProject'
 import ModifyPassword from './containers/ModifyPassword'
 import ModifyBusinessCard from './containers/ModifyBusinessCard'
 import Contact from './containers/Contact'
+import OrganizationDetail from './containers/OrganizationDetail'
 
 const Routes = (props) => {
 
@@ -94,6 +95,7 @@ const Routes = (props) => {
         <Route path="/modify_password" component={ModifyPassword} />
         <Route path="/modify_business_card" component={ModifyBusinessCard} />
         <Route path="/contact" component={Contact} />
+        <Route path="/organization/:id" component={OrganizationDetail} />
 
       </div>
     </Router>
