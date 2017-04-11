@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { requestContents, receiveCurrentUserInfo, handleError } from '../actions'
+import { requestContents, receiveCurrentUserInfo, handleError, hideLoading } from '../actions'
 import api from '../api'
 
 import FormContainer from './FormContainer'
@@ -130,6 +130,7 @@ class Register2 extends React.Component {
         // TODO: 注册后，显示审核通知
         // '账号注册成功，工作人员会尽快审核，审核通过后可以正常使用。'
         // 等一会儿，跳转到主页
+        this.props.dispatch(hideLoading())
         localStorage.removeItem('REGISTER_BASIC_INFO')
         localStorage.removeItem('VERIFICATION_CODE_TOKEN')
         this.props.history.push('/')
