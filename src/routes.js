@@ -18,7 +18,7 @@ import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountrie
 import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
-import TimelineManagement from './components/TimelineManagement'
+import TimelineManagement from './containers/TimelineManagement'
 import ChatInvestor from './containers/ChatInvestor'
 import ChatTrader from './containers/ChatTrader'
 import UserInfo from './containers/UserInfo'
@@ -84,8 +84,8 @@ const Routes = (props) => {
         <Route path="/timeline_management" component={TimelineManagement} />
         <Route path="/chat_investor" component={ChatInvestor} />
         <Route path="/chat_trader" component={ChatTrader} />
-        <Route path="/user_info" component={UserInfo} />
-        <Route path="/edit_timeline" component={EditTimeline} />
+        <Route path="/user_info/:id" component={UserInfo} />
+        <Route path="/edit_timeline/:id" component={EditTimeline} />
         <Route path="/retrieve_password" component={RetrievePassword} />
         <Route path="/set_password" component={SetPassword} />
         <Route path="/my_investor" component={MyInvestor} />

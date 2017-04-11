@@ -277,4 +277,111 @@ export default {
     .catch(error => errCb(error))
   },
 
+  getSingleOrganization(id, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  getAllTimeLines(param, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
+      params: param,
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  getUserBasic(id, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/user/GetUserBasic', {
+      params: {
+        'input.lang': 'cn',
+        'input.id': id
+      },
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  getTimeLine(id, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetTimeLine', {
+      params: { 'input.timeLineId': id },
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  getTimeLineRemarks(id, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + id, {
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  createTimeLineRemark(param, cb, errCb) {
+    axios.post(url + 'services/InvestargetApi/projectTimeLine/CreateTimeLineRemark',
+      param,
+      {
+        headers: {'Authorization': 'Bearer ' + getToken()
+      }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
+  deleteTimeLineRemark(id, cb, errCb) {
+    axios.delete(url + 'services/InvestargetApi/projectTimeLine/deleteTimeLineRemark?id=' + id, {
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
 }
