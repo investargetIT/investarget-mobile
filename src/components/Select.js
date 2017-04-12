@@ -84,7 +84,7 @@ class Select extends React.Component {
         super(props)
 
         this.state = {
-            selected: [],
+            selected: props.selected ? props.selected : [],
         }
 
         if (props.multiple) {

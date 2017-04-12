@@ -16,6 +16,7 @@ export const RECEIVE_TAGS = 'RECEIVE_TAGS'
 export const SEARCH_PROJECT = 'SEARCH_PROJECT'
 export const CLEAR_FILTER = 'CLEAR_FILTER'
 export const CLONE_TRUE_FILTER = 'CLONE_TRUE_FILTER'
+export const MODIFY_USER_INFO = 'MODIFY_USER_INFO'
 
 export function requestContents(param) {
   return {
@@ -133,4 +134,11 @@ export function clearFilter() {
 
 export function cloneTrueFilter() {
   return { type: CLONE_TRUE_FILTER }
+}
+
+export function modifyUserInfo(userInfo) {
+  return {
+    type: MODIFY_USER_INFO,
+    userInfo
+  }
 }

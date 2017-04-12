@@ -418,6 +418,19 @@ export default {
       cb(response.data.result)
     })
     .catch(error => errCb(error))
-  }
+  },
+
+  modifyUser(param, cb, errCb) {
+    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param, {
+      headers: {'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      cb()
+    })
+    .catch(error => errCb(error))
+  },
 
 }

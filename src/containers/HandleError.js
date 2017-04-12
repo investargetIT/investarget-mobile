@@ -59,6 +59,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '验证失败，请重新登录'
           break
+        case 'update success':
+          showError = true
+          errMsg = '修改成功'
+          break
         default:
           console.error(error)
       }

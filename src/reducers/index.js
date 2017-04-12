@@ -16,7 +16,8 @@ import {
   RECEIVE_TITLES,
   SEARCH_PROJECT,
   CLEAR_FILTER,
-  CLONE_TRUE_FILTER
+  CLONE_TRUE_FILTER,
+  MODIFY_USER_INFO
 } from '../actions'
 
 const initialState = {
@@ -147,6 +148,11 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         trueFilter: filter,
         filter: filter
+      })
+    case MODIFY_USER_INFO:
+      localStorage.setItem('userInfo', JSON.stringify(action.userInfo))
+      return Object.assign({}, state, {
+        userInfo: action.userInfo
       })
     default:
       return state
