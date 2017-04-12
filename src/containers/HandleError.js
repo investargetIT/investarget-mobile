@@ -63,6 +63,14 @@ class HandleError extends Component {
           showError = true
           errMsg = '修改成功'
           break
+        case 'password not the same':
+          showError = true
+          errMsg = '两次输入的密码不一致'
+          break
+        case 'same password':
+          showError = true
+          errMsg = '新旧密码不能相同'
+          break
         default:
           console.error(error)
       }
@@ -82,6 +90,9 @@ class HandleError extends Component {
           showError = true
           errMsg = '验证码错误'
           break
+        case 200:
+          showError = true
+          errMsg = '旧密码错误'
         default:
           console.error(error)
       }

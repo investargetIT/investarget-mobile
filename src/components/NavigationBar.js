@@ -33,15 +33,33 @@ const navigationBarPlaceholderStyle = {
     backgroundColor: '#303133'
 }
 
+const buttonStyle = {
+  position: 'absolute',
+  top: '0px',
+  right: '18px',
+  fontSize: '18px',
+  color: 'white',
+  background: 'transparent',
+  border: 'none',
+  fontWeight: 'bold',
+  lineHeight: '48px'
+}
+
 const NavigationBar = (props) => {
+
   return (
     <div>
 
       <div style={navigationBarPlaceholderStyle}></div>
 
       <div style={containerStyle}>
+
         <img style={backIconStyle} src="/images/login/backButton@3x.png" alt="Back" onClick={props.history.goBack} />
+
         <div style={titleStyle}>{props.title}</div>
+
+       {props.action ? <button style={buttonStyle} onClick={props.onActionButtonClicked}>{props.action}</button> : null}
+
       </div>
 
     </div>

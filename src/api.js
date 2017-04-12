@@ -478,6 +478,29 @@ export default {
 
     })
     .catch(error => errCb(error))
-  }
+  },
+
+  modifyPassword(old, newP, cb, errCb) {
+  
+    const param = {
+      userId: getCurrentUserId(),
+      oldPassword: old,
+      newPassword: newP
+    }
+
+    axios.post(
+      url + 'services/InvestargetApi/user/ModifyPassword',
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError({code: 200})
+      }
+    })
+    .catch(error => errCb(error))
+  },
 
 }
