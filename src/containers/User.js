@@ -113,8 +113,6 @@ class User extends Component {
               <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
             </Link>
 
-            <LeftIconRightLabel icon="images/userCenter/ht-usercenter-7@2x.png" label="清除缓存" />
-            
             <Link to="/contact">
               <LeftIconRightLabel icon="images/userCenter/ht-usercenter-8@2x.png" label="联系我们" />
             </Link>

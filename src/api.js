@@ -437,4 +437,47 @@ export default {
     .catch(error => errCb(error))
   },
 
+
+  /**
+   * input.ftypes 类型说明
+   * 
+   * 系统算法推荐 = 0,       推荐给自己的，其他几种都显示投资人的
+   * 合伙人推荐 = 1,
+   * 后台人员推荐 = 2,       推荐给自己的，其他几种都显示投资人的
+   * 主动收藏 = 3,
+   * 有兴趣 = 4
+   */
+  getFavoriteProjects(cb, errCb) {
+    axios.get(
+      url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+
+      const all = response.data.result.items.map(item =>
+        axios.get(
+          url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + item.projectId,
+          { headers: { 'Authorization': 'Bearer ' + getToken() } }
+        )
+      )
+
+      return Promise.all(all)
+    })
+    .then(values => {
+      const favoriteProjects = values.map(item => {
+        if (!item.data.success) {
+          throw new ApiError(item.data.error)
+        }
+        return item.data.result
+      })
+
+      cb(favoriteProjects)
+
+    })
+    .catch(error => errCb(error))
+  }
+
 }
