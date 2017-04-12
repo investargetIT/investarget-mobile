@@ -70,7 +70,7 @@ class HandleError extends Component {
 
     function handleApiError(error) {
       switch (error.code) {
-        case 0:
+        case 120:
           showError = true
           errMsg = '用户名或密码错误'
           break

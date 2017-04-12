@@ -68,7 +68,11 @@ export default {
         throw new ApiError({code: 100, message: response.data.result.msg})
       } else {
         // Login failed
-        throw new ApiError(response.data.error)
+        throw new ApiError({
+          code: 120, 
+          message: response.data.error.message, 
+          details: response.data.error.detail
+        })
       }
     })
     .then(response => {
