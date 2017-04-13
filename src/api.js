@@ -552,4 +552,44 @@ export default {
     .catch(error => console.error(error))
   },
 
+  getFavoriteProjectId(cb, errCb) {
+    return new Promise((resolve, reject) => {
+      axios.get(
+        url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
+        { headers: { 'Authorization': 'Bearer ' + getToken() } }
+      )
+      .then(response => {
+        if (!response.data.success) {
+          throw new ApiError(response.data.error)
+        }
+        const idArr = response.data.result.items.map(item => item.projectId)
+        cb(idArr)
+        resolve(idArr)
+      })
+      .catch(error => {
+        errCb(error)
+        reject(error)
+      })
+    })
+  },
+
+  favoriteProject(id) {
+    const param = {
+      userId: getCurrentUserId(),
+      projectId: id,
+      fType: 3
+    }
+    axios.post(
+      url + 'services/InvestargetApi/project/ProjectFavorite',
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => console.error(error))
+  },
+
 }

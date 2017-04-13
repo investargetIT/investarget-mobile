@@ -79,12 +79,50 @@ var highlightContentStyle = {
     paddingLeft: '8px',
 }
 
+const actionContainerStyle = {
+  position: 'fixed',
+  height: '40px',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  display: 'flex'
+}
+
+const actionStyle = {
+  flex: 1,
+  backgroundColor: '#10458F',
+  border: 'none',
+  color: 'white',
+  fontSize: '15px'
+}
+
+const actionFavoriteContinerStyle = {
+  position: 'absolute',
+  bottom: '10px',
+  left: '0px',
+  right: '0px',
+  textAlign: 'center'
+}
+
+const favoriteIconStyle = {
+    width: '40px'
+}
+
+const actionPlaceHolderStyle = {
+    height: '40px',
+    backgroundColor: '#303133'
+}
 
 class ProjectDetail extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = { "result": null }
+        this.state = { 
+            "result": null,
+            "isMyFavoriteProject": false
+        }
+
+        this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
     }
 
     componentDidMount() {
@@ -104,7 +142,24 @@ class ProjectDetail extends React.Component {
         )},
         error => this.props.dispatch(handleError(error))
       )
+
+      api.getFavoriteProjectId(
+        projectId => this.setState({
+          isMyFavoriteProject: projectId.includes(parseInt(this.props.match.params.id, 10))
+        }),
+        error => this.props.dispatch(handleError(error))
+      )
       
+    }
+
+    handleFavoriteButtonToggle() {
+      this.state.isMyFavoriteProject ?
+        api.projectCancelFavorite(this.props.match.params.id) :
+        api.favoriteProject(this.props.match.params.id)
+        
+      this.setState({
+        isMyFavoriteProject: !this.state.isMyFavoriteProject
+      })
     }
 
     render() {
@@ -241,6 +296,20 @@ class ProjectDetail extends React.Component {
                     <h4 style={dataTitleStyle}>项目亮点</h4>
                     {hightlightItems}
                 </div>
+
+                <div style={actionPlaceHolderStyle}></div>
+                <div style={actionContainerStyle}>
+                    <button name="reset" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
+                    <button name="search" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
+                    <div style={actionFavoriteContinerStyle}>
+                        <img
+                            style={favoriteIconStyle}
+                            src={this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png"}
+                            onClick={this.handleFavoriteButtonToggle}
+                        />
+                    </div>
+                </div>
+
             </div>
         )
     }
