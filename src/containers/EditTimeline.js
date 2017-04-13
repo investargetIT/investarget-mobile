@@ -38,13 +38,13 @@ var openModalStyle = {
     color: '#4293ce',
 }
 
-var notesStyle = {
+var remarksStyle = {
     width: '100%',
 }
-var noteWrapStyle = {
+var remarkWrapStyle = {
     marginBottom: '2px',
 }
-var noteStyle = {
+var remarkStyle = {
     padding: '8px 17px',
     height: '60px',
     backgroundColor: '#f8f9fc',
@@ -83,24 +83,22 @@ class EditTimeline extends React.Component {
             timeLineId: null,
             timeLine: {
                 alertCycle: 7,
-                transactionStatusId: 1,
+                transactionStatusId: 0,
             },
-            notes: [],
+            remarks: [],
             showModal: false,
             showPickerView: false,
-            // {id: 0, content: '下午开产品会', time: '2017-04-06 16:00'},
-            // {id: 1, content: '下午开产品会', time: '2017-04-06 16:00'},
-            // {id: 2, content: '下午开产品会', time: '2017-04-06 16:00'},
         }
 
         this.openModal = this.openModal.bind(this)
         this.closeModal = this.closeModal.bind(this)
-        this.addNote = this.addNote.bind(this)
+        this.addRemark = this.addRemark.bind(this)
         
         this.openPicker = this.openPicker.bind(this)
         this.closePicker = this.closePicker.bind(this)
         this.pickStage = this.pickStage.bind(this)
         this.handleAlertCycleChange = this.handleAlertCycleChange.bind(this)
+        this.changeTimeLine = this.changeTimeLine.bind(this)
     }
 
     openModal(event) {
@@ -115,7 +113,7 @@ class EditTimeline extends React.Component {
         })
     }
 
-    addNote(content) {
+    addRemark(content) {
         api.createTimeLineRemark(
             {
                 timeLineId: this.state.timeLineId,
@@ -126,7 +124,7 @@ class EditTimeline extends React.Component {
                 api.getTimeLineRemarks(
                     this.state.timeLineId,
                     remarks => {
-                        this.setState({ notes: remarks })
+                        this.setState({ remarks: remarks })
                     },
                     error => this.props.dispatch(handleError(error))
                 )
@@ -135,12 +133,12 @@ class EditTimeline extends React.Component {
         )
     }
 
-    removeNote(id) {
-        var notes = this.state.notes.slice()
-        var index = notes.findIndex(note => note.id == id)
+    removeRemark(id) {
+        var remarks = this.state.remarks.slice()
+        var index = remarks.findIndex(remark => remark.id == id)
         if (index > -1) {
-            notes.splice(index, 1)
-            this.setState({ notes: notes })
+            remarks.splice(index, 1)
+            this.setState({ remarks: remarks })
         }
 
         api.deleteTimeLineRemark(
@@ -184,7 +182,7 @@ class EditTimeline extends React.Component {
 
 
     componentDidMount() {
-        var timeLineId = this.props.match.params.id
+        var timeLineId = parseInt(this.props.match.params.id)
         this.setState({ timeLineId: timeLineId })
         this.props.dispatch(requestContents(''))
         api.getTimeLine(
@@ -198,9 +196,22 @@ class EditTimeline extends React.Component {
         api.getTimeLineRemarks(
             timeLineId,
             remarks => {
-                this.setState({ 'notes': remarks})
+                this.setState({ 'remarks': remarks})
                 this.props.dispatch(hideLoading())
             },
+            error => this.props.dispatch(handleError(error))
+        )
+    }
+
+    changeTimeLine() {
+        var param = {
+            timeLineId: this.state.timeLineId,
+            transactionStatus: this.state.timeLine.transactionStatusId,
+            alertCycle: this.state.timeLine.alertCycle
+        }
+        api.changeTimeLine(
+            param,
+            () => {},
             error => this.props.dispatch(handleError(error))
         )
     }
@@ -227,7 +238,7 @@ class EditTimeline extends React.Component {
 
         return (
             <div style={containerStyle}>
-                <NavigationBar title="编辑进程" backIconClicked={this.props.history.goBack} />
+                <NavigationBar title="编辑进程" backIconClicked={this.props.history.goBack} action="提交" onActionButtonClicked={this.changeTimeLine} />
                 <div style={wrapStyle}>
                     <div style={rowStyle}>
                         <div style={colLeftStyle}>当前状态</div>
@@ -251,15 +262,15 @@ class EditTimeline extends React.Component {
                     </div>
                 </div>
 
-                <div style={notesStyle}>
+                <div style={remarksStyle}>
                     {
-                        this.state.notes.map(note => {
+                        this.state.remarks.map(remark => {
                             return (
-                                <div style={noteWrapStyle} key={note.id}>
-                                    <SwipeCell delete={this.removeNote.bind(this, note.id)}>
-                                        <div style={noteStyle}>
-                                            <p style={contentStyle}>{note.remark}</p>
-                                            <p style={timeStyle}>{note.creationTime.split('T')[0]}</p>
+                                <div style={remarkWrapStyle} key={remark.id}>
+                                    <SwipeCell delete={this.removeRemark.bind(this, remark.id)}>
+                                        <div style={remarkStyle}>
+                                            <p style={contentStyle}>{remark.remark}</p>
+                                            <p style={timeStyle}>{remark.creationTime.split('T')[0]}</p>
                                         </div>
                                     </SwipeCell>
                                 </div>
@@ -268,7 +279,7 @@ class EditTimeline extends React.Component {
                     }
                 </div>
 
-                <NoteModal show={this.state.showModal} onClose={this.closeModal} onSave={this.addNote}></NoteModal>
+                <NoteModal show={this.state.showModal} onClose={this.closeModal} onSave={this.addRemark}></NoteModal>
 
                 <div style={pickerViewWrapStyle}>
                     <PickerView show={this.state.showPickerView} title="项目进度" options={stages} value={timeLine.transactionStatusId} onConfirm={this.pickStage} onCancel={this.closePicker}></PickerView>

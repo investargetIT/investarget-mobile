@@ -503,4 +503,19 @@ export default {
     .catch(error => errCb(error))
   },
 
+  changeTimeLine(param, cb, errCb) {
+    axios.post(url + 'services/InvestargetApi/projectTimeLine/ChangeTimeLine',
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
 }
