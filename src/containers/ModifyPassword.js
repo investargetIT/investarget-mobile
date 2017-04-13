@@ -3,28 +3,11 @@ import NavigationBar from '../components/NavigationBar'
 import api from '../api'
 import { connect } from 'react-redux'
 import { requestContents, handleError, hideLoading } from '../actions'
+import LeftLabelRightContent from '../components/LeftLabelRightContent'
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
   minHeight: window.innerHeight - 48 + 'px'
-}
-
-const itemContainerStyle = {
-  backgroundColor: 'white',
-  marginBottom: '1px'
-}
-
-const labelContainerStyle = {
-  float: 'left',
-  width: '30%',
-  lineHeight: '42px',
-  fontSize: '16px',
-  paddingLeft: '20px'
-}
-
-const inputContainerStyle = {
-  lineHeight: '42px',
-  marginLeft: '30%'
 }
 
 const inputStyle = {
@@ -95,20 +78,44 @@ class ModifyPassword extends Component {
 
         <div style={containerStyle}>
 
-            <div style={itemContainerStyle}>
-              <div style={labelContainerStyle}>旧密码</div>
-              <div style={inputContainerStyle}><input name="old" style={inputStyle} type="password" placeholder="请输入旧密码" onChange={this.handleInputChange} /></div>
-            </div>
+          <LeftLabelRightContent
+            label="旧密码"
+            content={
+              <input
+                name="old"
+                style={inputStyle}
+                type="password"
+                placeholder="请输入旧密码"
+                onChange={this.handleInputChange}
+              />
+            }
+          />
 
-            <div style={itemContainerStyle}>
-              <div style={labelContainerStyle}>新密码</div>
-              <div style={inputContainerStyle}><input name="new" style={inputStyle} type="password" placeholder="请输入新密码（新旧密码不能相同）" onChange={this.handleInputChange} /></div>
-            </div>
+          <LeftLabelRightContent
+            label="新密码"
+            content={
+              <input
+                name="new"
+                style={inputStyle}
+                type="password"
+                placeholder="请输入新密码（新旧密码不能相同）"
+                onChange={this.handleInputChange}
+              />
+            }
+          />
 
-            <div style={itemContainerStyle}>
-              <div style={labelContainerStyle}>新密码确认</div>
-              <div style={inputContainerStyle}><input name="confirm" style={inputStyle} type="password" placeholder="请再次输入新密码" onChange={this.handleInputChange} /></div>
-            </div>
+          <LeftLabelRightContent
+            label="新密码确认"
+            content={
+              <input
+                name="confirm"
+                style={inputStyle}
+                type="password"
+                placeholder="请再次输入新密码"
+                onChange={this.handleInputChange}
+              />
+            }
+          />
 
         </div>
 
