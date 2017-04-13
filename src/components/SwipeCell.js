@@ -56,6 +56,7 @@ class SwipeCell extends React.Component {
                     this.to(this.max)
                 }
                 
+                this.isTouchStart = false
                 return false
             },
         })

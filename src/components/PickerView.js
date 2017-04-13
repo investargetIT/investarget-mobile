@@ -135,6 +135,7 @@ class PickerView extends React.Component {
                     value: self.props.options[index].value
                 })
                 this.to(newV)
+                this.isTouchStart = false
                 return false
             },
         })

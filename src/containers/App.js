@@ -105,6 +105,7 @@ class App extends Component {
         if (value > 70) {
           this.to(60);
           mockRequest(this);
+          this.touchStart = false;
           return false;
         }
       },
