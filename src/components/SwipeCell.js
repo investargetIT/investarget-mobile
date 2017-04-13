@@ -17,15 +17,6 @@ var cellStyle = {
     flexShrink: '0',
     width: '80%',
 }
-var rightStyle = {
-    flexShrink: '0',
-    width: '20%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    color: '#fff',
-}
 
 class SwipeCell extends React.Component {
     constructor(props) {
@@ -68,13 +59,22 @@ class SwipeCell extends React.Component {
     }
 
     render() {
+        var rightStyle = {
+            flexShrink: '0',
+            width: '20%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: this.props.actionBackgroundColor || 'red',
+            color: '#fff',
+        }
         return (
             <div style={containerStyle} ref="container">
                 <div style={wrapStyle} ref="scroller">
                     <div style={cellStyle}>
                         {this.props.children}
                     </div>
-                    <div style={rightStyle} ref="right" onClick={this.props.delete}>删除</div>
+                    <div style={rightStyle} ref="right" onClick={this.props.delete}>{this.props.action || "删除"}</div>
                 </div>
             </div>
         )

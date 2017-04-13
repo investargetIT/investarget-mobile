@@ -531,4 +531,25 @@ export default {
     .catch(error => errCb(error))
   },
 
+  projectCancelFavorite(id) {
+
+    const param = {
+      userId: getCurrentUserId(),
+      projectId: id,
+      fType: 3
+    }
+
+    axios.post(
+      url + 'services/InvestargetApi/project/ProjectCancelFavorite',
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => console.error(error))
+  },
+
 }
