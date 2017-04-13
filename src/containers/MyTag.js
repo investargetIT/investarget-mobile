@@ -3,7 +3,7 @@ import NavigationBar from '../components/NavigationBar'
 import Select from '../components/Select'
 import { connect } from 'react-redux'
 import api from '../api'
-import { modifyUserInfo, handleError } from '../actions'
+import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
 
 class MyTag extends Component {
 
@@ -17,9 +17,9 @@ class MyTag extends Component {
 
     const param = Object.assign({}, this.props.userInfo, {
       userTagses: items,
-      orgId: this.props.userInfo.org.id,
-      orgAreaId: this.props.userInfo.orgArea.id,
-      titleId: this.props.userInfo.title.id,
+      orgId: this.props.userInfo.org ? this.props.userInfo.org.id : null,
+      orgAreaId: this.props.userInfo.orgArea ? this.props.userInfo.orgArea.id : null,
+      titleId: this.props.userInfo.title ? this.props.userInfo.title.id : null,
     })
 
     const newUserInfo = Object.assign({}, this.props.userInfo, {
@@ -30,9 +30,11 @@ class MyTag extends Component {
       })
     })
 
+    this.props.dispatch(requestContents(''))
     api.modifyUser(
       param,
       () => {
+        this.props.dispatch(hideLoading())
         this.props.dispatch(modifyUserInfo(newUserInfo))
         this.props.dispatch(handleError(new Error('update success')))
       },
