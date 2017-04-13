@@ -179,14 +179,15 @@ class App extends Component {
     var rows = []
     this.props.projects.forEach(function(element) {
       rows.push(
-        <ProjectListCell
-          title={element.title}
-          country={element.country}
-          industrys={element.industrys.join('')}
-          imgUrl={element.imgUrl}
-          amount={element.amount}
-          key={element.id}
-          id={element.id} />
+        <div className="margin-bottom-2" key={element.id}>
+          <ProjectListCell
+            title={element.title}
+            country={element.country}
+            industrys={element.industrys.join('')}
+            imgUrl={element.imgUrl}
+            amount={element.amount}
+            id={element.id} />
+        </div>
       )
     }, this)
 

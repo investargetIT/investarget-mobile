@@ -73,15 +73,17 @@ class ChatInvestor extends React.Component {
     render() {
         var rows = []
         this.state.projects.forEach(function(element) {
-        rows.push(
-            <ProjectListCell
-            title={element.title}
-            country={element.country}
-            industrys={element.industrys.join('')}
-            imgUrl={element.imgUrl}
-            amount={element.amount}
-            key={element.title} />
-        )
+            rows.push(
+                <div className="margin-bottom-2" key={element.title}>
+                    <ProjectListCell
+                        title={element.title}
+                        country={element.country}
+                        industrys={element.industrys.join('')}
+                        imgUrl={element.imgUrl}
+                        amount={element.amount}
+                    />
+                </div>
+            )
         }, this)
 
         return (

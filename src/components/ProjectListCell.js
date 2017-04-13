@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 var containerStyle = {
   position: 'relative',
   padding: '7px',
-  marginBottom: '2px',
   backgroundColor: 'white'
 }
 
