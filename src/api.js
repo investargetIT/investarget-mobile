@@ -34,6 +34,27 @@ function getCurrentUserId() {
   return id
 }
 
+function getFavoriteProjectId(cb, errCb) {
+  return new Promise((resolve, reject) => {
+    axios.get(
+      url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      const idArr = response.data.result.items.map(item => item.projectId)
+      if (cb) cb(idArr)
+      resolve(idArr)
+    })
+    .catch(error => {
+      if (errCb) errCb(error)
+      reject(error)
+    })
+  })
+}
+
 export default {
   
   getProjects(params, cb, errCb, skipCount = 0) {
@@ -461,18 +482,11 @@ export default {
    * 有兴趣 = 4
    */
   getFavoriteProjects(cb, errCb) {
-    axios.get(
-      url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
+    getFavoriteProjectId()
     .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-
-      const all = response.data.result.items.map(item =>
+      const all = response.map(item =>
         axios.get(
-          url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + item.projectId,
+          url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + item,
           { headers: { 'Authorization': 'Bearer ' + getToken() } }
         )
       )
@@ -553,24 +567,7 @@ export default {
   },
 
   getFavoriteProjectId(cb, errCb) {
-    return new Promise((resolve, reject) => {
-      axios.get(
-        url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
-        { headers: { 'Authorization': 'Bearer ' + getToken() } }
-      )
-      .then(response => {
-        if (!response.data.success) {
-          throw new ApiError(response.data.error)
-        }
-        const idArr = response.data.result.items.map(item => item.projectId)
-        cb(idArr)
-        resolve(idArr)
-      })
-      .catch(error => {
-        errCb(error)
-        reject(error)
-      })
-    })
+    getFavoriteProjectId(cb, errCb)
   },
 
   favoriteProject(id) {
