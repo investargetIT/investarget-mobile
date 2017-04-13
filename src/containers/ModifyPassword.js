@@ -98,7 +98,7 @@ class ModifyPassword extends Component {
                 name="new"
                 style={inputStyle}
                 type="password"
-                placeholder="请输入新密码（新旧密码不能相同）"
+                placeholder="请输入新密码(新旧密码不能相同)"
                 onChange={this.handleInputChange}
               />
             }

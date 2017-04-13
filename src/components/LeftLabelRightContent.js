@@ -7,16 +7,17 @@ const itemContainerStyle = {
 
 const labelContainerStyle = {
   float: 'left',
-  width: '30%',
+  width: '28%',
   lineHeight: '42px',
-  fontSize: '16px',
-  paddingLeft: '20px'
+  fontSize: '14px',
+  paddingLeft: '16px'
 }
 
 const inputContainerStyle = {
   lineHeight: '42px',
-  marginLeft: '30%',
-  fontSize: '16px'
+  marginLeft: '28%',
+  fontSize: '14px',
+  paddingRight: '10px'
 }
 
 function LeftLabelRightContent(props) {
