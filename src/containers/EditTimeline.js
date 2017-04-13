@@ -86,45 +86,55 @@ class EditTimeline extends React.Component {
                 transactionStatusId: 0,
             },
             remarks: [],
-            showModal: false,
+            remarkDraft: '',
+            remarkId: null,
+            showAddModal: false,
+            showModifyModal: false,
             showPickerView: false,
+            transactionStatus: null,
         }
 
-        this.openModal = this.openModal.bind(this)
-        this.closeModal = this.closeModal.bind(this)
-        this.addRemark = this.addRemark.bind(this)
-        
-        this.openPicker = this.openPicker.bind(this)
-        this.closePicker = this.closePicker.bind(this)
-        this.pickStage = this.pickStage.bind(this)
+        this.handleAddRemark = this.handleAddRemark.bind(this)
+        this.handleAddRemarkCancel = this.handleAddRemarkCancel.bind(this)
+        this.handleAddRemarkConfirm = this.handleAddRemarkConfirm.bind(this)
+
+        this.handleRemarkValueChange = this.handleRemarkValueChange.bind(this)        
+
+        this.handleModifyRemark = this.handleModifyRemark.bind(this)
+        this.handleModifyRemarkCancel = this.handleModifyRemarkCancel.bind(this)
+        this.handleModifyRemarkConfirm = this.handleModifyRemarkConfirm.bind(this)
+
+        this.handleModifyTransactionStatus = this.handleModifyTransactionStatus.bind(this)
+        this.handleModifyTransactionStatusCancel = this.handleModifyTransactionStatusCancel.bind(this)
+        this.handleModifyTransactionStatusConfirm = this.handleModifyTransactionStatusConfirm.bind(this)
+
+        this.handleTransactionStatusChange = this.handleTransactionStatusChange.bind(this)
+
         this.handleAlertCycleChange = this.handleAlertCycleChange.bind(this)
-        this.changeTimeLine = this.changeTimeLine.bind(this)
+
+        this.handleChangeTimeLine = this.handleChangeTimeLine.bind(this)
     }
 
-    openModal(event) {
-        this.setState({
-            showModal: true,
-        })
+    handleAddRemark() {
+        this.setState({ showAddModal: true })
     }
 
-    closeModal() {
-        this.setState({
-            showModal: false,
-        })
+    handleAddRemarkCancel() {
+        this.setState({ showAddModal: false, remarkDraft: '' })
     }
 
-    addRemark(content) {
+    handleAddRemarkConfirm() {
         api.createTimeLineRemark(
-            {
-                timeLineId: this.state.timeLineId,
-                remark: content
-            },
-            () => {
-                this.setState({ showModal: false })
+            { timeLineId: this.state.timeLineId, remark: this.state.remarkDraft },
+            (remarks) => {
+                this.setState({ showAddModal: false, remarkDraft: '' })
+
+                this.props.dispatch(requestContents(''))
                 api.getTimeLineRemarks(
                     this.state.timeLineId,
                     remarks => {
                         this.setState({ remarks: remarks })
+                        this.props.dispatch(hideLoading())
                     },
                     error => this.props.dispatch(handleError(error))
                 )
@@ -133,41 +143,70 @@ class EditTimeline extends React.Component {
         )
     }
 
-    removeRemark(id) {
-        var remarks = this.state.remarks.slice()
-        var index = remarks.findIndex(remark => remark.id == id)
-        if (index > -1) {
-            remarks.splice(index, 1)
-            this.setState({ remarks: remarks })
-        }
+    handleRemarkValueChange(event) {
+        var content = event.target.value
+        this.setState({ remarkDraft: content })
+    }
 
-        api.deleteTimeLineRemark(
-            id,
-            () => {},
+    handleModifyRemark(remark) {
+        this.setState({ showModifyModal: true, remarkId: remark.id, remarkDraft: remark.remark })
+    }
+
+    handleModifyRemarkCancel() {
+        this.setState({ showModifyModal: false, remarkId: null, remarkDraft: '' })
+    }
+
+    handleModifyRemarkConfirm() {
+        this.props.dispatch(requestContents(''))  
+        api.modifyTimeLineRemark(
+            this.state.remarkId,
+            { remark: this.state.remarkDraft },
+            () => {
+                var remarks = this.state.remarks.slice()
+                var index = remarks.findIndex(remark => remark.id == this.state.remarkId)
+                remarks[index].remark = this.state.remarkDraft
+                this.setState({ showModifyModal: false, remarkId: null, remarkDraft: '', remarks: remarks })
+                this.props.dispatch(hideLoading())
+            },
             error => this.props.dispatch(handleError(error))
         )
     }
 
-    openPicker() {
-        this.setState({
-            showPickerView: true
-        })
+    handleRemoveRemark(id, e) {
+        e.stopPropagation()
+        this.props.dispatch(requestContents(''))
+        api.deleteTimeLineRemark(
+            id,
+            () => {
+                var remarks = this.state.remarks.slice()
+                var index = remarks.findIndex(remark => remark.id == id)
+                if (index > -1) {
+                    remarks.splice(index, 1)
+                }
+                this.setState({ remarks: remarks })
+                this.props.dispatch(hideLoading())
+            },
+            error => this.props.dispatch(handleError(error))
+        )
     }
 
-    closePicker() {
-        this.setState({
-            showPickerView: false
-        })
+    handleModifyTransactionStatus() {
+        this.setState({ showPickerView: true, transactionStatus: this.state.timeLine.transactionStatusId })
     }
 
-    pickStage(val) {
+    handleTransactionStatusChange(value) {
+        this.setState({ transactionStatus: value })
+    }
+
+    handleModifyTransactionStatusCancel() {
+        this.setState({ showPickerView: false, transactionStatus: null })
+    }
+
+    handleModifyTransactionStatusConfirm() {
         var timeLine = Object.assign({}, this.state.timeLine, {
-            'transactionStatusId': val
+            'transactionStatusId': this.state.transactionStatus
         })
-        this.setState({
-            'timeLine': timeLine,
-            'showPickerView': false
-        })
+        this.setState({ showPickerView: false, transactionStatus: null, timeLine: timeLine })
     }
 
     handleAlertCycleChange(event) {
@@ -180,6 +219,21 @@ class EditTimeline extends React.Component {
         })
     }
 
+    handleChangeTimeLine() {
+        var param = {
+            timeLineId: this.state.timeLineId,
+            transactionStatus: this.state.timeLine.transactionStatusId,
+            alertCycle: this.state.timeLine.alertCycle
+        }
+        this.props.dispatch(requestContents(''))
+        api.changeTimeLine(
+            param,
+            () => {
+                this.props.dispatch(hideLoading())
+            },
+            error => this.props.dispatch(handleError(error))
+        )
+    }
 
     componentDidMount() {
         var timeLineId = parseInt(this.props.match.params.id)
@@ -203,20 +257,6 @@ class EditTimeline extends React.Component {
         )
     }
 
-    changeTimeLine() {
-        var param = {
-            timeLineId: this.state.timeLineId,
-            transactionStatus: this.state.timeLine.transactionStatusId,
-            alertCycle: this.state.timeLine.alertCycle
-        }
-        api.changeTimeLine(
-            param,
-            () => {},
-            error => this.props.dispatch(handleError(error))
-        )
-    }
-
-
     render() {
         var stages = [
             {name: '获取项目概要', value: 0},
@@ -238,11 +278,11 @@ class EditTimeline extends React.Component {
 
         return (
             <div style={containerStyle}>
-                <NavigationBar title="编辑进程" backIconClicked={this.props.history.goBack} action="提交" onActionButtonClicked={this.changeTimeLine} />
+                <NavigationBar title="编辑进程" backIconClicked={this.props.history.goBack} action="提交" onActionButtonClicked={this.handleChangeTimeLine} />
                 <div style={wrapStyle}>
                     <div style={rowStyle}>
                         <div style={colLeftStyle}>当前状态</div>
-                        <div style={colRightStyle} onClick={this.openPicker}>
+                        <div style={colRightStyle} onClick={this.handleModifyTransactionStatus}>
                             { transactionStatusName }
                         </div>
                     </div>
@@ -256,7 +296,7 @@ class EditTimeline extends React.Component {
                         <div style={colLeftStyle}>时间轴备注</div>
                         <div style={colRightStyle}>
                             <div style={{textAlign: 'right'}}>
-                                <a href="javascript:void(0)" style={openModalStyle} onClick={this.openModal}>添加备注</a>                                    
+                                <a href="javascript:void(0)" style={openModalStyle} onClick={this.handleAddRemark}>添加备注</a>                                    
                             </div>
                         </div>
                     </div>
@@ -266,8 +306,8 @@ class EditTimeline extends React.Component {
                     {
                         this.state.remarks.map(remark => {
                             return (
-                                <div style={remarkWrapStyle} key={remark.id}>
-                                    <SwipeCell delete={this.removeRemark.bind(this, remark.id)}>
+                                <div style={remarkWrapStyle} key={remark.id} onClick={this.handleModifyRemark.bind(this, remark)}>
+                                    <SwipeCell delete={this.handleRemoveRemark.bind(this, remark.id)}>
                                         <div style={remarkStyle}>
                                             <p style={contentStyle}>{remark.remark}</p>
                                             <p style={timeStyle}>{remark.creationTime.split('T')[0]}</p>
@@ -279,10 +319,29 @@ class EditTimeline extends React.Component {
                     }
                 </div>
 
-                <NoteModal show={this.state.showModal} onClose={this.closeModal} onSave={this.addRemark}></NoteModal>
+                <NoteModal show={this.state.showAddModal}
+                           value={this.state.remarkDraft}
+                           onValueChange={this.handleRemarkValueChange}
+                           onCancel={this.handleAddRemarkCancel}
+                           onConfirm={this.handleAddRemarkConfirm}>
+                </NoteModal>
+
+                <NoteModal show={this.state.showModifyModal}
+                           value={this.state.remarkDraft}
+                           onValueChange={this.handleRemarkValueChange}
+                           onCancel={this.handleModifyRemarkCancel}
+                           onConfirm={this.handleModifyRemarkConfirm}>
+                </NoteModal>
 
                 <div style={pickerViewWrapStyle}>
-                    <PickerView show={this.state.showPickerView} title="项目进度" options={stages} value={timeLine.transactionStatusId} onConfirm={this.pickStage} onCancel={this.closePicker}></PickerView>
+                    <PickerView show={this.state.showPickerView}
+                                title="项目进度"
+                                options={stages}
+                                value={this.state.transactionStatus}
+                                onValueChange={this.handleTransactionStatusChange}
+                                onCancel={this.handleModifyTransactionStatusCancel}
+                                onConfirm={this.handleModifyTransactionStatusConfirm}>
+                    </PickerView>
                 </div>
 
             </div>

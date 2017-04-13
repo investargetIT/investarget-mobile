@@ -370,10 +370,23 @@ export default {
   createTimeLineRemark(param, cb, errCb) {
     axios.post(url + 'services/InvestargetApi/projectTimeLine/CreateTimeLineRemark',
       param,
-      {
-        headers: {'Authorization': 'Bearer ' + getToken()
+      { headers: {'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (response.data.success) {
+        cb()
+      } else {
+        throw new ApiError(response.data.error)
       }
     })
+    .catch(error => errCb(error))
+  },
+
+  modifyTimeLineRemark(id, param, cb, errCb) {
+    axios.put(url + 'services/InvestargetApi/projectTimeLine/ModifTimeLineRemark?id=' + id,
+      param,
+      { headers: {'Authorization': 'Bearer ' + getToken() } }
+    )
     .then(response => {
       if (response.data.success) {
         cb()

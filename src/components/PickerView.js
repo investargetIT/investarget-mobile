@@ -84,23 +84,6 @@ var borderStyle = {
 class PickerView extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            value: props.value,
-        }
-
-        this.cancel = this.cancel.bind(this)
-        this.confirm = this.confirm.bind(this)
-    }
-
-    cancel() {
-        this.setState({
-            value: this.props.value
-        })
-        this.props.onCancel()
-    }
-
-    confirm() {
-        this.props.onConfirm(this.state.value)
     }
 
     componentDidMount() {
@@ -121,7 +104,7 @@ class PickerView extends React.Component {
             step: HEIGHT,
             spring: true,
             inertia: false,
-            touchEnd: function(evt, v, index) {
+            touchEnd: function(evt, v) {
                 var newV;
                 if (v < this.min) {
                     newV = this.min
@@ -131,9 +114,8 @@ class PickerView extends React.Component {
                     newV = Math.round(v / this.step) * this.step
                 }
                 var index = - (newV / HEIGHT)
-                self.setState({
-                    value: self.props.options[index].value
-                })
+                self.props.onValueChange(self.props.options[index].value)
+
                 this.to(newV)
                 this.isTouchStart = false
                 return false
@@ -147,9 +129,6 @@ class PickerView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            value: nextProps.value
-        })
         var index = nextProps.options.findIndex((option) => {
             return option.value == nextProps.value
         })
@@ -170,8 +149,8 @@ class PickerView extends React.Component {
             <div style={this.props.show ? containerStyle : hiddenStyle}>
                 <div style={titleStyle}>
                     {this.props.title}
-                    <img style={cancelIconStyle} src="/images/x@2x.png" onClick={this.cancel}></img>
-                    <img style={confirmIconStyle} src="/images/v@2x.png" onClick={this.confirm}></img>
+                    <img style={cancelIconStyle} src="/images/x@2x.png" onClick={this.props.onCancel}></img>
+                    <img style={confirmIconStyle} src="/images/v@2x.png" onClick={this.props.onConfirm}></img>
                 </div>
                 <div style={scrollStyle} ref="container">
                     <div style={maskStyle}></div>

@@ -75,60 +75,25 @@ var saveStyle = {
 }
 
 
-class Modal extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            note: '',
-        }
-
-        this.handleInputChange = this.handleInputChange.bind(this)
-        this.handleClose = this.handleClose.bind(this)
-        this.handleSave = this.handleSave.bind(this)
-    }
-
-    handleInputChange(event) {
-        var val = event.target.value
-        this.setState({
-            note: val
-        })
-    }
-
-    handleClose(event) {
-        this.props.onClose()
-        this.setState({
-            note: '',
-        })
-    }
-
-    handleSave(event) {
-        this.props.onSave(this.state.note)
-        this.setState({
-            note: '',
-        })
-    }
-
-
-    render() {
-        return (
-            <div style={this.props.show ? coverStyle : hiddenStyle}>
-                <div style={wrapStyle}>
-                    <div style={modalStyle}>
-                        <div style={headStyle}>
-                            <div style={titleStyle}>备注信息</div>
-                            <img style={closeStyle} src="/images/closeView@2x.png" onClick={this.handleClose}></img>
-                        </div>
-                        <div style={bodyStyle}>
-                            <textarea style={textareaStyle} placeholder="新备注" value={this.state.note} onChange={this.handleInputChange}></textarea>
-                        </div>
-                        <div style={footStyle}>
-                            <button style={saveStyle} onClick={this.handleSave}>保存</button>
-                        </div>
+const Modal = function(props) {
+    return (
+        <div style={props.show ? coverStyle : hiddenStyle}>
+            <div style={wrapStyle}>
+                <div style={modalStyle}>
+                    <div style={headStyle}>
+                        <div style={titleStyle}>备注信息</div>
+                        <img style={closeStyle} src="/images/closeView@2x.png" onClick={props.onCancel}></img>
+                    </div>
+                    <div style={bodyStyle}>
+                        <textarea style={textareaStyle} placeholder="新备注" value={props.value} onChange={props.onValueChange}></textarea>
+                    </div>
+                    <div style={footStyle}>
+                        <button style={saveStyle} onClick={props.onConfirm}>保存</button>
                     </div>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default Modal
