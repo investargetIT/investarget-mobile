@@ -71,6 +71,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '新旧密码不能相同'
           break
+        case 'Please contact to modify':
+          showError = true
+          errMsg = '请联系客服人员进行修改'
+          break
         default:
           console.error(error)
       }
