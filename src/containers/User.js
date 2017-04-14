@@ -54,7 +54,13 @@ class User extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = { avatar: null}
+
     this.handleClick = this.handleClick.bind(this)
+
+    this.handleAvatarChange = this.handleAvatarChange.bind(this)
+    this.readFile = this.readFile.bind(this)
   }
 
   handleClick() {
@@ -62,6 +68,35 @@ class User extends Component {
       this.props.dispatch(logout())
     }
   }
+
+  handleAvatarChange(e) {
+    var file = e.target.files[0];
+
+    if (file) {
+      if (/^image\//i.test(file.type)) {
+        this.readFile(file);
+      } else {
+        alert('Not a valid image!');
+      }
+    }
+  }
+
+  readFile(file) {
+    var react = this
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+      react.setState({ avatar: reader.result });
+      // processFile(reader.result, file.type);
+    }
+
+    reader.onerror = function () {
+      alert('There was an error reading the file!');
+    }
+
+    reader.readAsDataURL(file);
+  }
+
 
   render () {
     if (!this.props.isLogin) {
@@ -78,6 +113,8 @@ class User extends Component {
         </div>
         <div style={headerContainerStyle}>
           <img alt="" style={avatarStyle} src={this.props.userInfo.photoUrl} />
+          {/*<img alt="" style={avatarStyle} src={this.state.avatar || this.props.userInfo.photoUrl} />
+          <input id="file" type="file" accept="image/*" onChange={this.handleAvatarChange} />*/}
           <p style={orgNameStyle}>{this.props.userInfo.company}</p>
           <p><span style={nameAndTitleStyle}>{this.props.userInfo.name}</span><span style={nameAndTitleStyle}>{this.props.userInfo.title.titleName}</span></p>
         </div>
