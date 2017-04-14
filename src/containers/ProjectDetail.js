@@ -101,7 +101,8 @@ const actionFavoriteContinerStyle = {
   bottom: '10px',
   left: '0px',
   right: '0px',
-  textAlign: 'center'
+  width: '40px',
+  margin: 'auto'
 }
 
 const favoriteIconStyle = {
@@ -123,6 +124,7 @@ class ProjectDetail extends React.Component {
         }
 
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
+        this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
     }
 
     componentDidMount() {
@@ -160,6 +162,14 @@ class ProjectDetail extends React.Component {
       this.setState({
         isMyFavoriteProject: !this.state.isMyFavoriteProject
       })
+    }
+
+    handleActionButtonClicked(event) {
+        switch (event.target.name) {
+            case "timeline":
+                this.props.history.push('/timeline/' + this.props.match.params.id)
+                break
+        }
     }
 
     render() {
@@ -299,8 +309,8 @@ class ProjectDetail extends React.Component {
 
                 <div style={actionPlaceHolderStyle}></div>
                 <div style={actionContainerStyle}>
-                    <button name="reset" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
-                    <button name="search" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
+                    <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
+                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
                     <div style={actionFavoriteContinerStyle}>
                         <img
                             style={favoriteIconStyle}

@@ -34,6 +34,7 @@ import ModifyPassword from './containers/ModifyPassword'
 import ModifyBusinessCard from './containers/ModifyBusinessCard'
 import Contact from './containers/Contact'
 import OrganizationDetail from './containers/OrganizationDetail'
+import Timeline from './containers/Timeline'
 
 const Routes = (props) => {
 
@@ -96,6 +97,7 @@ const Routes = (props) => {
         <Route path="/modify_business_card" component={ModifyBusinessCard} />
         <Route path="/contact" component={Contact} />
         <Route path="/organization/:id" component={OrganizationDetail} />
+        <Route path="/timeline/:id" component={Timeline} />
 
       </div>
     </Router>
