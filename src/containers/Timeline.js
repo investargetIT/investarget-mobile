@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
+import { Link } from 'react-router-dom'
 
 const stepIconStyle = {
   width: '14px',
@@ -137,7 +138,7 @@ class Timeline extends Component {
           </div>
         </div>
 
-        <TimelineStep icon="/images/timeline/stepImage1.png" color="#FF6900" title="step1，获取项目概要" />
+	<Link to="/latest_remark"><TimelineStep icon="/images/timeline/stepImage1.png" color="#FF6900" title="step1，获取项目概要" /></Link>
         <TimelineStep icon="/images/timeline/stepImage2.png" color="#2AA0AE" title="step2，签署保密协议" />
         <TimelineStep icon="/images/timeline/stepImage3.png" color="#5649B9" title="step3，获取投资备忘录" />
         <TimelineStep icon="/images/timeline/stepImage4.png" color="#F94545" title="step4，进入一期资料库" />

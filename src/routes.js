@@ -35,6 +35,7 @@ import ModifyBusinessCard from './containers/ModifyBusinessCard'
 import Contact from './containers/Contact'
 import OrganizationDetail from './containers/OrganizationDetail'
 import Timeline from './containers/Timeline'
+import LatestRemark from './containers/LatestRemark'
 
 const Routes = (props) => {
 
@@ -98,6 +99,7 @@ const Routes = (props) => {
         <Route path="/contact" component={Contact} />
         <Route path="/organization/:id" component={OrganizationDetail} />
         <Route path="/timeline/:id" component={Timeline} />
+	<Route path="/latest_remark" component={LatestRemark} />
 
       </div>
     </Router>
