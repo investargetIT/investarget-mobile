@@ -187,7 +187,11 @@ class Timeline extends Component {
       }
     }
     if (result.length === 0) {
-      this.props.history.push("/latest_remark")
+      var toObj = {
+	pathname: '/latest_remark',
+	state: { foo: "bar" },
+      }
+      this.props.history.push(toObj)
     }
   }
 

@@ -603,4 +603,18 @@ export default {
     .catch(error => errCb(error))
   },
 
+  getUserRemarks(timeLineId, cb, errCb) {
+    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(response => {
+      if (response.data.success) {
+        cb(response.data.result)
+      } else {
+        throw new ApiError(response.data.error)
+      }
+    })
+    .catch(error => errCb(error))
+  },
+
 }

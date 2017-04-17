@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import Investor from '../components/Investor.js'
+import api from '../api'
 
 const remarkContainerStyle = {
   backgroundColor: 'white',
@@ -55,6 +56,18 @@ const itemContainerStyle = {
 }
 
 class LatestRemark extends Component {
+
+  componentDidMount(){
+    console.log(this.props.location.state)
+    this.props.match.params.ids.split('-').map(item => {
+      api.getUserRemarks(
+	item,
+	data => console.log(data),
+	error => console.error(error)
+      )
+    })
+  }
+
   render(){
     return (
       <div>
