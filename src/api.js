@@ -82,6 +82,26 @@ function getFavoriteProjectIds(param, cb, errCb) {
   })
 }
 
+function simplyGet(uri, cb, errCb) {
+  return new Promise((resolve, reject) => {
+    axios.get(
+      url + uri,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      const data = response.data.result
+      if (cb) cb(data)
+      resolve(data)
+    })
+    .catch(error => {
+      if (errCb) errCb(error)
+      reject(error)
+    })
+  })
+}
 
 export default {
   getCurrentUserId,
@@ -640,17 +660,7 @@ export default {
   },
 
   getUserRemarks(timeLineId, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
+    return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
   },
 
 }

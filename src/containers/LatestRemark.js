@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import Investor from '../components/Investor.js'
 import api from '../api'
+import { handleError } from '../actions/'
 
 const remarkContainerStyle = {
   backgroundColor: 'white',
@@ -28,8 +29,8 @@ function Remark(props) {
     <div style={remarkContainerStyle}>
       <div>最新备注</div>
       <hr style={dividerStyle} />
-      <div style={contentStyle}>Questioniar sent. Howerer tje contac person id now in vocation/ So we need to wait dor hie back.</div>
-      <div style={statusStyle}>当前状态：step3，获取投资备忘录</div>
+      <div style={contentStyle}>{props.content}</div>
+      <div style={statusStyle}>当前状态：{props.status}</div>
     </div> 
   )
 }
@@ -52,56 +53,62 @@ const remarkContainerStyle1 = {
 }
 
 const itemContainerStyle = {
-  margin: '16px 0px'
+  margin: '16px 0px',
+  overflow: 'auto'
 }
 
 class LatestRemark extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {timelines: []}
+  }
+
   componentDidMount(){
-    console.log(this.props.location.state)
-    this.props.match.params.ids.split('-').map(item => {
+    var timelines = this.props.location.state
+    for (let a = 0; a < timelines.length; a++) {
       api.getUserRemarks(
-	item,
-	data => console.log(data),
-	error => console.error(error)
+	timelines[a].timeLineId,
+	data => {
+	  timelines[a]['latestRemarkContent'] = data.length > 0 ? data[0].remark : '暂无'
+	  this.setState({timelines: timelines})
+	},
+	error => this.dispatch(handleError((error)))
+       )
+      api.getUserBasic(
+	timelines[a].investorId,
+	data => {
+	  timelines[a]['investorOrgName'] = data.company
+	  this.setState({timelines: timelines})
+	},
+	error => this.dispatch(handleError((error)))
       )
-    })
+    }
   }
 
   render(){
+
+    var content = this.state.timelines.map(item => (
+
+	<div style={itemContainerStyle} key={item.timeLineId}>
+	  <div style={investorContainerStyle}>
+	    <Investor org={item.investorOrgName} name={item.investorName} />
+	  </div>
+	  <div style={remarkContainerStyle1}>
+	    <Remark content={item.latestRemarkContent} status={'step' + item.transactionStatusId + '，' +  item.transactionStatusName} />
+	  </div>
+	</div>))
+
+
+
     return (
       <div>
 
-	<img style={backgroundImageStyle} src="/images/timeline/timeLineBG@2x.png" alt="" />      
+	<img style={backgroundImageStyle} src="/images/timeline/timeLineBG@2x.png" alt="" />
 
 	<NavigationBar title="最新备注" />
 
-	<div style={itemContainerStyle}>
-	  <div style={investorContainerStyle}>
-	    <Investor org="Investarget" name="无军可" />
-	  </div>
-	  <div style={remarkContainerStyle1}>
-	    <Remark />
-	  </div>
-	</div>  
-
-	<div style={itemContainerStyle}>
-	  <div style={investorContainerStyle}>
-	    <Investor org="Investarget" name="无军可" />
-	  </div>
-	  <div style={remarkContainerStyle1}>	
-	    <Remark />
-	  </div>
-	</div>
-
-	<div style={itemContainerStyle}>
-	  <div style={investorContainerStyle}>
-	    <Investor org="Investarget" name="无军可" />
-	  </div>
-	  <div style={remarkContainerStyle1}>
-	    <Remark />
-	  </div>
-	</div>
+	{content}
 
       </div>
     )

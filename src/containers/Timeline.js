@@ -183,13 +183,13 @@ class Timeline extends Component {
     for (var a = 0;a < myInvestorId.length;a++) {
       var index = investorIds.indexOf(myInvestorId[a])
       if (index > -1) {
-	result.push(a)
+	result.push(index)
       }
     }
-    if (result.length === 0) {
+    if (result.length > 0) {
       var toObj = {
 	pathname: '/latest_remark',
-	state: { foo: "bar" },
+	state: result.map(item=>investors[item])
       }
       this.props.history.push(toObj)
     }
