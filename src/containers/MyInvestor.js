@@ -3,6 +3,7 @@ import NavigationBar from '../components/NavigationBar'
 import api from '../api'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const investorContainerStyle = {
   textAlign: 'center'
@@ -88,9 +89,11 @@ class MyInvestor extends Component {
 
     const content = this.state.myInvestor.map(
       item => (
-        <div style={itemStyle} key={item.id}>
-          <Investor name={item.name} org={item.org} photoUrl={item.photoUrl} />
-        </div>
+        <Link key={item.id} to={{pathname: '/chat_investor/' + item.id, state:{investorName: item.name}}}>
+          <div style={itemStyle}>
+            <Investor name={item.name} org={item.org} photoUrl={item.photoUrl} />
+          </div>
+        </Link>
       )
     )
 
