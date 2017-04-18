@@ -24,6 +24,15 @@ function getToken() {
   return token
 }
 
+function getCurrentUserInfo() {
+  var userInfo
+  var userInfoStr = localStorage.getItem('userInfo')
+  if (userInfoStr) {
+    userInfo = JSON.parse(userInfoStr)
+  }
+  return userInfo
+}
+
 function getCurrentUserId() {
   var id
   var userInfoStr = localStorage.getItem('userInfo')
@@ -98,6 +107,48 @@ function simplyGet(uri, cb, errCb) {
     })
     .catch(error => {
       if (errCb) errCb(error)
+      reject(error)
+    })
+  })
+}
+
+function simplyPut(uri, param, cb, errCb) {
+  return new Promise((resolve, reject) => {
+    axios.put(
+      url + uri,
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      const data = response.data.result
+      if (cb) cb(data)
+      resolve(data)
+    })
+    .catch(error => {
+      if (errCb) errCb(error)
+      reject(error)
+    })
+  })
+}
+
+function upload(uri, data) {
+  return new Promise((resolve, reject) => {
+    axios.post(
+      url + uri,
+      data,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+      .then(response => {
+	if (!response.data.success) {
+          throw new ApiError(response.data.error)
+        }
+      const data = response.data.result
+      resolve(data)
+    })
+    .catch(error => {
       reject(error)
     })
   })
@@ -661,6 +712,32 @@ export default {
 
   getUserRemarks(timeLineId, cb, errCb) {
     return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
+  },
+
+  uploadUserAvatar(formData, cb, errCb, key) {
+    var uri
+    if (key) {
+      uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
+    } else {
+      uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
+    }
+
+    upload(uri, formData)
+      .then(data => {
+	var userInfo = getCurrentUserInfo()
+	const param = Object.assign({}, userInfo, {
+	        photoKey: data.key,
+	        orgId: userInfo.org ? userInfo.org.id : null,
+	        orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
+	        titleId: userInfo.title ? userInfo.title.id : null,
+	      })
+
+      return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
+    })
+      .then(data => {
+	cb()
+      })
+    .catch(error => errCb(error))
   },
 
 }

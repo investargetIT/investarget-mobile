@@ -3,7 +3,8 @@ import TabBar from './TabBar'
 import LeftIconRightLabel from '../components/LeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
-import { logout } from '../actions'
+import { logout, handleError, requestContents, hideLoading } from '../actions'
+import api from '../api'
 
 var blurBackgroundStyle = {
   position: 'absolute',
@@ -50,6 +51,23 @@ var settingContainerStyle = {
   padding: '20px 0px'
 }
 
+var avatarContainerStyle = {
+  position: 'relative',
+  display: 'inline-block'
+}
+
+var inputContainerStyle = {
+  position: 'absolute',
+  left: 0,
+  top: 0
+}
+
+var inputStyle = {
+  width: '90px',
+  height: '90px',
+  opacity: 0
+}
+
 class User extends Component {
 
   constructor(props) {
@@ -82,12 +100,23 @@ class User extends Component {
   }
 
   readFile(file) {
+
     var react = this
     var reader = new FileReader();
 
     reader.onloadend = function () {
+
       react.setState({ avatar: reader.result });
-      // processFile(reader.result, file.type);
+
+      var formData = new FormData()
+      formData.append('file', file)
+
+      api.uploadUserAvatar(
+	formData,
+	() => react.props.dispatch(hideLoading()),
+	error => react.props.dispatch(handleError(error)),
+	react.props.userInfo.photoKey || null
+      )
     }
 
     reader.onerror = function () {
@@ -95,6 +124,7 @@ class User extends Component {
     }
 
     reader.readAsDataURL(file);
+    this.props.dispatch(requestContents(''))
   }
 
 
@@ -112,9 +142,10 @@ class User extends Component {
           <div style={blurImageStyle}></div>
         </div>
         <div style={headerContainerStyle}>
-          <img alt="" style={avatarStyle} src={this.props.userInfo.photoUrl} />
-          {/*<img alt="" style={avatarStyle} src={this.state.avatar || this.props.userInfo.photoUrl} />
-          <input id="file" type="file" accept="image/*" onChange={this.handleAvatarChange} />*/}
+	  <div style={avatarContainerStyle}>
+	    <img alt="" style={avatarStyle} src={this.state.avatar || this.props.userInfo.photoUrl} />
+	    <div style={inputContainerStyle}><input style={inputStyle} id="file" type="file" accept="image/*" onChange={this.handleAvatarChange} /></div>
+	  </div>
           <p style={orgNameStyle}>{this.props.userInfo.company}</p>
           <p><span style={nameAndTitleStyle}>{this.props.userInfo.name}</span><span style={nameAndTitleStyle}>{this.props.userInfo.title.titleName}</span></p>
         </div>
