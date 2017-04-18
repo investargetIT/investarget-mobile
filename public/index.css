@@ -173,5 +173,6 @@ a {
 }
 
 .margin-bottom-2 {
+  display: block;
   margin-bottom: 2px;
 }

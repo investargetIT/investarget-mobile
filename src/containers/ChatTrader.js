@@ -1,5 +1,9 @@
 import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
+import NavigationBar from '../components/NavigationBar'
+import api from '../api'
+import { connect } from 'react-redux'
+import { requestContents, hideLoading, handleError } from '../actions'
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',
@@ -39,65 +43,75 @@ class ChatTrader extends React.Component {
         super(props)
         this.state = {
             activeTab: 'recommend', // 'recommend', 'favorite'
-            projects: [
-                {
-                    amount: 1000000,
-                    country: "中国",
-                    imgUrl: "https://o79atf82v.qnssl.com/Web-project-Hotel food and beverage.png",
-                    industrys: ["酒店餐饮"],
-                    title: "测试项目007"
-                },
-                {
-                    amount: 1000000000,
-                    country: "韩国",
-                    imgUrl: "https://o79atf82v.qnssl.com/Web-Project-hzp.png",
-                    industrys: ["化妆品"],
-                    title: "幻彩项目：韩国上市化妆品公司少数股权投资机会"
-                },
-            ]
+            projects: []
         }
-
-        this.selectTab = this.selectTab.bind(this)
     }
 
+    selectTab(tab) {
+        this.setState({ activeTab: tab })
+        var map = {
+            'interest': 4,
+            'favorite': 3,
+            'recommend': 1,
+            'system': 0
+        }
+        var ftype = map[tab]
+        this.getFavoriteProjects(ftype)
+    }
 
-    selectTab(event) {
-        var tab = event.target.dataset.id
-        this.setState({
-            activeTab: tab,
-        })
+    getFavoriteProjects(ftype) {
+        var userId = api.getCurrentUserId()
+        var ftypes = [ftype]
+        var param = {
+            'input.maxResultCount': 10,
+            'input.skipCount': 0,
+            'input.userId': userId,
+            'input.ftypes': ftypes.join(',')
+        }
+        this.props.dispatch(requestContents(''))
+        api.getFavoriteProjects(
+            param,
+            (projects) => {
+                this.setState({ projects: projects })
+                this.props.dispatch(hideLoading())
+            },
+            error => this.props.dispatch(handleError(error))
+        )
+    }
+
+    componentDidMount() {
+        this.selectTab(this.state.activeTab)
     }
 
     render() {
-        var rows = []
-        this.state.projects.forEach(function (element) {
-            rows.push(
-                <div className="margin-bottom-2" key={element.title}>
-                    <ProjectListCell
-                        title={element.title}
-                        country={element.country}
-                        industrys={element.industrys.join('')}
-                        imgUrl={element.imgUrl}
-                        amount={element.amount}
-                    />
-                </div>
-            )
-        }, this)
-
         return (
             <div style={containerStyle}>
+                <NavigationBar title={this.props.location.state.transactionName} backIconClicked={this.props.history.goBack} />
                 <div style={scrollStyle}>
-                <div style={tabsStyle}>
-                    <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} data-id="recommend" onClick={this.selectTab}>交易师推荐</span>
-                    <span style={this.state.activeTab == 'favorite' ? activeTabStyle : tabStyle} data-id="favorite" onClick={this.selectTab}>我的收藏</span>
-                </div>
+                    <div style={tabsStyle}>
+                        <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'recommend')}>交易师推荐</span>
+                        <span style={this.state.activeTab == 'favorite' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'favorite')}>我的收藏</span>
+                    </div>
                 </div>
                 <div style={projectListStyle}>
-                    { rows }
+                    {
+                        this.state.projects.map(project => (
+                            <div className="margin-bottom-2" key={project.title}>
+                                <ProjectListCell
+                                    title={project.title}
+                                    country={project.country}
+                                    industrys={project.industrys.join('')}
+                                    imgUrl={project.imgUrl}
+                                    amount={project.amount}
+                                    id={project.id}
+                                />
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         )
     }
 }
 
-export default ChatTrader
+export default connect()(ChatTrader)

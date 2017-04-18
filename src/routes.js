@@ -84,8 +84,8 @@ const Routes = (props) => {
         <Route path="/filter" component={Filter} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
-        <Route path="/chat_investor" component={ChatInvestor} />
-        <Route path="/chat_trader" component={ChatTrader} />
+        <Route path="/chat_investor/:id" component={ChatInvestor} />
+        <Route path="/chat_transaction/:id" component={ChatTrader} />
         <Route path="/user_info/:id" component={UserInfo} />
         <Route path="/edit_timeline/:id" component={EditTimeline} />
         <Route path="/retrieve_password" component={RetrievePassword} />

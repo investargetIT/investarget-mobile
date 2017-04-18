@@ -136,8 +136,9 @@ class ProjectDetail extends React.Component {
 
       this.props.dispatch(requestContents(''))
 
+      var projectId = this.props.match.params.id
       api.getSingleProject(
-        this.props.match.params.id,
+        projectId,
         data => {
           this.props.dispatch(hideLoading())
           this.setState({ result: data }
@@ -145,19 +146,28 @@ class ProjectDetail extends React.Component {
         error => this.props.dispatch(handleError(error))
       )
 
-      api.getFavoriteProjectId(
-        projectId => this.setState({
-          isMyFavoriteProject: projectId.includes(parseInt(this.props.match.params.id, 10))
-        }),
+      // 是否收藏了项目
+      api.getFavoriteProjectIds(
+        {
+            'input.projectId': projectId,
+            'input.userId': api.getCurrentUserId(),
+            'input.ftypes': '3'
+        },
+        projectIds => {
+            this.setState({
+                isMyFavoriteProject: (projectIds.length == 1)
+            })
+        },
         error => this.props.dispatch(handleError(error))
       )
       
     }
 
     handleFavoriteButtonToggle() {
+      var projectId = this.props.match.params.id
       this.state.isMyFavoriteProject ?
-        api.projectCancelFavorite(this.props.match.params.id) :
-        api.favoriteProject(this.props.match.params.id)
+        api.projectCancelFavorite(projectId) :
+        api.favoriteProject(projectId)
         
       this.setState({
         isMyFavoriteProject: !this.state.isMyFavoriteProject

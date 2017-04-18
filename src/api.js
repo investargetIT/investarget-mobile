@@ -34,11 +34,38 @@ function getCurrentUserId() {
   return id
 }
 
-function getFavoriteProjectId(cb, errCb) {
+function getCurrentUserType() {
+  var type
+  var userInfoStr = localStorage.getItem('userInfo')
+  if (userInfoStr) {
+    const userInfo = JSON.parse(userInfoStr)
+    type = userInfo.userType
+  }
+  return type
+}
+
+function getCurrentUserInfo() {
+  var userInfoStr = localStorage.getItem('userInfo')
+  return userInfoStr ? JSON.parse(userInfoStr) : {}
+}
+
+/**
+ * input.ftypes 类型说明
+ * 
+ * 系统算法推荐 = 0,       推荐给自己的，其他几种都显示投资人的
+ * 合伙人推荐 = 1,
+ * 后台人员推荐 = 2,       推荐给自己的，其他几种都显示投资人的
+ * 主动收藏 = 3,
+ * 有兴趣 = 4
+ */
+function getFavoriteProjectIds(param, cb, errCb) {
   return new Promise((resolve, reject) => {
     axios.get(
-      url + 'services/InvestargetApi/project/GetFavoriteProjects?input.lang=cn&input.ftypes=3&input.userId=' + getCurrentUserId(),
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+      url + 'services/InvestargetApi/project/GetFavoriteProjects',
+      { 
+        params: Object.assign({ 'input.lang': 'cn' }, param),
+        headers: { 'Authorization': 'Bearer ' + getToken() }
+      }
     )
     .then(response => {
       if (!response.data.success) {
@@ -55,7 +82,11 @@ function getFavoriteProjectId(cb, errCb) {
   })
 }
 
+
 export default {
+  getCurrentUserId,
+  getCurrentUserType,
+  getCurrentUserInfo,
   
   getProjects(params, cb, errCb, skipCount = 0) {
     axios.get(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount)
@@ -327,6 +358,21 @@ export default {
   },
 
   getAllTimeLines(param, cb, errCb) {
+    var userId = getCurrentUserId()
+    var userType = getCurrentUserType()
+    param = Object.assign({
+      'input.lang': 'cn',
+      'input.isClose': false,
+      'input.maxResultCount': 10,
+      'input.skipCount': 0,
+    }, param)
+    if (userType == 1) {
+      param['input.investorId'] = userId
+    } else if (userType == 2) {
+      param['input.supplierId'] = userId
+    } else if (userType == 3) {
+      param['input.transactionId'] = userId
+    }
     axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
       params: param,
       headers: {'Authorization': 'Bearer ' + getToken() }
@@ -471,42 +517,6 @@ export default {
     .catch(error => errCb(error))
   },
 
-
-  /**
-   * input.ftypes 类型说明
-   * 
-   * 系统算法推荐 = 0,       推荐给自己的，其他几种都显示投资人的
-   * 合伙人推荐 = 1,
-   * 后台人员推荐 = 2,       推荐给自己的，其他几种都显示投资人的
-   * 主动收藏 = 3,
-   * 有兴趣 = 4
-   */
-  getFavoriteProjects(cb, errCb) {
-    getFavoriteProjectId()
-    .then(response => {
-      const all = response.map(item =>
-        axios.get(
-          url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + item,
-          { headers: { 'Authorization': 'Bearer ' + getToken() } }
-        )
-      )
-
-      return Promise.all(all)
-    })
-    .then(values => {
-      const favoriteProjects = values.map(item => {
-        if (!item.data.success) {
-          throw new ApiError(item.data.error)
-        }
-        return item.data.result
-      })
-
-      cb(favoriteProjects)
-
-    })
-    .catch(error => errCb(error))
-  },
-
   modifyPassword(old, newP, cb, errCb) {
   
     const param = {
@@ -566,8 +576,34 @@ export default {
     .catch(error => console.error(error))
   },
 
-  getFavoriteProjectId(cb, errCb) {
-    getFavoriteProjectId(cb, errCb)
+  getFavoriteProjectIds,
+
+  getFavoriteProjects(param, cb, errCb) {
+    param = Object.assign({ 'input.lang': 'cn' }, param)
+    getFavoriteProjectIds(param)
+    .then(ids => {
+      const all = ids.map(id => {
+        return new Promise((resolve, reject) => {
+          this.getSingleProject(
+            id,
+            item => {
+              var obj = {}
+              obj['id'] = item.id
+              obj['title'] = item.titleC
+              obj['amount'] = item.financedAmount
+              obj['country'] = item.country.countryName
+              obj['imgUrl'] = item.industrys[0].imgUrl
+              obj['industrys'] = item.industrys.map(i => i.industryName)
+              resolve(obj)
+            },
+            error => reject(error)
+          )
+        })
+      })
+      return Promise.all(all)
+    })
+    .then(projects => cb(projects))
+    .catch(error => errCb(error))
   },
 
   favoriteProject(id) {

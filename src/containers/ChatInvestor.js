@@ -1,6 +1,11 @@
 import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
+import api from '../api'
+import { connect } from 'react-redux'
+import { requestContents, hideLoading, handleError } from '../actions'
+import { Link } from  'react-router-dom'
+
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',
@@ -39,70 +44,84 @@ var projectListStyle = {}
 class ChatInvestor extends React.Component {
     constructor(props) {
         super(props)
+
         this.state = {
             activeTab: 'interest', // 'favorite', 'recommend', 'system'
-            projects: [
-                {
-                    amount: 1000000,
-                    country: "中国",
-                    imgUrl: "https://o79atf82v.qnssl.com/Web-project-Hotel food and beverage.png",
-                    industrys: ["酒店餐饮"],
-                    title: "测试项目007"
-                },
-                {
-                    amount: 1000000000,
-                    country: "韩国",
-                    imgUrl: "https://o79atf82v.qnssl.com/Web-Project-hzp.png",
-                    industrys: ["化妆品"],
-                    title: "幻彩项目：韩国上市化妆品公司少数股权投资机会"
-                },
-            ]
+            projects: []
         }
-
-        this.selectTab = this.selectTab.bind(this)
     }
 
-
-    selectTab(event) {
-        var tab = event.target.dataset.id
+    selectTab(tab) {
         this.setState({
             activeTab: tab,
         })
+        var map = {
+            'interest': 4,
+            'favorite': 3,
+            'recommend': 1,
+            'system': 0
+        }
+        var ftype = map[tab]
+
+        this.getFavoriteProjects(ftype)
+    }
+
+    getFavoriteProjects(ftype) {
+        var ftypes = [ftype]
+        this.props.dispatch(requestContents(''))
+        api.getFavoriteProjects(
+            {
+                'input.maxResultCount': 10,
+                'input.skipCount': 0,
+                'input.userId': this.props.match.params.id,
+                'input.ftypes': ftypes.join(',')
+            },
+            (projects) => {
+                this.setState({ projects: projects })
+                this.props.dispatch(hideLoading())
+            },
+            error => this.props.dispatch(handleError(error))
+        )
+    }
+
+    componentDidMount() {
+        this.selectTab(this.state.activeTab)
     }
 
     render() {
-        var rows = []
-        this.state.projects.forEach(function(element) {
-            rows.push(
-                <div className="margin-bottom-2" key={element.title}>
-                    <ProjectListCell
-                        title={element.title}
-                        country={element.country}
-                        industrys={element.industrys.join('')}
-                        imgUrl={element.imgUrl}
-                        amount={element.amount}
-                    />
-                </div>
-            )
-        }, this)
 
         return (
             <div style={containerStyle}>
-                <NavigationBar title="投资人" backIconClicked={this.props.history.goBack} />
+                <NavigationBar title={this.props.location.state.investorName} backIconClicked={this.props.history.goBack} />
                 <div style={scrollStyle}>
-                <div style={tabsStyle}>
-                    <span style={this.state.activeTab == 'interest' ? activeTabStyle : tabStyle} data-id="interest" onClick={this.selectTab}>Ta感兴趣</span>
-                    <span style={this.state.activeTab == 'favorite' ? activeTabStyle : tabStyle} data-id="favorite" onClick={this.selectTab}>Ta的收藏</span>
-                    <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} data-id="recommend" onClick={this.selectTab}>推荐Ta的</span>
-                    <span style={this.state.activeTab == 'system' ? activeTabStyle : tabStyle} data-id="system" onClick={this.selectTab}>系统推送</span>
-                </div>
+                    <div style={tabsStyle}>
+                        <span style={this.state.activeTab == 'interest' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'interest')}>Ta感兴趣</span>
+                        <span style={this.state.activeTab == 'favorite' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'favorite')}>Ta的收藏</span>
+                        <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'recommend')}>推荐Ta的</span>
+                        <span style={this.state.activeTab == 'system' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'system')}>系统推荐</span>
+                    </div>
                 </div>
                 <div style={projectListStyle}>
-                    { rows }
+                    {
+                        this.state.projects.map(
+                            (project) => (
+                                <Link className="margin-bottom-2" key={project.id} to={'/project/' + project.id}>
+                                    <ProjectListCell
+                                        title={project.title}
+                                        country={project.country}
+                                        industrys={project.industrys.join('')}
+                                        imgUrl={project.imgUrl}
+                                        amount={project.amount}
+                                        id={project.id}
+                                    />
+                                </Link>
+                            )
+                        )
+                    }
                 </div>
             </div>
         )
     }
 }
 
-export default ChatInvestor
+export default connect()(ChatInvestor)

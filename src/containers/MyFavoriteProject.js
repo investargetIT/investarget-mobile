@@ -30,6 +30,12 @@ class MyFavoriteProject extends Component {
   componentDidMount() {
     this.props.dispatch(requestContents(''))
     api.getFavoriteProjects(
+      {
+        'input.userId': api.getCurrentUserId(),
+        'input.ftypes': '3',
+        'input.maxResultCount': 10,
+        'input.skipCount': 0,
+      },
       favoriteProjects => {
         this.props.dispatch(hideLoading())
         this.setState({ projects: favoriteProjects })
@@ -46,18 +52,19 @@ class MyFavoriteProject extends Component {
   }
 
   render() {
+    console.log(this.state.projects)
 
-    const content = this.state.projects.map(element =>
-      <div className="margin-bottom-2" key={element.id}>
-        <SwipeCell delete={this.removeFavoriteProject.bind(this, element.id)} action="取消收藏" actionBackgroundColor="#276CD2" >
-          <Link to={"/project/" + element.id} >
+    const content = this.state.projects.map(project =>
+      <div className="margin-bottom-2" key={project.id}>
+        <SwipeCell delete={this.removeFavoriteProject.bind(this, project.id)} action="取消收藏" actionBackgroundColor="#276CD2" >
+          <Link to={"/project/" + project.id} >
             <ProjectListCell
-              title={element.titleC}
-              country={element.country.countryName}
-              industrys={element.industrys.map(item => item.industryName).join('')}
-              imgUrl={element.industrys[0].imgUrl}
-              amount={element.financedAmount}
-              id={element.id} />
+              title={project.title}
+              country={project.country}
+              industrys={project.industrys.join('')}
+              imgUrl={project.imgUrl}
+              amount={project.amount}
+              id={project.id} />
           </Link>
         </SwipeCell>
       </div>
@@ -67,7 +74,7 @@ class MyFavoriteProject extends Component {
       <div>
         <NavigationBar title="我收藏的项目" backIconClicked={this.props.history.goBack} />
         <div style={contentContainerStyle}>
-          {content.length > 0 ? content : <img style={emptyPicStyle} src="/images/emptyBox@2x.png" />}
+          {this.state.projects.length > 0 ? content : <img style={emptyPicStyle} src="/images/emptyBox@2x.png" />}
         </div>
       </div>
     )

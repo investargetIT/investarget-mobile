@@ -107,10 +107,7 @@ class TimelineManagement extends React.Component {
     componentDidMount() {
         this.props.dispatch(requestContents(''))
         api.getAllTimeLines(
-            {
-                'input.lang': 'cn',
-                'input.maxResultCount': 10,
-            },
+            {},
             result => {
                 this.setState({
                     totalCount: result.totalCount,
@@ -123,6 +120,7 @@ class TimelineManagement extends React.Component {
     }
 
     render() {
+        var userId = api.getCurrentUserId()
         return (
             <div style={containerStyle}>
                 <NavigationBar title="项目进程" backIconClicked={this.handleGoBack} />
@@ -134,14 +132,17 @@ class TimelineManagement extends React.Component {
                         {
                             this.state.timelines.map(timeline => (
                                 <div style={timelineStyle} key={timeline.timeLineId}>
-                                    <Link to="project/85">
+                                    <Link to={'project/' + timeline.timeLineId}>
                                         <div style={nameStyle}>
                                             <span style={nameSpanStyle}>{timeline.projectName}</span>
                                         </div>
                                     </Link>
 
                                     <div style={detailStyle}>
-                                        <Link to={'chat_investor/' + timeline.investorId}>
+                                        <Link to={timeline.investorId == userId ? 
+                                            'user_info/' + userId : 
+                                            {pathname: 'chat_investor/' + timeline.investorId, state: {investorName: timeline.investorName}}
+                                        }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人：</span>
                                                 <span style={rightColStyle}>{timeline.investorName}</span>
@@ -155,7 +156,10 @@ class TimelineManagement extends React.Component {
                                             </div>
                                         </Link>
 
-                                        <Link to={'user_info/' + timeline.transactionId}>
+                                        <Link to={timeline.transactionId == userId ?
+                                            'user_info/' + userId :
+                                            {pathname: 'chat_transaction/' + timeline.transactionId, state: {transactionName: timeline.transactionName}}
+                                        }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>交易师：</span>
                                                 <span style={rightColStyle}>{timeline.transactionName}</span>
