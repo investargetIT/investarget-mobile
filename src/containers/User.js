@@ -163,7 +163,7 @@ class User extends Component {
           <ul>
 
             <Link to="/my_investor">
-              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的投资人" />
+              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label={this.props.userInfo.userType === 1 ? "我的交易师" : "我的投资人"} />
             </Link>
 
             <Link to="/notification">

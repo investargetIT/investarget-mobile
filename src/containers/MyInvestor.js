@@ -100,7 +100,7 @@ class MyInvestor extends Component {
     return (
       <div>
 
-        <NavigationBar title="我的投资人" backIconClicked={this.props.history.goBack} />
+        <NavigationBar title={this.props.userInfo.userType === 1 ? "我的交易师" : "我的投资人"} backIconClicked={this.props.history.goBack} />
 
         <div style={floatContainerStyle}>
           {content}
@@ -112,4 +112,9 @@ class MyInvestor extends Component {
 
 }
 
-export default connect()(MyInvestor)
+function mapStateToProps(state) {
+  const { userInfo } = state
+  return { userInfo }
+}
+
+export default connect(mapStateToProps)(MyInvestor)

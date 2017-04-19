@@ -572,16 +572,7 @@ export default {
   },
 
   getUsers(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/user/GetUsers?input.lang=cn&input.partnerId=' + getCurrentUserId(), {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
+    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.userId=' + getCurrentUserId(), cb, errCb)
   },
 
   getUserMessages(cb, errCb) {
