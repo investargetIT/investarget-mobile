@@ -1,6 +1,6 @@
 import React from 'react'
 import api from '../api'
-import { handleError, requestContents, hideLoading } from '../actions'
+import { handleError, requestContents, hideLoading, setRecommendProjects } from '../actions'
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
 
@@ -125,6 +125,7 @@ class ProjectDetail extends React.Component {
 
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
+        this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
     }
 
     componentDidMount() {
@@ -165,9 +166,15 @@ class ProjectDetail extends React.Component {
 
     handleFavoriteButtonToggle() {
       var projectId = this.props.match.params.id
+      var param = {
+          userId: api.getCurrentUserId(),
+          projectId: projectId,
+          fType: 3
+      }
+
       this.state.isMyFavoriteProject ?
-        api.projectCancelFavorite(projectId) :
-        api.favoriteProject(projectId)
+        api.projectCancelFavorite(param, ()=>{}, error=>{}) :
+        api.favoriteProject(param, ()=>{}, error=>{})
         
       this.setState({
         isMyFavoriteProject: !this.state.isMyFavoriteProject
@@ -179,7 +186,18 @@ class ProjectDetail extends React.Component {
             case "timeline":
                 this.props.history.push('/timeline/' + this.props.match.params.id)
                 break
+            case "recommend":
+                // 先 setRecommendProjects, 再跳转到 "选择投资人"
+                var projectId = this.props.match.params.id
+                this.props.dispatch(setRecommendProjects([projectId]))
+                this.props.history.push('/select_investors')
+                break
         }
+    }
+
+    handleBackIconClicked() {
+        this.props.dispatch(setRecommendProjects([]))
+        this.props.history.goBack()
     }
 
     render() {
@@ -237,7 +255,7 @@ class ProjectDetail extends React.Component {
         return (
             <div>
 
-                <NavigationBar title="项目详情" backIconClicked={this.props.history.goBack}/>
+                <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>
 
                 <div style={bgImageStyle}>
                     <div style={firstStyle}>

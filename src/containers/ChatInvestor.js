@@ -3,7 +3,7 @@ import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
 import { connect } from 'react-redux'
-import { requestContents, hideLoading, handleError } from '../actions'
+import { requestContents, hideLoading, handleError, setRecommendInvestors } from '../actions'
 import { Link } from  'react-router-dom'
 
 
@@ -49,6 +49,8 @@ class ChatInvestor extends React.Component {
             activeTab: 'interest', // 'favorite', 'recommend', 'system'
             projects: []
         }
+
+        this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
     }
 
     selectTab(tab) {
@@ -84,6 +86,12 @@ class ChatInvestor extends React.Component {
         )
     }
 
+    handleActionButtonClicked() {
+        var investorId = this.props.match.params.id
+        this.props.dispatch(setRecommendInvestors([investorId]))
+        this.props.history.push('/my_favorite_project')
+    }
+
     componentDidMount() {
         this.selectTab(this.state.activeTab)
     }
@@ -92,7 +100,10 @@ class ChatInvestor extends React.Component {
 
         return (
             <div style={containerStyle}>
-                <NavigationBar title={this.props.location.state.investorName} backIconClicked={this.props.history.goBack} />
+                <NavigationBar title={this.props.location.state.investorName}
+                               backIconClicked={this.props.history.goBack}
+                               action="+"
+                               onActionButtonClicked={this.handleActionButtonClicked} />
                 <div style={scrollStyle}>
                     <div style={tabsStyle}>
                         <span style={this.state.activeTab == 'interest' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'interest')}>Ta感兴趣</span>

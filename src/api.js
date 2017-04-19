@@ -648,14 +648,7 @@ export default {
     .catch(error => errCb(error))
   },
 
-  projectCancelFavorite(id) {
-
-    const param = {
-      userId: getCurrentUserId(),
-      projectId: id,
-      fType: 3
-    }
-
+  projectCancelFavorite(param, cb, errCb) {
     axios.post(
       url + 'services/InvestargetApi/project/ProjectCancelFavorite',
       param,
@@ -664,9 +657,11 @@ export default {
     .then(response => {
       if (!response.data.success) {
         throw new ApiError(response.data.error)
+      } else {
+        cb()
       }
     })
-    .catch(error => console.error(error))
+    .catch(error => errCb(error))
   },
 
   getFavoriteProjectIds,
@@ -699,12 +694,7 @@ export default {
     .catch(error => errCb(error))
   },
 
-  favoriteProject(id) {
-    const param = {
-      userId: getCurrentUserId(),
-      projectId: id,
-      fType: 3
-    }
+  favoriteProject(param, cb, errCb) {
     axios.post(
       url + 'services/InvestargetApi/project/ProjectFavorite',
       param,
@@ -713,9 +703,11 @@ export default {
     .then(response => {
       if (!response.data.success) {
         throw new ApiError(response.data.error)
+      } else {
+        cb()
       }
     })
-    .catch(error => console.error(error))
+    .catch(error => errCb(error))
   },
 
   getLinesBasic(projectId, cb, errCb) {

@@ -17,7 +17,10 @@ import {
   SEARCH_PROJECT,
   CLEAR_FILTER,
   CLONE_TRUE_FILTER,
-  MODIFY_USER_INFO
+  MODIFY_USER_INFO,
+  SET_RECOMMEND_INVESTORS,
+  SET_RECOMMEND_PROJECTS,
+  CLEAR_RECOMMEND
 } from '../actions'
 
 const initialState = {
@@ -33,7 +36,11 @@ const initialState = {
   tags: [],
   titles: [],
   trueFilter: [],
-  needRefresh: false
+  needRefresh: false,
+  recommendProcess: {
+    investorIds: [],
+    projectIds: []
+  }
 }
 
 export default function (state = initialState, action) {
@@ -153,6 +160,27 @@ export default function (state = initialState, action) {
       localStorage.setItem('userInfo', JSON.stringify(action.userInfo))
       return Object.assign({}, state, {
         userInfo: action.userInfo
+      })
+    case SET_RECOMMEND_INVESTORS:
+      return Object.assign({}, state, {
+        recommendProcess: {
+          investorIds: action.ids,
+          projectIds: state.recommendProcess.projectIds
+        }
+      })
+    case SET_RECOMMEND_PROJECTS:
+      return Object.assign({}, state, {
+        recommendProcess: {
+          investorIds: state.recommendProcess.investorIds,
+          projectIds: action.ids
+        }
+      })
+    case CLEAR_RECOMMEND:
+      return Object.assign({}, state, {
+        recommendProcess: {
+          investorIds: [],
+          projectIds: []
+        }
       })
     default:
       return state

@@ -24,6 +24,7 @@ class SwipeCell extends React.Component {
     }
 
     componentDidMount() {
+        var self = this
         var containerEl = this.refs.container
         var scrollerEl = this.refs.scroller
         var rightEl = this.refs.right
@@ -46,11 +47,18 @@ class SwipeCell extends React.Component {
                 } else {
                     this.to(this.max)
                 }
+                self.props.onPositionChange()
                 
                 this.isTouchStart = false
                 return false
             },
         })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isInitialPosition) {
+            this.alloyTouch.to(this.alloyTouch.max)
+        }
     }
     
     componentWillUnmount() {

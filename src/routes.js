@@ -37,6 +37,7 @@ import OrganizationDetail from './containers/OrganizationDetail'
 import Timeline from './containers/Timeline'
 import LatestRemark from './containers/LatestRemark'
 import NotificationDetail from './containers/NotificationDetail'
+import SelectInvestors from './containers/SelectInvestors'
 
 const Routes = (props) => {
 
@@ -100,8 +101,9 @@ const Routes = (props) => {
         <Route path="/contact" component={Contact} />
         <Route path="/organization/:id" component={OrganizationDetail} />
         <Route path="/timeline/:id" component={Timeline} />
-	<Route path="/latest_remark" component={LatestRemark} />
-	<Route path="/notifications/:id" component={NotificationDetail} />
+	      <Route path="/latest_remark" component={LatestRemark} />
+	      <Route path="/notifications/:id" component={NotificationDetail} />
+        <Route path="/select_investors" component={SelectInvestors} />
 
       </div>
     </Router>

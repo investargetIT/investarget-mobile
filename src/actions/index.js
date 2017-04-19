@@ -17,6 +17,9 @@ export const SEARCH_PROJECT = 'SEARCH_PROJECT'
 export const CLEAR_FILTER = 'CLEAR_FILTER'
 export const CLONE_TRUE_FILTER = 'CLONE_TRUE_FILTER'
 export const MODIFY_USER_INFO = 'MODIFY_USER_INFO'
+export const SET_RECOMMEND_INVESTORS = 'SET_RECOMMEND_INVESTORS'
+export const SET_RECOMMEND_PROJECTS = 'SET_RECOMMEND_PROJECTS'
+export const CLEAR_RECOMMEND = 'CLEAR_RECOMMEND'
 
 export function requestContents(param) {
   return {
@@ -140,5 +143,25 @@ export function modifyUserInfo(userInfo) {
   return {
     type: MODIFY_USER_INFO,
     userInfo
+  }
+}
+
+export function setRecommendInvestors(ids) {
+  return {
+    type: SET_RECOMMEND_INVESTORS,
+    ids: ids
+  }
+}
+
+export function setRecommendProjects(ids) {
+  return {
+    type: SET_RECOMMEND_PROJECTS,
+    ids: ids
+  }
+}
+
+export function clearRecommend() {
+  return {
+    type: CLEAR_RECOMMEND
   }
 }
