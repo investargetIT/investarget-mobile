@@ -48,7 +48,7 @@ function Message(props) {
 
       <div style={messageRightContainerStyle}>
         <div style={messageTitleAndDateContainerStyle}>
-          <div style={messageTitleStyle}>用户消息</div>
+          <div style={messageTitleStyle}>{props.title}</div>
           <div style={messageDateStyle}>{props.date}</div>
         </div>
         <div>{props.content}</div>
@@ -93,6 +93,7 @@ class Notification extends Component {
     }
 
     this.handleFilterTypeChanged = this.handleFilterTypeChanged.bind(this)
+    this.handleMessageClicked = this.handleMessageClicked.bind(this)
   }
 
   componentDidMount() {
@@ -110,12 +111,52 @@ class Notification extends Component {
     }
   }
 
+  getMessageTitle(type) {
+    var title = ''
+    switch (type) {
+      case 1:
+	title = '用户消息'
+	break
+      case 2:
+	title = '项目消息'
+	break
+      case 3:
+	title = '需求消息'
+	break
+      case 4:
+	title = '系统消息'
+	break
+      case 5:
+	title = '项目消息'
+	break
+      default:
+	title = '消息'
+    }
+    return title
+  }
+
+  handleMessageClicked(data) {
+
+    if (!data.isread) {
+      api.readMessage(data.id)
+    }
+
+    if (data.messageType === 2) {
+      this.props.history.push('/project/' + data.businessId)
+    } else {
+      this.props.history.push('/notifications/' + data.tid)
+    }
+
+  }
+
   render() {
 
     const content = this.state.message.filter(item =>
       item.isread === !this.state.showUnReadMessage
     ).map(item =>
-      <Message key={item.id} date={item.creationTime.substr(0, 10)} content={item.title} />
+      <div key={item.id} onClick={this.handleMessageClicked.bind(this, item)}>
+	<Message title={this.getMessageTitle(item.messageType)} date={item.creationTime.substr(0, 10)} content={item.title} />
+      </div>
     )
 
     return (

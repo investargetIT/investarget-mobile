@@ -134,6 +134,28 @@ function simplyPut(uri, param, cb, errCb) {
   })
 }
 
+function simplyPost(uri, param, cb, errCb) {
+  return new Promise((resolve, reject) => {
+    axios.post(
+      url + uri,
+      param,
+      { headers: { 'Authorization': 'Bearer ' + getToken() } }
+    )
+    .then(response => {
+      if (!response.data.success) {
+        throw new ApiError(response.data.error)
+      }
+      const data = response.data.result
+      if (cb) cb(data)
+      resolve(data)
+    })
+    .catch(error => {
+      if (errCb) errCb(error)
+      reject(error)
+    })
+  })
+}
+
 function upload(uri, data) {
   return new Promise((resolve, reject) => {
     axios.post(
@@ -742,6 +764,14 @@ export default {
 	cb(resKey, resUrl)
       })
     .catch(error => errCb(error))
+  },
+
+  getNotificationDetail(id, cb, errCb) {
+    return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
+  },
+
+  readMessage(id, cb, errCb) {
+    return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
   },
 
 }
