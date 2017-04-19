@@ -21,12 +21,12 @@ const TabBarItem = (props) => {
   var content
   if (props.route) {
     content = <Link to={props.route}>
-      <img style={iconStyle} alt={props.label} src="images/tab_bar_item_icon.svg" />
+      <img style={iconStyle} alt={props.label} src={props.iconSrc} />
       <p style={labelStyle}>{props.label}</p>
     </Link>
   } else if (props.url) {
     content = <a href={props.url}>
-      <img style={iconStyle} alt={props.label} src="images/tab_bar_item_icon.svg" />
+      <img style={iconStyle} alt={props.label} src={props.iconSrc} />
       <p style={labelStyle}>{props.label}</p>
     </a>
   }
