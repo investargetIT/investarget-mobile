@@ -76,7 +76,7 @@ class Login extends React.Component {
     const param = {
       mobileOrEmailAddress: this.state.username,
       password: this.state.password,
-      app: 1
+      app: 3
     }
 
     this.props.dispatch(requestContents(''))

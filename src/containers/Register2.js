@@ -124,7 +124,7 @@ class Register2 extends React.Component {
       'gender': 0,
       'company': this.state.company,
       'titleId': this.state.title,
-      'registerSource': 2,
+      'registerSource': 3,
       'userType': registerBasicInfo.userType,
       'userTagses': this.state.tags,
       'mobileAreaCode': 86,
