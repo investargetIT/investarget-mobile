@@ -25,10 +25,10 @@ class TabBar extends Component {
     return (
       <div style={containerStyle}>
         <div className="tab-bar" style={style}>
-	  <TabBarItem label="首页" route="/" iconSrc={ this.props.location.pathname === "/" ? "/images/userCenter/ht-usercenter-1@2x.png" : "/images/userCenter/ht-usercenter-2@2x.png"} />
-          <TabBarItem label="智库" route="/posts" iconSrc={ this.props.location.pathname === "/posts" ? "/images/userCenter/ht-usercenter-1@2x.png" : "/images/userCenter/ht-usercenter-2@2x.png"} />
-	  <TabBarItem label="活动" url={this.props.eventUrl} iconSrc="/images/userCenter/ht-usercenter-2@2x.png" />
-          <TabBarItem label="个人中心" route="/user" iconSrc={ this.props.location.pathname === "/user" ? "/images/userCenter/ht-usercenter-1@2x.png" : "/images/userCenter/ht-usercenter-2@2x.png"} />
+	  <TabBarItem label="首页" route="/" isActive={this.props.location.pathname === "/"} iconSrc={ this.props.location.pathname === "/" ? "/images/tabbar/home_fill.png" : "/images/tabbar/home.png"} />
+	  <TabBarItem label="智库" route="/posts" isActive={this.props.location.pathname === "/posts"} iconSrc={ this.props.location.pathname === "/posts" ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png"} />
+	  <TabBarItem label="活动" url={this.props.eventUrl} iconSrc="/images/tabbar/activity.png" />
+	  <TabBarItem label="个人中心" route="/user" isActive={this.props.location.pathname === "/user"} iconSrc={ this.props.location.pathname === "/user" ? "/images/tabbar/my_fill.png" : "/images/tabbar/my.png"} />
         </div>
       </div>
     )

@@ -7,17 +7,25 @@ var tabBarItemStyle = {
 }
 
 var iconStyle = {
-  width: '20px',
-  height: '20px'
+  width: '24px',
+  height: '24px'
 }
 
 var labelStyle = {
   fontSize: '10px',
-  color: 'gray'
+  color: 'gray',
+  WebkitMarginBefore: 0,
+  WebkitMarginAfter: 0
 }
 
 const TabBarItem = (props) => {
-
+  
+  var labelStyle = {
+    fontSize: '10px',
+    color: props.isActive ? '#10458F' : 'gray',
+    WebkitMarginBefore: 0,
+    WebkitMarginAfter: 0
+  }
   var content
   if (props.route) {
     content = <Link to={props.route}>
