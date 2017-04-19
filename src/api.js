@@ -715,6 +715,7 @@ export default {
   },
 
   uploadUserAvatar(formData, cb, errCb, key) {
+
     var uri
     if (key) {
       uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
@@ -722,20 +723,23 @@ export default {
       uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
     }
 
+    var resKey, resUrl
     upload(uri, formData)
       .then(data => {
+	resKey = data.key
+	resUrl = data.url
 	var userInfo = getCurrentUserInfo()
 	const param = Object.assign({}, userInfo, {
-	        photoKey: data.key,
 	        orgId: userInfo.org ? userInfo.org.id : null,
 	        orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
 	        titleId: userInfo.title ? userInfo.title.id : null,
 	      })
 
+	param[formData.get('key')] = data.key
       return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
     })
       .then(data => {
-	cb()
+	cb(resKey, resUrl)
       })
     .catch(error => errCb(error))
   },

@@ -3,7 +3,7 @@ import TabBar from './TabBar'
 import LeftIconRightLabel from '../components/LeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
-import { logout, handleError, requestContents, hideLoading } from '../actions'
+import { logout, handleError, requestContents, hideLoading, modifyUserInfo } from '../actions'
 import api from '../api'
 
 var blurBackgroundStyle = {
@@ -110,10 +110,19 @@ class User extends Component {
 
       var formData = new FormData()
       formData.append('file', file)
+      formData.append('key', 'photoKey')
 
       api.uploadUserAvatar(
 	formData,
-	() => react.props.dispatch(hideLoading()),
+	(key, url) => {
+	  react.props.dispatch(hideLoading())
+	  react.props.dispatch(handleError(new Error('Please wait patient')))
+	  const newUserInfo = Object.assign({}, react.props.userInfo, {
+	    photoKey: key,
+	    photoUrl: url
+	  })
+	  react.props.dispatch(modifyUserInfo(newUserInfo))
+	},
 	error => react.props.dispatch(handleError(error)),
 	react.props.userInfo.photoKey || null
       )

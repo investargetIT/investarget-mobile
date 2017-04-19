@@ -74,7 +74,11 @@ class HandleError extends Component {
         case 'Please contact to modify':
           showError = true
           errMsg = '请联系客服人员进行修改'
-          break
+	  break
+	case 'Please wait patient':
+	  showError = true
+	  errMsg = "图像更新需要时间，请耐心等待"
+	  break
         default:
           console.error(error)
       }
