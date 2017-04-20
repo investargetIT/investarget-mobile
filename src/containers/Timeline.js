@@ -145,13 +145,20 @@ class Timeline extends Component {
     super(props)
     this.state = { 
       timelines: [],
-      myInvestor: [] 
+      myInvestor: [],
+      title: ''
     }
 
     this.handleStepClicked = this.handleStepClicked.bind(this)
   }
 
   componentDidMount() {
+
+    var entireTitle = this.props.location.state
+    var titleArr = entireTitle.split('：')
+    var title = titleArr.length > 0 ? titleArr[0] : entireTitle
+    this.setState({ title: title })
+
     api.getLinesBasic(
       this.props.match.params.id,
       data => {
@@ -204,7 +211,7 @@ class Timeline extends Component {
 	<div style={titleContainerStyle2}>
 	  <div style={stepIconContainerStyle}></div>
 	  <div style={titleContainerStyle}>
-	    <span style={titleStyle}>大使项目</span>
+	    <span style={titleStyle}>{this.state.title}</span>
 	  </div>
 	</div>
 

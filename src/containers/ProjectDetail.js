@@ -183,8 +183,12 @@ class ProjectDetail extends React.Component {
 
     handleActionButtonClicked(event) {
         switch (event.target.name) {
-            case "timeline":
-                this.props.history.push('/timeline/' + this.props.match.params.id)
+	  case "timeline":
+	    var toObj = {
+	      pathname: '/timeline/' + this.props.match.params.id,
+	      state: this.state.result.titleC
+	    }
+                this.props.history.push(toObj)
                 break
             case "recommend":
                 // 先 setRecommendProjects, 再跳转到 "选择投资人"
