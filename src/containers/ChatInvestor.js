@@ -87,12 +87,12 @@ class ChatInvestor extends React.Component {
     }
 
     handleActionButtonClicked() {
-        var investorId = this.props.match.params.id
-        this.props.dispatch(setRecommendInvestors([investorId]))
         this.props.history.push('/my_favorite_project')
     }
 
     componentDidMount() {
+        var investorId = this.props.match.params.id
+        this.props.dispatch(setRecommendInvestors([investorId]))
         this.selectTab(this.state.activeTab)
     }
 

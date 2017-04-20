@@ -3,6 +3,7 @@ import NavigationBar from '../components/NavigationBar'
 import api from '../api'
 import { handleError, requestContents, hideLoading, setRecommendInvestors, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
+import Modal from '../components/Modal'
 
 
 const containerStyle = {
@@ -80,10 +81,12 @@ class SelectInvestors extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            myInvestor: []
+            myInvestor: [],
+            showModal: false,
         }
         this.confirmSelect = this.confirmSelect.bind(this)
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
+        this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
     }
 
     confirmSelect() {
@@ -95,44 +98,51 @@ class SelectInvestors extends React.Component {
     }
 
     recommend() {
-        alert('recommend')
-        // var userId = api.getCurrentUserId()
-        // var investorIds = this.props.recommendProcess.investorIds
-        // var projectIds  = this.props.recommendProcess.projectIds
-        // var all = []
+        var userId = api.getCurrentUserId()
+        var investorIds = this.props.recommendProcess.investorIds
+        var projectIds  = this.props.recommendProcess.projectIds
+        var all = []
 
-        // this.props.dispatch(requestContents(''))
-        // investorIds.forEach(investorId => {
-        //     projectIds.forEach(projectId => {
-        //         all.push(new Promise((resolve, reject) => {
-        //             var param = {
-        //                 userId: investorId,
-        //                 projectId: projectId,
-        //                 fType: 1,
-        //                 transactionId: userId,
-        //             }
-        //             api.favoriteProject(
-        //                 param,
-        //                 () => resolve(),
-        //                 error => reject(error)
-        //             )
-        //         }))
-        //     })
-        // })
+        this.props.dispatch(requestContents(''))
+        investorIds.forEach(investorId => {
+            projectIds.forEach(projectId => {
+                all.push(new Promise((resolve, reject) => {
+                    var param = {
+                        userId: investorId,
+                        projectId: projectId,
+                        fType: 1,
+                        transactionId: userId,
+                    }
+                    api.favoriteProject(
+                        param,
+                        () => resolve(),
+                        error => reject(error)
+                    )
+                }))
+            })
+        })
 
-        // Promise.all(all)
-        // .then(
-        //     items => {
-        //         this.props.dispatch(hideLoading())
-        //         this.props.dispatch(clearRecommend())
-        //     }
-        // )
-        // .catch(
-        //     error => {
-        //         this.props.dispatch(handleError(error))
-        //         this.props.dispatch(clearRecommend())
-        //     }
-        // )
+        Promise.all(all)
+        .then(
+            items => {
+                this.props.dispatch(hideLoading())
+                this.props.dispatch(clearRecommend())
+                this.setState({
+                    showModal: true
+                })
+            }
+        )
+        .catch(
+            error => {
+                this.props.dispatch(handleError(error))
+                this.props.dispatch(clearRecommend())
+            }
+        )
+    }
+
+    handleRecommendSuccess() {
+        this.setState({ showModal: false })
+        this.props.history.goBack()
     }
 
     toggleSelect(id) {
@@ -201,6 +211,8 @@ class SelectInvestors extends React.Component {
                         ))
                     }
                 </div>
+
+                <Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} />
             </div>
         )
     }

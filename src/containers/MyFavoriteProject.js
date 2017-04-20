@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
-import { handleError, requestContents, hideLoading, setRecommendProjects } from '../actions'
+import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import ProjectListCell from '../components/ProjectListCell'
 import { Link } from 'react-router-dom'
 import SwipeCell from '../components/SwipeCell'
+import Modal from '../components/Modal'
 
 const contentContainerStyle = {
   backgroundColor: '#EEF3F4',
@@ -121,6 +122,7 @@ class MyFavoriteProject extends Component {
       projects: [],
       isSelecting: false,
       isInitialCellPosition: true,
+      showModal: false,
     }
 
     this.showSelect = this.showSelect.bind(this)
@@ -130,6 +132,7 @@ class MyFavoriteProject extends Component {
     this.handleCellPositionChange = this.handleCellPositionChange.bind(this)
 
     this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
+    this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
   }
 
   handleCellPositionChange() {
@@ -172,7 +175,51 @@ class MyFavoriteProject extends Component {
   }
 
   recommend() {
-    alert('recommend')
+    var userId = api.getCurrentUserId()
+    var investorIds = this.props.recommendProcess.investorIds
+    var projectIds  = this.props.recommendProcess.projectIds
+    var all = []
+
+    this.props.dispatch(requestContents(''))
+    investorIds.forEach(investorId => {
+        projectIds.forEach(projectId => {
+            all.push(new Promise((resolve, reject) => {
+                var param = {
+                    userId: investorId,
+                    projectId: projectId,
+                    fType: 1,
+                    transactionId: userId,
+                }
+                api.favoriteProject(
+                    param,
+                    () => resolve(),
+                    error => reject(error)
+                )
+            }))
+        })
+    })
+
+    Promise.all(all)
+    .then(
+        items => {
+            this.props.dispatch(hideLoading())
+            this.props.dispatch(clearRecommend())
+            this.setState({
+                showModal: true
+            })
+        }
+    )
+    .catch(
+        error => {
+            this.props.dispatch(handleError(error))
+            this.props.dispatch(clearRecommend())
+        }
+    )
+  }
+
+  handleRecommendSuccess() {
+      this.setState({ showModal: false })
+      this.props.history.goBack()
   }
 
   handleBackIconClicked() {
@@ -242,6 +289,8 @@ class MyFavoriteProject extends Component {
             <div style={actionButtonStyle} onClick={this.confirmSelect}>确定</div>
           </div>
         </div>
+
+        <Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} />
       </div>
     )
     

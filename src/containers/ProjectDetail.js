@@ -1,8 +1,9 @@
 import React from 'react'
 import api from '../api'
-import { handleError, requestContents, hideLoading, setRecommendProjects } from '../actions'
+import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
+import Modal from '../components/Modal'
 
 var firstStyle = {
     position: 'absolute',
@@ -120,12 +121,62 @@ class ProjectDetail extends React.Component {
 
         this.state = { 
             "result": null,
-            "isMyFavoriteProject": false
+            "isMyFavoriteProject": false,
+            "showModal": false
         }
 
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
+        this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
+    }
+
+    recommend() {
+        var userId = api.getCurrentUserId()
+        var investorIds = this.props.recommendProcess.investorIds
+        var projectIds  = this.props.recommendProcess.projectIds
+        var all = []
+
+        this.props.dispatch(requestContents(''))
+        investorIds.forEach(investorId => {
+            projectIds.forEach(projectId => {
+                all.push(new Promise((resolve, reject) => {
+                    var param = {
+                        userId: investorId,
+                        projectId: projectId,
+                        fType: 1,
+                        transactionId: userId,
+                    }
+                    api.favoriteProject(
+                        param,
+                        () => resolve(),
+                        error => reject(error)
+                    )
+                }))
+            })
+        })
+
+        Promise.all(all)
+        .then(
+            items => {
+                this.props.dispatch(hideLoading())
+                this.props.dispatch(setRecommendProjects([]))
+                this.setState({
+                    showModal: true
+                })
+            }
+        )
+        .catch(
+            error => {
+                this.props.dispatch(handleError(error))
+                this.props.dispatch(setRecommendProjects([]))
+            }
+        )
+    }
+
+    handleRecommendSuccess() {
+        this.setState({ showModal: false })
+        this.props.history.goBack()
     }
 
     componentDidMount() {
@@ -134,6 +185,9 @@ class ProjectDetail extends React.Component {
         this.props.history.push('/login')
         return
       }
+
+      var projectId = this.props.match.params.id
+      this.props.dispatch(setRecommendProjects([projectId]))
 
       this.props.dispatch(requestContents(''))
 
@@ -192,11 +246,21 @@ class ProjectDetail extends React.Component {
                 this.props.history.push(toObj)
                 break
             case "recommend":
-                // 先 setRecommendProjects, 再跳转到 "选择投资人"
-                var projectId = this.props.match.params.id
-                this.props.dispatch(setRecommendProjects([projectId]))
-                this.props.history.push('/select_investors')
+                if (this.props.recommendProcess.projectIds.length &&
+                    this.props.recommendProcess.investorIds.length)
+                {
+                    this.recommend()
+                } else if (this.props.recommendProcess.projectIds.length) {
+                    this.props.history.push('/select_investors')
+                }
                 break
+            case "interest":
+                var param = {
+                    userId: api.getCurrentUserId(),
+                    projectId: this.props.match.params.id,
+                    fType: 4,
+                }
+                api.favoriteProject(param, ()=>{}, error=>{})
         }
     }
 
@@ -255,7 +319,7 @@ class ProjectDetail extends React.Component {
                     return null;
                 }
             })
-
+        
 
       var wechatImageContainer = {
 	display: 'none'
@@ -348,7 +412,17 @@ class ProjectDetail extends React.Component {
                 <div style={actionPlaceHolderStyle}></div>
                 <div style={actionContainerStyle}>
                     <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
-                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>{ this.props.userInfo.userType === 1 ? "感兴趣" : "推荐给投资人" }</button>
+                    {
+                        this.props.userInfo.userType == 1 ? (
+                            <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button>
+                        ) : null
+                    }
+                    {
+                        this.props.userInfo.userType == 3 ? (
+                            <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
+                        ) : null
+                    }
+                    
                     <div style={actionFavoriteContinerStyle}>
                         <img
                             style={favoriteIconStyle}
@@ -357,6 +431,8 @@ class ProjectDetail extends React.Component {
                         />
                     </div>
                 </div>
+
+                <Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} />
 
             </div>
         )
@@ -381,8 +457,8 @@ function changeToEnter(text) {
 }
 
 function mapStateToProps(state) {
-  const { isLogin, userInfo } = state
-  return { isLogin, userInfo }
+  const { isLogin, userInfo, recommendProcess } = state
+  return { isLogin, userInfo, recommendProcess }
 }
 
 export default connect(mapStateToProps)(ProjectDetail)

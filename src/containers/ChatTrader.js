@@ -4,6 +4,7 @@ import NavigationBar from '../components/NavigationBar'
 import api from '../api'
 import { connect } from 'react-redux'
 import { requestContents, hideLoading, handleError } from '../actions'
+import { Link } from 'react-router-dom'
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',
@@ -89,14 +90,16 @@ class ChatTrader extends React.Component {
                 <NavigationBar title={this.props.location.state.transactionName} backIconClicked={this.props.history.goBack} />
                 <div style={scrollStyle}>
                     <div style={tabsStyle}>
-                        <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'recommend')}>交易师推荐</span>
+                        <span style={this.state.activeTab == 'interest' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'interest')}> 感兴趣</span>
                         <span style={this.state.activeTab == 'favorite' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'favorite')}>我的收藏</span>
+                        <span style={this.state.activeTab == 'recommend' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'recommend')}>交易师推荐</span>
+                        <span style={this.state.activeTab == 'system' ? activeTabStyle : tabStyle} onClick={this.selectTab.bind(this, 'system')}>系统推荐</span>
                     </div>
                 </div>
                 <div style={projectListStyle}>
                     {
                         this.state.projects.map(project => (
-                            <div className="margin-bottom-2" key={project.title}>
+                            <Link className="margin-bottom-2" key={project.id} to={'/project/' + project.id}>
                                 <ProjectListCell
                                     title={project.title}
                                     country={project.country}
@@ -105,7 +108,7 @@ class ChatTrader extends React.Component {
                                     amount={project.amount}
                                     id={project.id}
                                 />
-                            </div>
+                            </Link>
                         ))
                     }
                 </div>
