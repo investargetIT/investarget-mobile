@@ -141,7 +141,8 @@ class ProjectDetail extends React.Component {
       api.getSingleProject(
         projectId,
         data => {
-          this.props.dispatch(hideLoading())
+	  this.props.dispatch(hideLoading())
+	  document.title = data.titleC
           this.setState({ result: data }
         )},
         error => this.props.dispatch(handleError(error))
@@ -256,9 +257,14 @@ class ProjectDetail extends React.Component {
             })
 
 
+      var wechatImageContainer = {
+	display: 'none'
+      }
         return (
-            <div>
-
+	  <div>
+	    <div style={wechatImageContainer}> 
+	      <img src={info.industrys[0].imgUrl} alt="" />
+	    </div>
                 <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>
 
                 <div style={bgImageStyle}>
@@ -266,7 +272,7 @@ class ProjectDetail extends React.Component {
                         <p style={titleStyle} >{ info.titleC }</p>
                         <p style={tagStyle} >标签：{ info.tags.map(tag => <span style={spanStyle} key={tag.id}>{tag.tagName}</span>) } </p>
                         <p style={dateStyle} >发布日期：{info.creationTime}</p>
-                    </div>     
+		      </div>
                 </div>
 
                 <div style={dataSetStyle}>
