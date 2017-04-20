@@ -161,10 +161,21 @@ class User extends Component {
 
         <div style={settingContainerStyle}>
           <ul>
+            {
+              this.props.userInfo.userType === 3 ? (
+                <Link to="/my_investor">
+                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的投资人" />
+                </Link>
+              ) : null
+            }
 
-            <Link to="/my_investor">
-              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label={this.props.userInfo.userType === 1 ? "我的交易师" : "我的投资人"} />
-            </Link>
+            {
+              this.props.userInfo.userType === 1 ? (
+                <Link to="/my_trasaction">
+                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的交易师" />
+                </Link>
+              ) : null
+            }
 
             <Link to="/notification">
               <LeftIconRightLabel icon="images/notifyMessage@2x.png" label="通知消息" />
@@ -187,7 +198,7 @@ class User extends Component {
             </Link>
 
             <Link to="/modify_business_card">
-              <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="修改名片" />
+              <LeftIconRightLabel icon="images/userCenter/name_card@2x.png" label="修改名片" />
             </Link>
 
             <Link to="/contact">

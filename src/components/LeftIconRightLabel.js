@@ -2,23 +2,21 @@ import React from 'react'
 
 var itemContainerStyle = {
   display: 'flex',
-  padding: '6px 30px'
+  padding: '6px 30px',
+  alignItems: 'center',
 }
 
 var iconStyle = {
   width: '20px',
-  height: '20px'
-}
-
-var iconContainerStyle = {
-  paddingRight: '14px'
+  height: 'auto',
+  marginRight: '14px'
 }
 
 function LeftIconRightLabel(props) {
   return (
     <li style={itemContainerStyle} onClick={props.onClick}>
-      <div style={iconContainerStyle}><img alt="" style={iconStyle} src={props.icon} /></div>
-      <div><span>{props.label}</span></div>
+      <img alt="" style={iconStyle} src={props.icon} />
+      <span>{props.label}</span>
     </li>
   )
 }
