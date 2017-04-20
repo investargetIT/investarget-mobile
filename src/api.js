@@ -737,7 +737,9 @@ export default {
 	const param = Object.assign({}, userInfo, {
 	        orgId: userInfo.org ? userInfo.org.id : null,
 	        orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
-	        titleId: userInfo.title ? userInfo.title.id : null,
+	  titleId: userInfo.title ? userInfo.title.id : null,
+	  photoBucket: 'image',
+	  cardBucket: 'image'
 	      })
 
 	param[formData.get('key')] = data.key
