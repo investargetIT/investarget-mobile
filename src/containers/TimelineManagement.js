@@ -97,7 +97,8 @@ class TimelineManagement extends React.Component {
             timelines: [],
             latestRemark: {},
         }
-        this.handleGoBack = this.handleGoBack.bind(this)
+      this.handleGoBack = this.handleGoBack.bind(this)
+      this.handleTimelineClicked = this.handleTimelineClicked.bind(this)
     }
 
     handleGoBack() {
@@ -118,6 +119,12 @@ class TimelineManagement extends React.Component {
             error => this.props.dispatch(handleError(error))
         )
     }
+
+  handleTimelineClicked(id) {
+    if (this.props.userInfo.userType === 3) {
+      this.props.history.push('edit_timeline/' + id)
+    }
+  }
 
     render() {
         var userId = api.getCurrentUserId()
@@ -166,31 +173,25 @@ class TimelineManagement extends React.Component {
                                             </div>
                                         </Link>
 
-                                        <Link to={'edit_timeline/' + timeline.timeLineId}>
-                                            <div style={rowStyle}>
+                                            <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
                                                 <span style={leftColStyle}>当前状态：</span>
                                                 <span style={rightColStyle}>{timeline.transactionStatusName}</span>
                                             </div>
-                                        </Link>
 
                                         <div style={rowStyle}>
                                             <span style={leftColStyle}>是否结束：</span>
                                             <span style={rightColStyle}>{timeline.isClose ? '已结束' : '未结束'}</span>
                                         </div>
 
-                                        <Link to={'edit_timeline/' + timeline.timeLineId}>
-                                            <div style={rowStyle}>
+					  <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
                                                 <span style={leftColStyle}>剩余天数：</span>
                                                 <span style={rightColStyle}>{timeline.remainingAlertDays}</span>
                                             </div>
-                                        </Link>
 
-                                        <Link to={'edit_timeline/' + timeline.timeLineId}>
-                                            <div style={rowNoBorderStyle}>
+                                            <div style={rowNoBorderStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
                                                 <span style={leftColStyle}>最新备注：</span>
                                                 <span style={rightColStyle}>{timeline.remark}</span>
                                             </div>
-                                        </Link>
 
                                     </div>
                                 </div>
@@ -203,4 +204,9 @@ class TimelineManagement extends React.Component {
     }
 }
 
-export default connect()(TimelineManagement)
+function mapStateToProps(state) {
+  const { userInfo} = state
+  return { userInfo}
+}
+
+export default connect(mapStateToProps)(TimelineManagement)
