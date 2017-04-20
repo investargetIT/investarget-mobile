@@ -75,7 +75,7 @@ class MyInvestor extends Component {
           var object = {}
           object.id = item.id
           object.name = item.name
-          object.org = item.org.name || item.company
+          object.org = item.org ? item.org.name : item.company
           object.photoUrl = item.photoUrl
           return object
         })

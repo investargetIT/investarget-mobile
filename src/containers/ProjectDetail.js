@@ -338,7 +338,7 @@ class ProjectDetail extends React.Component {
                 <div style={actionPlaceHolderStyle}></div>
                 <div style={actionContainerStyle}>
                     <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
-                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
+                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>{ this.props.userInfo.userType === 1 ? "感兴趣" : "推荐给投资人" }</button>
                     <div style={actionFavoriteContinerStyle}>
                         <img
                             style={favoriteIconStyle}
@@ -371,8 +371,8 @@ function changeToEnter(text) {
 }
 
 function mapStateToProps(state) {
-  const isLogin = state.isLogin
-  return { isLogin }
+  const { isLogin, userInfo } = state
+  return { isLogin, userInfo }
 }
 
 export default connect(mapStateToProps)(ProjectDetail)
