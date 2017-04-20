@@ -112,7 +112,7 @@ class App extends Component {
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
         if (projectID) {
-          this.props.history.push('/project/' + projectID);
+          window.location.href = '/project/' + projectID
         }
       }
     })
