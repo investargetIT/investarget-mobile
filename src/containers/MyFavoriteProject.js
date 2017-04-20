@@ -231,7 +231,7 @@ class MyFavoriteProject extends Component {
 
     return (
       <div>
-        <NavigationBar title="我收藏的项目" backIconClicked={this.handleBackIconClicked} action="推荐" onActionButtonClicked={this.showSelect} />
+        <NavigationBar title="我收藏的项目" backIconClicked={this.handleBackIconClicked} action={ this.props.userInfo.userType === 3 ? "推荐" : null } onActionButtonClicked={this.showSelect} />
         <div style={contentContainerStyle}>
           {this.state.projects.length > 0 ? content : <img style={emptyPicStyle} src="/images/emptyBox@2x.png" />}
         </div>
@@ -250,10 +250,8 @@ class MyFavoriteProject extends Component {
 }
 
 function mapStateToProps(state) {
-  const { recommendProcess } = state
-  return {
-    recommendProcess
-  }
+  const { recommendProcess, userInfo } = state
+  return { recommendProcess, userInfo }
 }
 
 
