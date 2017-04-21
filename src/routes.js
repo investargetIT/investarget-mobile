@@ -19,8 +19,7 @@ import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
 import TimelineManagement from './containers/TimelineManagement'
-import ChatInvestor from './containers/ChatInvestor'
-import ChatTrader from './containers/ChatTrader'
+import Chat from './containers/Chat'
 import UserInfo from './containers/UserInfo'
 import EditTimeline from './containers/EditTimeline'
 import RetrievePassword from './containers/RetrievePassword'
@@ -86,8 +85,7 @@ const Routes = (props) => {
         <Route path="/filter" component={Filter} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
-        <Route path="/chat_investor/:id" component={ChatInvestor} />
-        <Route path="/chat_transaction/:id" component={ChatTrader} />
+        <Route path="/chat/:id" component={Chat} />
         <Route path="/user_info/:id" component={UserInfo} />
         <Route path="/edit_timeline/:id" component={EditTimeline} />
         <Route path="/retrieve_password" component={RetrievePassword} />
