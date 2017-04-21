@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import { connect } from 'react-redux'
 
 const messageContainerStyle = {
   padding: '10px'
@@ -142,7 +143,7 @@ class Notification extends Component {
     }
 
     if (data.messageType === 2) {
-      this.props.history.push('/project/' + data.businessId)
+      window.location.href = '/project/' + data.businessId + (this.props.userInfo ? '/' + this.props.userInfo.token : '')
     } else {
       this.props.history.push('/notifications/' + data.tid)
     }
@@ -175,4 +176,9 @@ class Notification extends Component {
   }
 }
 
-export default Notification
+function mapStateToProps(state) {
+  const { userInfo } = state
+  return { userInfo }
+}
+
+export default connect(mapStateToProps)(Notification)

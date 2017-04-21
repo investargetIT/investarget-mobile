@@ -256,7 +256,7 @@ class MyFavoriteProject extends Component {
         <div style={cellContainerStyle}>
           <div style={this.state.isSelecting ? cellWrapStyle : {}}>
             <SwipeCell delete={this.removeFavoriteProject.bind(this, project.id)} action="取消收藏" actionBackgroundColor="#276CD2" isInitialPosition={this.state.isInitialCellPosition} onPositionChange={this.handleCellPositionChange} >
-              <Link to={"/project/" + project.id} >
+	      <a href={"/project/" + project.id + (this.props.userInfo ? '/' + this.props.userInfo.token : '') }>
                 <ProjectListCell
                   title={project.title}
                   country={project.country}
@@ -264,7 +264,7 @@ class MyFavoriteProject extends Component {
                   imgUrl={project.imgUrl}
                   amount={project.amount}
                   id={project.id} />
-              </Link>
+              </a>
             </SwipeCell>
           </div>
           <div style={ this.state.isSelecting ? checkboxWrapStyle : checkboxWrapHideStyle } onClick={this.toggleSelect.bind(this, project.id)}>

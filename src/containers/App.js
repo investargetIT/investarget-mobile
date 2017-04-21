@@ -111,8 +111,8 @@ class App extends Component {
       },
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
-        if (projectID) {
-          window.location.href = '/project/' + projectID
+	if (projectID) {
+	  window.location.href = '/project/' + projectID + (react.props.userInfo ? '/' + react.props.userInfo.token : '')
         }
       }
     })
@@ -250,7 +250,8 @@ function mapStateToProps(state) {
   const projects = state.projects
   const needRefresh = state.needRefresh
   const filter = state.trueFilter
-  return { projects, filter, needRefresh }
+  const userInfo = state.userInfo
+  return { projects, filter, needRefresh, userInfo }
 }
 
 function filterToParams(data) {

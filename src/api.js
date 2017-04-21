@@ -251,9 +251,10 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getSingleProject(id, cb, errCb) {
+  getSingleProject(id, cb, errCb, token) {
+
     axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
+      headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
     })
     .then(response => {
       if (response.data.success) {

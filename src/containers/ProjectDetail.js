@@ -181,7 +181,7 @@ class ProjectDetail extends React.Component {
 
     componentDidMount() {
 
-      if (!this.props.isLogin) {
+      if (!this.props.match.params.token) {
         this.props.history.push('/login')
         return
       }
@@ -192,6 +192,7 @@ class ProjectDetail extends React.Component {
       this.props.dispatch(requestContents(''))
 
       var projectId = this.props.match.params.id
+      const token = this.props.match.params.token
       api.getSingleProject(
         projectId,
         data => {
@@ -199,10 +200,12 @@ class ProjectDetail extends React.Component {
 	  document.title = data.titleC
           this.setState({ result: data }
         )},
-        error => this.props.dispatch(handleError(error))
+	error => this.props.dispatch(handleError(error)),
+	token
       )
 
       // 是否收藏了项目
+      if (!this.props.isLogin) return
       api.getFavoriteProjectIds(
         {
             'input.projectId': projectId,
@@ -270,6 +273,7 @@ class ProjectDetail extends React.Component {
     }
 
     render() {
+
 
       if (!this.state.result) {
         return null
@@ -409,6 +413,7 @@ class ProjectDetail extends React.Component {
                     {hightlightItems}
                 </div>
 
+		{ this.props.isLogin ? <div>
                 <div style={actionPlaceHolderStyle}></div>
                 <div style={actionContainerStyle}>
                     <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
@@ -432,8 +437,8 @@ class ProjectDetail extends React.Component {
                     </div>
                 </div>
 
-                <Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} />
-
+		<Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} /></div>
+: null }
             </div>
         )
     }
