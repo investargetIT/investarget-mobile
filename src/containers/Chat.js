@@ -136,7 +136,8 @@ class Chat extends React.Component {
                     <div style={tabsStyle}>
                         {
                             ['interest', 'favorite', 'recommend', 'system'].map(tab => (
-                                <span style={this.state.activeTab == tab ? activeTabStyle : tabStyle}
+                                <span key={tab}
+                                      style={this.state.activeTab == tab ? activeTabStyle : tabStyle}
                                       onClick={this.selectTab.bind(this, tab)}>{tabNameMap[tab]}</span>
                             ))
                         }

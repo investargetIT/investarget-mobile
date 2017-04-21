@@ -5,11 +5,11 @@ import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-const investorContainerStyle = {
+const partenerContainerStyle = {
   textAlign: 'center'
 }
 
-const investorAvatarStyle = {
+const partenerAvatarStyle = {
   width: '73px',
   height: '73px',
   borderRadius: '50%'
@@ -34,10 +34,10 @@ const investarNameStyle = {
   overflow: 'hidden',
 }
 
-function Investor(props) {
+function Partener(props) {
   return (
-    <div style={investorContainerStyle}>
-      <img style={investorAvatarStyle} src={props.photoUrl ? props.photoUrl : "/images/userCenter/defaultAvatar@2x.png"} alt="" />
+    <div style={partenerContainerStyle}>
+      <img style={partenerAvatarStyle} src={props.photoUrl ? props.photoUrl : "/images/userCenter/defaultAvatar@2x.png"} alt="" />
       <p style={investarOrgStyle}>{props.org}</p>
       <p style={investarNameStyle}>{props.name}</p>
     </div>
@@ -55,12 +55,12 @@ const itemStyle = {
   margin: '8px ' + 75/375/6*100+'%',
 }
 
-class MyInvestor extends Component {
+class MyPartener extends Component {
 
   constructor(props) {
     super(props)
 
-    this.state = { myInvestor: [] }
+    this.state = { myPartener: [] }
   }
 
   componentDidMount() {
@@ -71,7 +71,7 @@ class MyInvestor extends Component {
       data => {
         this.props.dispatch(hideLoading())
 
-        const myInvestor = data.items.map(item => {
+        const myPartener = data.items.map(item => {
           var object = {}
           object.id = item.id
           object.name = item.name
@@ -79,7 +79,7 @@ class MyInvestor extends Component {
           object.photoUrl = item.photoUrl
           return object
         })
-        this.setState({myInvestor: myInvestor})
+        this.setState({myPartener: myPartener})
       },
       error => this.props.dispatch(handleError(error))
     )
@@ -87,11 +87,11 @@ class MyInvestor extends Component {
 
   render() {
 
-    const content = this.state.myInvestor.map(
+    const content = this.state.myPartener.map(
       item => (
-        <Link key={item.id} to={{pathname: '/chat/' + item.id, state:{investorName: item.name}}}>
+        <Link key={item.id} to={{pathname: '/chat/' + item.id, state:{partenerName: item.name}}}>
           <div style={itemStyle}>
-            <Investor name={item.name} org={item.org} photoUrl={item.photoUrl} />
+            <Partener name={item.name} org={item.org} photoUrl={item.photoUrl} />
           </div>
         </Link>
       )
@@ -117,4 +117,4 @@ function mapStateToProps(state) {
   return { userInfo }
 }
 
-export default connect(mapStateToProps)(MyInvestor)
+export default connect(mapStateToProps)(MyPartener)
