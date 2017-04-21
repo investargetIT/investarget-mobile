@@ -296,8 +296,12 @@ class ProjectDetail extends React.Component {
     }
 
     handleBackIconClicked() {
-        this.props.dispatch(setRecommendProjects([]))
-        this.props.history.goBack()
+      this.props.dispatch(setRecommendProjects([]))
+      if (this.props.history.length > 1) {
+	this.props.history.goBack()
+      } else {
+	window.location.href = '/'
+      }
     }
 
     render() {
