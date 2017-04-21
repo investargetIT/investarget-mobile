@@ -148,7 +148,7 @@ class Chat extends React.Component {
                         this.state.projects.length ?
                             this.state.projects.map(
                                 (project) => (
-                                    <Link className="margin-bottom-2" key={project.id} to={'/project/' + project.id}>
+				  <a className="margin-bottom-2" key={project.id} href={'/project/' + project.id + (this.props.userInfo ? '/' + this.props.userInfo.token : '')}>
                                         <ProjectListCell
                                             title={project.title}
                                             country={project.country}
@@ -157,7 +157,7 @@ class Chat extends React.Component {
                                             amount={project.amount}
                                             id={project.id}
                                         />
-                                    </Link>
+                                    </a>
                                 )
                             ) :
                             <EmptyBox />
@@ -172,7 +172,8 @@ function mapStateToProps(state) {
     const { userInfo } = state
     return {
         userId: userInfo.id,
-        userType: userInfo.userType
+      userType: userInfo.userType,
+      userInfo
     }
 }
 
