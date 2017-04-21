@@ -121,13 +121,13 @@ class Chat extends React.Component {
             <div style={containerStyle}>
                 { this.props.userType === 3
                     ? (
-                        <NavigationBar title={this.props.location.state.investorName}
+                        <NavigationBar title={this.props.location.state.name}
                                        backIconClicked={this.props.history.goBack}
                                        action="+"
                                        onActionButtonClicked={this.handleActionButtonClicked} />
                     )
                     : (
-                        <NavigationBar title={this.props.location.state.investorName}
+                        <NavigationBar title={this.props.location.state.name}
                                        backIconClicked={this.props.history.goBack} />
                     )
                 }

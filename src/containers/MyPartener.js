@@ -89,7 +89,7 @@ class MyPartener extends Component {
 
     const content = this.state.myPartener.map(
       item => (
-        <Link key={item.id} to={{pathname: '/chat/' + item.id, state:{partenerName: item.name}}}>
+        <Link key={item.id} to={{pathname: '/chat/' + item.id, state:{name: item.name}}}>
           <div style={itemStyle}>
             <Partener name={item.name} org={item.org} photoUrl={item.photoUrl} />
           </div>
