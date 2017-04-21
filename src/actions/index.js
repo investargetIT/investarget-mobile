@@ -57,11 +57,13 @@ export function logout() {
   }
 }
 
-export function receiveCurrentUserInfo(token, object) {
+export function receiveCurrentUserInfo(token, object, username, password) {
   return {
     type: RECEIVE_USER_INFO,
     token,
-    object
+    object,
+    username,
+    password
   }
 }
 

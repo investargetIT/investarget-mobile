@@ -69,7 +69,9 @@ export default function (state = initialState, action) {
       })
     case RECEIVE_USER_INFO:
       const userInfo = Object.assign({}, action.object, {
-        token: action.token
+	token: action.token,
+	username: action.username,
+	password: action.password
       })
 
       localStorage.setItem('userInfo', JSON.stringify(userInfo))

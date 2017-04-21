@@ -14,7 +14,7 @@ import Register from './containers/Register'
 import Register2 from './containers/Register2'
 import ProjectDetail from  './containers/ProjectDetail'
 import { connect } from 'react-redux'
-import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries, receiveTags, receiveTitles } from './actions'
+import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries, receiveTags, receiveTitles, receiveCurrentUserInfo } from './actions'
 import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
@@ -67,41 +67,56 @@ const Routes = (props) => {
     error => console.error(error)
   )
 
+  const userInfo = localStorage.getItem('userInfo')
+  if (userInfo) {
+    const user = JSON.parse(userInfo)
+    const param = { 
+      mobileOrEmailAddress: user.username,
+      password: user.password,
+      app: 3
+    }
+    api.loginAndGetUserInfo(
+      param,
+      (authToken, userInfo) => props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password)),
+      error => console.error(error)
+    )   
+  }
+
   return (
     <Router>
       <div id="container">
 
-        <LoadingAndToast />
-        <HandleError />
+	<LoadingAndToast />
+	<HandleError />
 
-        <Route exact path="/" component={App} />
-        <Route path="/posts" component={Posts} />
-        <Route path="/events" component={Events} />
-        <Route path="/user" component={User} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/register2" component={Register2} />
-        <Route path="/agreement" component={Agreement} />
-        <Route path="/filter" component={Filter} />
+	<Route exact path="/" component={App} />
+	<Route path="/posts" component={Posts} />
+	<Route path="/events" component={Events} />
+	<Route path="/user" component={User} />
+	<Route path="/login" component={Login} />
+	<Route path="/register" component={Register} />
+	<Route path="/register2" component={Register2} />
+	<Route path="/agreement" component={Agreement} />
+	<Route path="/filter" component={Filter} />
 	<Route path="/project/:id/:token?" component={ProjectDetail} />
-        <Route path="/timeline_management" component={TimelineManagement} />
-        <Route path="/chat/:id" component={Chat} />
-        <Route path="/user_info/:id" component={UserInfo} />
-        <Route path="/edit_timeline/:id" component={EditTimeline} />
-        <Route path="/retrieve_password" component={RetrievePassword} />
-        <Route path="/set_password" component={SetPassword} />
-        <Route path="/my_partener" component={MyPartener} />
-        <Route path="/notification" component={Notification} />
-        <Route path="/my_tag" component={MyTag} />
-        <Route path="/my_favorite_project" component={MyFavoriteProject} />
-        <Route path="/modify_password" component={ModifyPassword} />
-        <Route path="/modify_business_card" component={ModifyBusinessCard} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/organization/:id" component={OrganizationDetail} />
-        <Route path="/timeline/:id" component={Timeline} />
-	      <Route path="/latest_remark" component={LatestRemark} />
-	      <Route path="/notifications/:id" component={NotificationDetail} />
-        <Route path="/select_investors" component={SelectInvestors} />
+	<Route path="/timeline_management" component={TimelineManagement} />
+	<Route path="/chat/:id" component={Chat} />
+	<Route path="/user_info/:id" component={UserInfo} />
+	<Route path="/edit_timeline/:id" component={EditTimeline} />
+	<Route path="/retrieve_password" component={RetrievePassword} />
+	<Route path="/set_password" component={SetPassword} />
+	<Route path="/my_partener" component={MyPartener} />
+	<Route path="/notification" component={Notification} />
+	<Route path="/my_tag" component={MyTag} />
+	<Route path="/my_favorite_project" component={MyFavoriteProject} />
+	<Route path="/modify_password" component={ModifyPassword} />
+	<Route path="/modify_business_card" component={ModifyBusinessCard} />
+	<Route path="/contact" component={Contact} />
+	<Route path="/organization/:id" component={OrganizationDetail} />
+	<Route path="/timeline/:id" component={Timeline} />
+	<Route path="/latest_remark" component={LatestRemark} />
+	<Route path="/notifications/:id" component={NotificationDetail} />
+	<Route path="/select_investors" component={SelectInvestors} />
 
       </div>
     </Router>

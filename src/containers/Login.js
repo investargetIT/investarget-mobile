@@ -82,7 +82,7 @@ class Login extends React.Component {
     this.props.dispatch(requestContents(''))
     api.loginAndGetUserInfo(
       param,
-      (authToken, userInfo) => this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo)),
+      (authToken, userInfo) => this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password)),
       error => this.props.dispatch(handleError(error))
     )
 
