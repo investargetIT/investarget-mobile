@@ -163,16 +163,16 @@ class User extends Component {
           <ul>
             {
               this.props.userInfo.userType === 3 ? (
-                <Link to="/my_investor">
-                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的投资人" />
+                <Link to="/my_partener">
+                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="我的投资人" />
                 </Link>
               ) : null
             }
 
             {
               this.props.userInfo.userType === 1 ? (
-                <Link to="/my_trasaction">
-                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-1@2x.png" label="我的交易师" />
+                <Link to="/my_partener">
+                  <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="我的交易师" />
                 </Link>
               ) : null
             }

@@ -89,7 +89,7 @@ class MyInvestor extends Component {
 
     const content = this.state.myInvestor.map(
       item => (
-        <Link key={item.id} to={{pathname: '/chat_investor/' + item.id, state:{investorName: item.name}}}>
+        <Link key={item.id} to={{pathname: '/chat/' + item.id, state:{investorName: item.name}}}>
           <div style={itemStyle}>
             <Investor name={item.name} org={item.org} photoUrl={item.photoUrl} />
           </div>
