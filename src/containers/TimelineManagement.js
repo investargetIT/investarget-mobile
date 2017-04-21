@@ -108,7 +108,7 @@ class TimelineManagement extends React.Component {
     componentDidMount() {
         this.props.dispatch(requestContents(''))
         api.getAllTimeLines(
-            {},
+            { 'input.maxResultCount': 100 },
             result => {
                 this.setState({
                     totalCount: result.totalCount,
