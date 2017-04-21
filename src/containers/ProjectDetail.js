@@ -122,13 +122,17 @@ class ProjectDetail extends React.Component {
         this.state = { 
             "result": null,
             "isMyFavoriteProject": false,
-            "showModal": false
+            "showModal": false,
+            "modalTitle": "",
+            "modalContent": "",
+            "modalActions": [],
         }
 
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
         this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
+        this.hideModal = this.hideModal.bind(this)
     }
 
     recommend() {
@@ -162,7 +166,10 @@ class ProjectDetail extends React.Component {
                 this.props.dispatch(hideLoading())
                 this.props.dispatch(setRecommendProjects([]))
                 this.setState({
-                    showModal: true
+                    showModal: true,
+                    modalTitle: '通知',
+                    modalContent:  '推荐成功',
+                    modalActions: [{name: '确定', handler: this.handleRecommendSuccess}]
                 })
             }
         )
@@ -237,33 +244,54 @@ class ProjectDetail extends React.Component {
       this.setState({
         isMyFavoriteProject: !this.state.isMyFavoriteProject
       })
+      if (!this.state.isMyFavoriteProject) {
+          this.setState({
+              showModal: true,
+              modalTitle: '通知',
+              modalContent: '收藏成功',
+              modalActions: [{name: '确定', handler: this.hideModal}]
+          })
+      }
+    }
+
+    hideModal() {
+        this.setState({ showModal: false })
     }
 
     handleActionButtonClicked(event) {
         switch (event.target.name) {
-	  case "timeline":
-	    var toObj = {
-	      pathname: '/timeline/' + this.props.match.params.id,
-	      state: this.state.result.titleC
-	    }
+	        case "timeline":
+                var toObj = {
+                pathname: '/timeline/' + this.props.match.params.id,
+                state: this.state.result.titleC
+                }
                 this.props.history.push(toObj)
                 break
             case "recommend":
-                if (this.props.recommendProcess.projectIds.length &&
-                    this.props.recommendProcess.investorIds.length)
-                {
-                    this.recommend()
-                } else if (this.props.recommendProcess.projectIds.length) {
-                    this.props.history.push('/select_investors')
+                if (this.state.isMyFavoriteProject) {
+                    if (this.props.recommendProcess.projectIds.length &&
+                        this.props.recommendProcess.investorIds.length)
+                    {
+                        this.recommend()
+                    } else if (this.props.recommendProcess.projectIds.length) {
+                        this.props.history.push('/select_user')
+                    }
+                } else {
+                    this.setState({
+                        showModal: true,
+                        modalTitle: '通知',
+                        modalContent: '您还未收藏该项目，请先收藏',
+                        modalActions: [{name: '确定', handler: this.hideModal}]
+                    })
                 }
                 break
             case "interest":
-                var param = {
-                    userId: api.getCurrentUserId(),
-                    projectId: this.props.match.params.id,
-                    fType: 4,
+                if (this.props.recommendProcess.projectIds.length &&
+                    this.props.recommendProcess.investorIds.length) {
+                    this.recommend()
+                } else if (this.props.recommendProcess.projectIds.length) {
+                    this.props.history.push('/select_user')
                 }
-                api.favoriteProject(param, ()=>{}, error=>{})
         }
     }
 
@@ -326,13 +354,14 @@ class ProjectDetail extends React.Component {
         
 
       var wechatImageContainer = {
-	display: 'none'
+	    display: 'none'
       }
         return (
-	  <div>
-	    <div style={wechatImageContainer}> 
-	      <img src={info.industrys[0].imgUrl} alt="" />
-	    </div>
+	        <div>
+                <div style={wechatImageContainer}> 
+                    <img src={info.industrys[0].imgUrl} alt="" />
+                </div>
+
                 <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>
 
                 <div style={bgImageStyle}>
@@ -340,7 +369,7 @@ class ProjectDetail extends React.Component {
                         <p style={titleStyle} >{ info.titleC }</p>
                         <p style={tagStyle} >标签：{ info.tags.map(tag => <span style={spanStyle} key={tag.id}>{tag.tagName}</span>) } </p>
                         <p style={dateStyle} >发布日期：{info.creationTime}</p>
-		      </div>
+		            </div>
                 </div>
 
                 <div style={dataSetStyle}>
@@ -413,32 +442,34 @@ class ProjectDetail extends React.Component {
                     {hightlightItems}
                 </div>
 
-		{ this.props.isLogin ? <div>
-                <div style={actionPlaceHolderStyle}></div>
-                <div style={actionContainerStyle}>
-                    <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
-                    {
-                        this.props.userInfo.userType == 1 ? (
-                            <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button>
-                        ) : null
-                    }
-                    {
-                        this.props.userInfo.userType == 3 ? (
-                            <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
-                        ) : null
-                    }
-                    
-                    <div style={actionFavoriteContinerStyle}>
-                        <img
-                            style={favoriteIconStyle}
-                            src={this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png"}
-                            onClick={this.handleFavoriteButtonToggle}
-                        />
+		        { this.props.isLogin ? 
+                    <div>
+                        <div style={actionPlaceHolderStyle}></div>
+                        <div style={actionContainerStyle}>
+                            <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
+                            {
+                                this.props.userInfo.userType == 1 ? (
+                                    <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button>
+                                ) : null
+                            }
+                            {
+                                this.props.userInfo.userType == 3 ? (
+                                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
+                                ) : null
+                            }
+                            
+                            <div style={actionFavoriteContinerStyle}>
+                                <img
+                                    style={favoriteIconStyle}
+                                    src={this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png"}
+                                    onClick={this.handleFavoriteButtonToggle}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                : null }
 
-		<Modal show={this.state.showModal} title="通知" content="推荐成功" actions={[{name: '确定', handler: this.handleRecommendSuccess}]} /></div>
-: null }
+                <Modal show={this.state.showModal} title={this.state.modalTitle} content={this.state.modalContent} actions={this.state.modalActions} />
             </div>
         )
     }

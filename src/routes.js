@@ -36,7 +36,7 @@ import OrganizationDetail from './containers/OrganizationDetail'
 import Timeline from './containers/Timeline'
 import LatestRemark from './containers/LatestRemark'
 import NotificationDetail from './containers/NotificationDetail'
-import SelectInvestors from './containers/SelectInvestors'
+import SelectUser from './containers/SelectUser'
 
 const Routes = (props) => {
 
@@ -86,37 +86,38 @@ const Routes = (props) => {
     <Router>
       <div id="container">
 
-	<LoadingAndToast />
-	<HandleError />
+        <LoadingAndToast />
+        <HandleError />
 
-	<Route exact path="/" component={App} />
-	<Route path="/posts" component={Posts} />
-	<Route path="/events" component={Events} />
-	<Route path="/user" component={User} />
-	<Route path="/login" component={Login} />
-	<Route path="/register" component={Register} />
-	<Route path="/register2" component={Register2} />
-	<Route path="/agreement" component={Agreement} />
-	<Route path="/filter" component={Filter} />
-	<Route path="/project/:id/:token?" component={ProjectDetail} />
-	<Route path="/timeline_management" component={TimelineManagement} />
-	<Route path="/chat/:id" component={Chat} />
-	<Route path="/user_info/:id" component={UserInfo} />
-	<Route path="/edit_timeline/:id" component={EditTimeline} />
-	<Route path="/retrieve_password" component={RetrievePassword} />
-	<Route path="/set_password" component={SetPassword} />
-	<Route path="/my_partener" component={MyPartener} />
-	<Route path="/notification" component={Notification} />
-	<Route path="/my_tag" component={MyTag} />
-	<Route path="/my_favorite_project" component={MyFavoriteProject} />
-	<Route path="/modify_password" component={ModifyPassword} />
-	<Route path="/modify_business_card" component={ModifyBusinessCard} />
-	<Route path="/contact" component={Contact} />
-	<Route path="/organization/:id" component={OrganizationDetail} />
-	<Route path="/timeline/:id" component={Timeline} />
-	<Route path="/latest_remark" component={LatestRemark} />
-	<Route path="/notifications/:id" component={NotificationDetail} />
-	<Route path="/select_investors" component={SelectInvestors} />
+
+        <Route exact path="/" component={App} />
+        <Route path="/posts" component={Posts} />
+        <Route path="/events" component={Events} />
+        <Route path="/user" component={User} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/register2" component={Register2} />
+        <Route path="/agreement" component={Agreement} />
+        <Route path="/filter" component={Filter} />
+        <Route path="/project/:id" component={ProjectDetail} />
+        <Route path="/timeline_management" component={TimelineManagement} />
+        <Route path="/chat/:id" component={Chat} />
+        <Route path="/user_info/:id" component={UserInfo} />
+        <Route path="/edit_timeline/:id" component={EditTimeline} />
+        <Route path="/retrieve_password" component={RetrievePassword} />
+        <Route path="/set_password" component={SetPassword} />
+        <Route path="/my_partener" component={MyPartener} />
+        <Route path="/notification" component={Notification} />
+        <Route path="/my_tag" component={MyTag} />
+        <Route path="/my_favorite_project" component={MyFavoriteProject} />
+        <Route path="/modify_password" component={ModifyPassword} />
+        <Route path="/modify_business_card" component={ModifyBusinessCard} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/organization/:id" component={OrganizationDetail} />
+        <Route path="/timeline/:id" component={Timeline} />
+	      <Route path="/latest_remark" component={LatestRemark} />
+	      <Route path="/notifications/:id" component={NotificationDetail} />
+        <Route path="/select_user" component={SelectUser} />
 
       </div>
     </Router>
