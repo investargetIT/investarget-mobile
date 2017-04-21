@@ -99,7 +99,7 @@ const Routes = (props) => {
         <Route path="/register2" component={Register2} />
         <Route path="/agreement" component={Agreement} />
         <Route path="/filter" component={Filter} />
-        <Route path="/project/:id" component={ProjectDetail} />
+        <Route path="/project/:id/:token?" component={ProjectDetail} />
         <Route path="/timeline_management" component={TimelineManagement} />
         <Route path="/chat/:id" component={Chat} />
         <Route path="/user_info/:id" component={UserInfo} />
