@@ -189,7 +189,7 @@ class User extends Component {
         <div style={blurBackgroundStyle}>
           <div style={blurImageStyle}></div>
         </div>
-        
+
         <div style={headerContainerStyle}>
           <div style={avatarContainerStyle}>
             <img alt="" style={avatarStyle} src={this.state.avatar || this.props.userInfo.photoUrl} />
@@ -219,7 +219,7 @@ class User extends Component {
               }
 
               <Link to="/notification">
-                <LeftIconRightLabel icon="images/notifyMessage@2x.png" label="通知消息" hideBorder={true} />
+                <LeftIconRightLabel icon="images/notification.svg" label="通知消息" hideBorder={true} />
               </Link>
             </Group>
             <Group>
@@ -228,7 +228,7 @@ class User extends Component {
               </Link>
 
               <Link to="/timeline_management">
-                <LeftIconRightLabel icon="images/userCenter/ht-usercenter-9@2x.png" label="时间轴管理" />
+                <LeftIconRightLabel icon="images/userCenter/timeline.svg" label="时间轴管理" />
               </Link>
 
               <Link to="/my_favorite_project">
