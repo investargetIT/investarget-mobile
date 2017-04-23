@@ -56,9 +56,6 @@ class App extends Component {
         filterToParams(this.props.filter),
         projects => {
           this.props.dispatch(receiveContents('', projects))
-          if (projects.length === 0) {
-            this.props.dispatch(handleError(new Error('No More Projects')))
-          }
         },
         error => this.props.dispatch(handleError(error))
       )
@@ -87,7 +84,7 @@ class App extends Component {
         resetMin();
       },
       change: function (value) {
-        if (value <= this.min + 5 && !loading) {
+        if (this.min < 0 && value <= this.min + 5 && !loading) {
           loading = true;
           loadMore();
         }
@@ -118,7 +115,8 @@ class App extends Component {
     })
     
     function resetMin() {
-      alloyTouch.min = -1 * parseInt(getComputedStyle(scroller).height, 10) + window.innerHeight - 45 - 48;
+      const result = -1 * parseInt(getComputedStyle(scroller).height, 10) + window.innerHeight - 45 - 48
+      alloyTouch.min = result < 0 ? result : 0
     }
 
     function loadMore() {
@@ -133,7 +131,6 @@ class App extends Component {
             react.props.dispatch(appendProjects(projects))
           } else {
             alloyTouch.to(alloyTouch.min + 50)
-            react.props.dispatch(handleError(new Error('No More Projects')))
           }
         },
         error => {
@@ -233,7 +230,7 @@ var loadmoreStyle = {
         <div id="wrapper">
           <div id="scroller">
             <ul id="list" ref="listContainer">
-              {rows}
+              { !this.props.isFetching && rows.length === 0 ? <div style={{textAlign: 'center'}}>没有结果，请重新筛选</div> : rows }
             </ul>
             <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src="/images/loading.svg" alt="" /></div>
           </div>
@@ -247,11 +244,9 @@ var loadmoreStyle = {
 }
 
 function mapStateToProps(state) {
-  const projects = state.projects
-  const needRefresh = state.needRefresh
+  const { projects, needRefresh, userInfo, isFetching } = state
   const filter = state.trueFilter
-  const userInfo = state.userInfo
-  return { projects, filter, needRefresh, userInfo }
+  return { projects, filter, needRefresh, userInfo, isFetching }
 }
 
 function filterToParams(data) {
