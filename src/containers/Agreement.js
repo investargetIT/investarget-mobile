@@ -2,8 +2,6 @@ import React from 'react'
 import TransparentNavigationBar from '../components/TransparentNavigationBar'
 import api from '../api'
 
->>>>>>> Add baseUrl to route
-
 const bgStyle = {
     width: '100%',
     minHeight: '100%',

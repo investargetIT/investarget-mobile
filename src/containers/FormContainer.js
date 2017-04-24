@@ -3,7 +3,6 @@ import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import api from '../api'
 import TransparetnNavigationBar from '../components/TransparentNavigationBar'
-import api from '../api'
 
 var containerStyle = {
   width: '100%',

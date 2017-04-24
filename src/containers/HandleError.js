@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import LoadingAndToast from './LoadingAndToast'
 import { connect } from 'react-redux'
 import { dismissErrMsg, logout } from '../actions'
@@ -6,12 +6,6 @@ import { withRouter } from 'react-router-dom'
 import api from '../api'
 
 class HandleError extends Component {
-
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.isError) {
