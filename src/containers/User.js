@@ -202,21 +202,13 @@ class User extends Component {
         <div style={settingContainerStyle}>
           <ul>
             <Group>
-              {
-                this.props.userInfo.userType === 3 ? (
-                  <Link to="/my_partener">
+              <Link to="/my_partener">
+                {
+                  this.props.userInfo.userType === 1 ?
+                    <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="我的交易师" /> :
                     <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="我的投资人" />
-                  </Link>
-                ) : null
-              }
-
-              {
-                this.props.userInfo.userType === 1 ? (
-                  <Link to="/my_partener">
-                    <LeftIconRightLabel icon="images/userCenter/ht-usercenter-6@2x.png" label="我的交易师" />
-                  </Link>
-                ) : null
-              }
+                }
+              </Link>
 
               <Link to="/notification">
                 <LeftIconRightLabel icon="images/notification.svg" label="通知消息" hideBorder={true} />

@@ -452,14 +452,9 @@ class ProjectDetail extends React.Component {
                         <div style={actionContainerStyle}>
                             <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
                             {
-                                this.props.userInfo.userType == 1 ? (
-                                    <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button>
-                                ) : null
-                            }
-                            {
-                                this.props.userInfo.userType == 3 ? (
+                                this.props.userInfo.userType == 1 ? 
+                                    <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button> :
                                     <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
-                                ) : null
                             }
                             
                             <div style={actionFavoriteContinerStyle}>
