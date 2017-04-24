@@ -46,7 +46,7 @@ var blurBackgroundStyle = {
 var blurImageStyle = {
   width: '100%',
   height: '240px',
-  backgroundImage: 'url(/images/userCenter/ht-usercenterheaderbg@2x.png)',
+  backgroundImage: 'url(' + api.baseUrl + '/images/userCenter/ht-usercenterheaderbg@2x.png)',
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
