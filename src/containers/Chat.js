@@ -40,6 +40,12 @@ var activeTabStyle = Object.assign({}, tabStyle, {
     color: '#10458F',
 });
 
+var iconStyle = {
+    width: '28px',
+    height: '28px',
+    verticalAlign: 'middle',
+}
+
 var projectListStyle = {}
 
 class Chat extends React.Component {
@@ -123,7 +129,7 @@ class Chat extends React.Component {
                     ? (
                         <NavigationBar title={this.props.location.state.name}
                                        backIconClicked={this.props.history.goBack}
-                                       action="+"
+                                       action={ <img style={iconStyle} src="/images/plus.png"></img> }
                                        onActionButtonClicked={this.handleActionButtonClicked} />
                     )
                     : (
