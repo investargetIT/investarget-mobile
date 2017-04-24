@@ -190,8 +190,8 @@ class ProjectDetail extends React.Component {
     }
 
     componentDidMount() {
-
-      if (!this.props.match.params.token) {
+      var urlTokenArr = /token=([^&]+)(&|$)/.exec(this.props.location.search)
+      if (!urlTokenArr || urlTokenArr.length < 2) {
         this.props.history.push(api.baseUrl + '/login')
         return
       }
@@ -202,7 +202,7 @@ class ProjectDetail extends React.Component {
       this.props.dispatch(requestContents(''))
 
       var projectId = this.props.match.params.id
-      const token = this.props.match.params.token
+      const token = urlTokenArr[1]
       api.getSingleProject(
         projectId,
         data => {

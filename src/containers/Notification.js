@@ -143,7 +143,7 @@ class Notification extends Component {
     }
 
     if (data.messageType === 2) {
-      window.location.href = api.baseUrl + '/project/' + data.businessId + (this.props.userInfo ? '/' + this.props.userInfo.token : '')
+      window.location.href = api.baseUrl + '/project/' + data.businessId + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')
     } else {
       this.props.history.push(api.baseUrl + '/notifications/' + data.tid)
     }

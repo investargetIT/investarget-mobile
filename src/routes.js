@@ -99,7 +99,7 @@ const Routes = (props) => {
         <Route path={api.baseUrl + "/register2"} component={Register2} />
         <Route path={api.baseUrl + "/agreement"} component={Agreement} />
         <Route path={api.baseUrl + "/filter"} component={Filter} />
-        <Route path={api.baseUrl + "/project/:id/:token?"} component={ProjectDetail} />
+        <Route path={api.baseUrl + "/project/:id"} component={ProjectDetail} />
         <Route path={api.baseUrl + "/timeline_management" } component={TimelineManagement} />
         <Route path={api.baseUrl + "/chat/:id" } component={Chat} />
         <Route path={api.baseUrl + "/user_info/:id" } component={UserInfo} />

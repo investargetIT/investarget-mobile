@@ -109,7 +109,7 @@ class App extends Component {
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
 	if (projectID) {
-	  window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '/' + react.props.userInfo.token : '')
+	  window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + react.props.userInfo.token : '')
         }
       }
     })
