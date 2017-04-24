@@ -37,8 +37,10 @@ class SetPassword extends React.Component {
     constructor(props) {
         super(props)
 
+        console.log(props)
+        // var registerInfo = JSON.parse(localStorage.getItem('REGISTER_BASIC_INFO'))
         this.state = {
-            mobile: '',
+            mobile: props.location.state && props.location.state.mobile || '',
             code: '',
             newPassword: '',
             fetchCodeWaitingTime: 0,
@@ -113,6 +115,12 @@ class SetPassword extends React.Component {
             error => this.props.dispatch(handleError(error))
         )
         
+    }
+
+    componentDidMount() {
+        this.setState({
+
+        })
     }
 
     componentWillUnmount() {

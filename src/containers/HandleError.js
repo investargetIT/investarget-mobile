@@ -55,6 +55,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '请获取短信验证码'
           break
+        case 'Please input valid Email':
+          showError = true
+          errMsg = '请输入有效的邮箱'
+          break
         case 'Request failed with status code 401':
           showError = true
           errMsg = '验证失败，请重新登录'

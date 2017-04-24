@@ -16,11 +16,6 @@ var phoneInputStyle = {
 
 var codeInputStyle = {
   margin: '30px 10px',
-  visibility: 'visible',
-}
-var hideCodeInputStyle = {
-  margin: '30px 10px',
-  visibility: 'hidden',
 }
 
 var sendCodeButtonStyle = {
@@ -42,11 +37,6 @@ var sendCodeButtonDisabledStyle = Object.assign({}, sendCodeButtonStyle, {
 
 var emailInputStyle = {
   margin: '30px 10px',
-  visibility: 'visible',
-}
-var hideEmailInputStyle = {
-  margin: '30px 10px',
-  visibility: 'hidden',
 }
 
 var buttonStyle = {
@@ -54,17 +44,17 @@ var buttonStyle = {
   fontSize: '16px',
 }
 
-var liscenseStyle = {
+var licenseStyle = {
   marginTop: '30px',
   textAlign: 'center',
 }
 
-var liscenseCheckStyle = {
+var licenseCheckStyle = {
   verticalAlign: 'middle',
   marginRight: '4px',
 }
 
-var liscenseLinkStyle = {
+var licenseLinkStyle = {
   verticalAlign: 'middle',
   color: '#999',
 }
@@ -79,12 +69,14 @@ class Register extends React.Component {
       mobile: '',
       code: '',
       email: '',
-      liscense: true,
+      license: true,
       fetchCodeWaitingTime: 0,
       timer: null
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.checkPhoneExist = this.checkPhoneExist.bind(this)
+    this.checkEmailFormat = this.checkEmailFormat.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleSendVerificationCode = this.handleSendVerificationCode.bind(this)
   }
@@ -140,23 +132,34 @@ class Register extends React.Component {
     )
   }
 
-  handleSubmit(userType) {
-
-    if (this.state.userExist === null) {
-      api.checkMobileOrEmailExist(
+  checkPhoneExist() {
+    api.checkMobileOrEmailExist(
         this.state.mobile,
         (result) => {
           if (result) {
-            this.props.history.push('/set_password')
+            this.setState({userExist: true})
+            this.props.history.push('/set_password', {mobile: this.state.mobile})
           } else {
             this.setState({userExist: false})
           }
         },
         (error) => this.props.dispatch(handleError(error)))
-    } else if (this.state.userExist === false) {
+  }
+
+  checkEmailFormat() {
+    var re = /[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/
+    return re.test(this.state.email)
+  }
+
+  handleSubmit(userType) {
       const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
       if (!token) {
         this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
+        return
+      }
+      if (!this.checkEmailFormat()) {
+        this.props.dispatch(handleError(new Error('Please input valid Email')))
+        console.log(this.checkEmailFormat())
         return
       }
       const param = {
@@ -177,8 +180,6 @@ class Register extends React.Component {
         },
         error => this.props.dispatch(handleError(error))
       )
-    }
-    
   }
 
   componentWillUnmount() {
@@ -193,6 +194,7 @@ class Register extends React.Component {
     const isMobileInvalid = /^1[34578]\d{9}$/.test(this.state.mobile) ? false : true
     const sendCodeStyle = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0 ? sendCodeButtonDisabledStyle : sendCodeButtonStyle
     const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
+    
     var sendCode = <button disabled={isMobileInvalid} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
     
 
@@ -201,13 +203,11 @@ class Register extends React.Component {
       disabled = true
     } else {
       if (this.state.userExist === false) {
-        disabled = this.state.mobile === '' || this.state.code === '' || this.state.email === ''
+        disabled = this.state.mobile === '' || this.state.code === '' || this.state.email === '' || !this.state.license
       } else {
         disabled = false
       }
     }
-
-
     
     var content = (
       <div>
@@ -216,25 +216,29 @@ class Register extends React.Component {
           <TextInput name="mobile" placeholder="请输入手机号" value={this.state.mobile} handleInputChange={this.handleInputChange} />
         </div>
 
-        <div style={this.state.userExist === false ? codeInputStyle : hideCodeInputStyle}>
+        <div style={this.state.userExist === false ? codeInputStyle : {display: 'none'}}>
           <TextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
         </div>
 
-        <div style={this.state.userExist === false ? emailInputStyle : hideEmailInputStyle}>
+        <div style={this.state.userExist === false ? emailInputStyle : {display: 'none'}}>
           <TextInput name="email" placeholder="请输入邮箱" value={this.state.email} handleInputChange={this.handleInputChange} />
         </div>
 
-        <div style={buttonStyle}>
+        <div style={this.state.userExist === false ? buttonStyle : {display: 'none'}}>
           <Button name="transaction" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 3)} value="我是交易师" />
         </div>
 
-        <div style={buttonStyle}>
+        <div style={this.state.userExist === false ? buttonStyle : {display: 'none'}}>
           <Button name="investor" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 1)} value="我是投资人" />
         </div>
 
-        <div style={liscenseStyle}>
-          <input name="liscense" style={liscenseCheckStyle} type="checkbox" checked={this.state.liscense} onChange={this.handleInputChange} />
-          <Link style={liscenseLinkStyle} to="/agreement">用户协议</Link>
+        <div style={this.state.userExist === false ? licenseStyle : {display: 'none'}}>
+          <input name="license" style={licenseCheckStyle} type="checkbox" checked={this.state.license} onChange={this.handleInputChange} />
+          <Link style={licenseLinkStyle} to="/agreement">用户协议</Link>
+        </div>
+
+        <div style={this.state.userExist === null ? buttonStyle : {display: 'none'}}>
+          <Button name="next" type="primary" value="下一步" onClick={this.checkPhoneExist} disabled={isMobileInvalid} />
         </div>
 
       </div>

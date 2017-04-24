@@ -8,6 +8,7 @@ import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import Select from '../components/Select'
+import Modal from '../components/Modal'
 
 
 const REGISTER_BASIC_INFO = 'REGISTER_BASIC_INFO'
@@ -53,6 +54,16 @@ const tagContainerStyle = {
   zIndex: '1',
 }
 
+var showPasswordStyle = {
+  padding: '5px',
+}
+
+var showPasswordIconStyle = {
+  width: '20px',
+  height: '20px',
+  verticalAlign: 'top',
+}
+
 class Register2 extends React.Component {
   constructor(props) {
     super(props)
@@ -65,6 +76,8 @@ class Register2 extends React.Component {
         password: '',
         showTitle: false,
         showTags: false,
+        showPassword: false,
+        showModal: false,
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -73,6 +86,8 @@ class Register2 extends React.Component {
     this.showTitleSelect = this.showTitleSelect.bind(this)
     this.handleSelectTags = this.handleSelectTags.bind(this)
     this.showTagsSelect = this.showTagsSelect.bind(this)
+    this.togglePassword = this.togglePassword.bind(this)
+    this.handleSubmitSuccess = this.handleSubmitSuccess.bind(this)
   }
 
   handleInputChange(event) {
@@ -112,6 +127,13 @@ class Register2 extends React.Component {
     })
   }
 
+  togglePassword(event) {
+    console.log(event)
+    this.setState({
+      showPassword: !this.state.showPassword
+    })
+  }
+
   handleSubmit() {
     var registerBasicInfo = JSON.parse(localStorage.getItem(REGISTER_BASIC_INFO))
     var param = {
@@ -142,11 +164,16 @@ class Register2 extends React.Component {
         this.props.dispatch(hideLoading())
         localStorage.removeItem('REGISTER_BASIC_INFO')
         localStorage.removeItem('VERIFICATION_CODE_TOKEN')
-        this.props.history.push('/')
+        this.setState({ showModal: true })
       },
       error => this.props.dispatch(handleError(error))
     )
 
+  }
+
+  handleSubmitSuccess() {
+    this.setState({ showModal: false })
+    this.props.history.push('/')
   }
 
   render() {
@@ -172,6 +199,11 @@ class Register2 extends React.Component {
                                          .map(option => option.name)
                                          .join('，')
                         : '请选择关注的行业'
+    
+    var showPassword = 
+      <div style={showPasswordStyle} onClick={this.togglePassword}>
+        <img src={ this.state.showPassword ? "/images/login/eyeOpen@2x.png" : "/images/login/eyeClose@2x.png"} style={showPasswordIconStyle} alt="" />
+      </div>
 
     var content =
       <div>
@@ -205,12 +237,18 @@ class Register2 extends React.Component {
         </div>
 
         <div style = {inputStyle}>
-            <TextInput name="password" placeholder="请输入密码" value={this.state.password} handleInputChange={this.handleInputChange} />
+            <TextInput name="password" placeholder="请输入密码" value={this.state.password} type={this.state.showPassword ? 'text' : 'password'} handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
         <div>
             <Button name="register" type="primary" disabled={disabled} onClick={this.handleSubmit} value="注册" />
         </div>
+
+        <Modal show={this.state.showModal}
+               title="通知"
+               content="账号注册成功，工作人员会尽快审核，审核通过后可以正常使用。"
+               actions={ [{name: '确定', handler: this.handleSubmitSuccess}] }>
+        </Modal>
 
       </div>
 
