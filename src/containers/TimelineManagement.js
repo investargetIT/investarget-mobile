@@ -139,7 +139,7 @@ class TimelineManagement extends React.Component {
                         {
                             this.state.timelines.map(timeline => (
                                 <div style={timelineStyle} key={timeline.timeLineId}>
-                                    <Link to={'project/' + timeline.timeLineId}>
+                                    <Link to={api.baseUrl + '/project/' + timeline.timeLineId}>
                                         <div style={nameStyle}>
                                             <span style={nameSpanStyle}>{timeline.projectName}</span>
                                         </div>

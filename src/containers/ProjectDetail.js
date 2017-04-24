@@ -5,6 +5,10 @@ import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
 import Modal from '../components/Modal'
 
+var containerStyle = {
+    minHeight: '100%',
+    backgroundColor: '#f4f4f4',
+}
 var firstStyle = {
     position: 'absolute',
     bottom: '0',
@@ -112,7 +116,6 @@ const favoriteIconStyle = {
 
 const actionPlaceHolderStyle = {
     height: '40px',
-    backgroundColor: '#303133'
 }
 
 class ProjectDetail extends React.Component {
@@ -193,7 +196,7 @@ class ProjectDetail extends React.Component {
         return
       }
 
-      var projectId = this.props.match.params.id
+      var projectId = parseInt(this.props.match.params.id)
       this.props.dispatch(setRecommendProjects([projectId]))
 
       this.props.dispatch(requestContents(''))
@@ -360,7 +363,7 @@ class ProjectDetail extends React.Component {
 	    display: 'none'
       }
         return (
-	        <div>
+	        <div style={containerStyle}>
                 <div style={wechatImageContainer}> 
                     <img src={info.industrys[0].imgUrl} alt="" />
                 </div>

@@ -133,6 +133,7 @@ class MyFavoriteProject extends Component {
 
     this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
     this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
+    this.removeFavoriteProject = this.removeFavoriteProject.bind(this)
   }
 
   handleCellPositionChange() {
@@ -170,7 +171,7 @@ class MyFavoriteProject extends Component {
     if (investorIds.length > 0 && projectIds.length > 0) {
       this.recommend()
     } else if (projectIds.length > 0) {
-      this.props.history.push('/select_user')
+      this.props.history.push(api.baseUrl + '/select_user')
     }
   }
 
@@ -247,7 +248,12 @@ class MyFavoriteProject extends Component {
     this.setState({
       projects: this.state.projects.filter(item => item.id !== id)
     })
-    api.projectCancelFavorite(id)
+    var param = {
+      fType: 3,
+      projectId: id,
+      userId: this.props.userInfo.id,
+    }
+    api.projectCancelFavorite(param)
   }
 
   render() {

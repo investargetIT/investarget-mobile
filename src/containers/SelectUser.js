@@ -205,7 +205,7 @@ class SelectUser extends React.Component {
                                     <div style={ this.props.selectedUsers.includes(user.id) ? userActiveStyle : userStyle }
                                          onClick={this.toggleSelect.bind(this, user.id)}>
                                         <div style={userPhotoWrapStyle}>
-                                            <img style={userPhotoStyle} src={user.photoUrl} alt="photo"/>
+                                            <img style={userPhotoStyle} src={user.photoUrl || api.baseUrl + '/images/userCenter/defaultAvatar@2x.png'} alt="photo"/>
                                         </div>
                                         <div style={userContentStyle}>
                                             <div style={userOrgStyle}>{user.org}</div>
