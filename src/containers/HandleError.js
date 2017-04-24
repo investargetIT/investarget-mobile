@@ -3,6 +3,7 @@ import LoadingAndToast from './LoadingAndToast'
 import { connect } from 'react-redux'
 import { dismissErrMsg, logout } from '../actions'
 import { withRouter } from 'react-router-dom'
+import api from '../api'
 
 class HandleError extends Component {
 
@@ -18,7 +19,7 @@ class HandleError extends Component {
         this.props.dispatch(dismissErrMsg())
         if (this.props.error.message === 'Request failed with status code 401') {
           this.props.dispatch(logout())
-          this.props.history.push('/login')
+          this.props.history.push(api.baseUrl + '/login')
         }
       }, 1000)
     }

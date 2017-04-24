@@ -90,34 +90,34 @@ const Routes = (props) => {
         <HandleError />
 
 
-        <Route exact path="/" component={App} />
-        <Route path="/posts" component={Posts} />
-        <Route path="/events" component={Events} />
-        <Route path="/user" component={User} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/register2" component={Register2} />
-        <Route path="/agreement" component={Agreement} />
-        <Route path="/filter" component={Filter} />
-        <Route path="/project/:id/:token?" component={ProjectDetail} />
-        <Route path="/timeline_management" component={TimelineManagement} />
-        <Route path="/chat/:id" component={Chat} />
-        <Route path="/user_info/:id" component={UserInfo} />
-        <Route path="/edit_timeline/:id" component={EditTimeline} />
-        <Route path="/retrieve_password" component={RetrievePassword} />
-        <Route path="/set_password" component={SetPassword} />
-        <Route path="/my_partener" component={MyPartener} />
-        <Route path="/notification" component={Notification} />
-        <Route path="/my_tag" component={MyTag} />
-        <Route path="/my_favorite_project" component={MyFavoriteProject} />
-        <Route path="/modify_password" component={ModifyPassword} />
-        <Route path="/modify_business_card" component={ModifyBusinessCard} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/organization/:id" component={OrganizationDetail} />
-        <Route path="/timeline/:id" component={Timeline} />
-	      <Route path="/latest_remark" component={LatestRemark} />
-	      <Route path="/notifications/:id" component={NotificationDetail} />
-        <Route path="/select_user" component={SelectUser} />
+        <Route exact path={api.baseUrl + "/"} component={App} />
+        <Route path={api.baseUrl + "/posts"} component={Posts} />
+	<Route path={api.baseUrl + "/events"} component={Events} />
+        <Route path={api.baseUrl + "/user"} component={User} />
+        <Route path={api.baseUrl + "/login"} component={Login} />
+        <Route path={api.baseUrl + "/register"} component={Register} />
+        <Route path={api.baseUrl + "/register2"} component={Register2} />
+        <Route path={api.baseUrl + "/agreement"} component={Agreement} />
+        <Route path={api.baseUrl + "/filter"} component={Filter} />
+        <Route path={api.baseUrl + "/project/:id/:token?"} component={ProjectDetail} />
+        <Route path={api.baseUrl + "/timeline_management" } component={TimelineManagement} />
+        <Route path={api.baseUrl + "/chat/:id" } component={Chat} />
+        <Route path={api.baseUrl + "/user_info/:id" } component={UserInfo} />
+        <Route path={api.baseUrl + "/edit_timeline/:id" } component={EditTimeline} />
+        <Route path={api.baseUrl + "/retrieve_password" } component={RetrievePassword} />
+        <Route path={api.baseUrl + "/set_password" } component={SetPassword} />
+        <Route path={api.baseUrl + "/my_partener" } component={MyPartener} />
+        <Route path={api.baseUrl + "/notification" } component={Notification} />
+        <Route path={api.baseUrl + "/my_tag" } component={MyTag} />
+        <Route path={api.baseUrl + "/my_favorite_project" } component={MyFavoriteProject} />
+        <Route path={api.baseUrl + "/modify_password" } component={ModifyPassword} />
+        <Route path={api.baseUrl + "/modify_business_card" } component={ModifyBusinessCard} />
+        <Route path={api.baseUrl + "/contact" } component={Contact} />
+        <Route path={api.baseUrl + "/organization/:id" } component={OrganizationDetail} />
+        <Route path={api.baseUrl + "/timeline/:id" } component={Timeline} />
+	      <Route path={api.baseUrl + "/latest_remark" } component={LatestRemark} />
+	      <Route path={api.baseUrl + "/notifications/:id" } component={NotificationDetail} />
+        <Route path={api.baseUrl + "/select_user" } component={SelectUser} />
 
       </div>
     </Router>

@@ -177,7 +177,7 @@ class User extends Component {
   render () {
     if (!this.props.isLogin) {
       return (
-        <Redirect to="/login" />
+        <Redirect to={api.baseUrl + "/login"} />
       )
     }
 
@@ -202,7 +202,7 @@ class User extends Component {
         <div style={settingContainerStyle}>
           <ul>
             <Group>
-              <Link to="/my_partener">
+              <Link to={api.baseUrl + "/my_partener"}>
                 {
                   this.props.userInfo.userType === 1 ?
                     <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-6@2x.png"} label="我的交易师" /> :
@@ -210,36 +210,40 @@ class User extends Component {
                 }
               </Link>
 
-              <Link to="/notification">
+              <Link to={api.baseUrl + "/notification"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/notification.svg"} label="通知消息" hideBorder={true} />
               </Link>
             </Group>
             <Group>
-              <Link to="/my_tag">
+              <Link to={api.baseUrl + "/my_tag"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-1@2x.png"} label="关注的标签" />
               </Link>
 
-              <Link to="/timeline_management">
+              <Link to={api.baseUrl + "/timeline_management"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/timeline.svg"} label="时间轴管理" />
               </Link>
 
-              <Link to="/my_favorite_project">
+              <Link to={api.baseUrl + "/my_favorite_project"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-3@2x.png"} label="收藏的项目" hideBorder={true} />
               </Link>
             </Group>
             <Group>
-              <Link to="/modify_password">
+              <Link to={api.baseUrl + "/modify_password"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-5@2x.png"} label="修改密码" />
               </Link>
 
-              <Link to="/modify_business_card">
+              <Link to={api.baseUrl + "/modify_business_card"}>
                 <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/name_card@2x.png"} label="修改名片" />
               </Link>
 
-              <Link to="/contact">
-                <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-8@2x.png"} label="联系我们" hideBorder={true} />
-              </Link>
+              <Link to={api.baseUrl + "/contact"}>
+		<LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-8@2x.png"} label="联系我们" hideBorder={true} />
+	      </Link>
             </Group>
+
+
+
+
             <Group>
               <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-9@2x.png"} label="退出登录" onClick={this.handleClick} hideBorder={true} /></Group>
 

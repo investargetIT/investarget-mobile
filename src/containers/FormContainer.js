@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-
+import api from '../api'
 import TransparetnNavigationBar from '../components/TransparentNavigationBar'
 import api from '../api'
 
@@ -48,7 +48,7 @@ function FormContainer(props) {
 
   if (props.isLogin) {
     return (
-      <Redirect to="/" />
+      <Redirect to={api.baseUrl + "/"} />
     )
   }
 

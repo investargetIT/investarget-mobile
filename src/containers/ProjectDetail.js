@@ -189,7 +189,7 @@ class ProjectDetail extends React.Component {
     componentDidMount() {
 
       if (!this.props.match.params.token) {
-        this.props.history.push('/login')
+        this.props.history.push(api.baseUrl + '/login')
         return
       }
 
@@ -262,7 +262,7 @@ class ProjectDetail extends React.Component {
         switch (event.target.name) {
 	        case "timeline":
                 var toObj = {
-                pathname: '/timeline/' + this.props.match.params.id,
+                pathname: api.baseUrl + '/timeline/' + this.props.match.params.id,
                 state: this.state.result.titleC
                 }
                 this.props.history.push(toObj)
@@ -274,7 +274,7 @@ class ProjectDetail extends React.Component {
                     {
                         this.recommend()
                     } else if (this.props.recommendProcess.projectIds.length) {
-                        this.props.history.push('/select_user')
+                        this.props.history.push(api.baseUrl + '/select_user')
                     }
                 } else {
                     this.setState({
@@ -290,7 +290,7 @@ class ProjectDetail extends React.Component {
                     this.props.recommendProcess.investorIds.length) {
                     this.recommend()
                 } else if (this.props.recommendProcess.projectIds.length) {
-                    this.props.history.push('/select_user')
+                    this.props.history.push(api.baseUrl + '/select_user')
                 }
         }
     }
@@ -300,7 +300,7 @@ class ProjectDetail extends React.Component {
       if (this.props.history.length > 1) {
 	this.props.history.goBack()
       } else {
-	window.location.href = '/'
+	window.location.href = api.baseUrl + '/'
       }
     }
 

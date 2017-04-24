@@ -195,7 +195,7 @@ class Timeline extends Component {
     }
     if (result.length > 0) {
       var toObj = {
-	pathname: '/latest_remark',
+	pathname: api.baseUrl + '/latest_remark',
 	state: result.map(item=>investors[item])
       }
       this.props.history.push(toObj)

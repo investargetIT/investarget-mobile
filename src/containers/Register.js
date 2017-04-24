@@ -138,7 +138,7 @@ class Register extends React.Component {
         (result) => {
           if (result) {
             this.setState({userExist: true})
-            this.props.history.push('/set_password', {mobile: this.state.mobile})
+            this.props.history.push(api.baseUrl + '/set_password', {mobile: this.state.mobile})
           } else {
             this.setState({userExist: false})
           }
@@ -176,7 +176,7 @@ class Register extends React.Component {
           })
           delete registerBasicInfo.token
           localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
-          this.props.history.push('/register2')
+          this.props.history.push(api.baseUrl + '/register2')
         },
         error => this.props.dispatch(handleError(error))
       )
@@ -234,7 +234,7 @@ class Register extends React.Component {
 
         <div style={this.state.userExist === false ? licenseStyle : {display: 'none'}}>
           <input name="license" style={licenseCheckStyle} type="checkbox" checked={this.state.license} onChange={this.handleInputChange} />
-          <Link style={licenseLinkStyle} to="/agreement">用户协议</Link>
+          <Link style={licenseLinkStyle} to={api.baseUrl + "/agreement"}>用户协议</Link>
         </div>
 
         <div style={this.state.userExist === null ? buttonStyle : {display: 'none'}}>
@@ -243,7 +243,7 @@ class Register extends React.Component {
 
       </div>
     )
-    return <FormContainer previousPage="/login" title="注册" innerHtml={content} />
+    return <FormContainer previousPage={api.baseUrl + "/login"} title="注册" innerHtml={content} />
   }
 
 }

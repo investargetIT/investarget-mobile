@@ -3,6 +3,8 @@ import axios from 'axios'
 const url = 'http://192.168.1.253:8082/api/'
 // const url = 'https://api.investarget.com/api/'
 
+const baseUrl = process.env.PUBLIC_URL
+
 function ApiError(object) {
   this.name = 'ApiError'
   this.message = object.message || 'Default Message'

@@ -102,7 +102,7 @@ class TimelineManagement extends React.Component {
     }
 
     handleGoBack() {
-        this.props.history.push('/user')
+        this.props.history.push(api.baseUrl + '/user')
     }
 
     componentDidMount() {
@@ -122,7 +122,7 @@ class TimelineManagement extends React.Component {
 
   handleTimelineClicked(id) {
     if (this.props.userInfo.userType === 3) {
-      this.props.history.push('edit_timeline/' + id)
+      this.props.history.push(api.baseUrl + '/edit_timeline/' + id)
     }
   }
 
@@ -147,8 +147,8 @@ class TimelineManagement extends React.Component {
 
                                     <div style={detailStyle}>
                                         <Link to={timeline.investorId == userId ? 
-                                            'user_info/' + userId : 
-                                            {pathname: 'chat/' + timeline.investorId, state: {name: timeline.investorName}}
+api.baseUrl + '/user_info/' + userId : 
+  {pathname: api.baseUrl + '/chat/' + timeline.investorId, state: {name: timeline.investorName}}
                                         }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人：</span>
@@ -156,7 +156,7 @@ class TimelineManagement extends React.Component {
                                             </div>
                                         </Link>
 
-                                        <Link to="organization/1466">
+					<Link to={api.baseUrl + "/organization/" + timeline.investorOrgId}>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人所属机构：</span>
                                                 <span style={rightColStyle}>{timeline.investorOrg}</span>
@@ -164,8 +164,8 @@ class TimelineManagement extends React.Component {
                                         </Link>
 
                                         <Link to={timeline.transactionId == userId ?
-                                            'user_info/' + userId :
-                                            {pathname: 'chat/' + timeline.transactionId, state: {name: timeline.transactionName}}
+					    api.baseUrl + '/user_info/' + userId :
+					    {pathname: api.baseUrl + '/chat/' + timeline.transactionId, state: {name: timeline.transactionName}}
                                         }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>交易师：</span>

@@ -109,7 +109,7 @@ class App extends Component {
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
 	if (projectID) {
-	  window.location.href = '/project/' + projectID + (react.props.userInfo ? '/' + react.props.userInfo.token : '')
+	  window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '/' + react.props.userInfo.token : '')
         }
       }
     })
@@ -219,7 +219,7 @@ var loadmoreStyle = {
           <div style={headerLabelStyle}>
             <span style={headerLabelSpanStyle}>项目推荐</span>
           </div>
-          <Link to="/filter">
+          <Link to={api.baseUrl + "/filter"}>
             <div style={headerActionStyle}>
               <img style={headerIconStyle} src={api.baseUrl + '/images/home/filter@2x.png'} alt="" />
               <span style={headerActionDoStyle}>筛选</span>

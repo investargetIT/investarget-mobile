@@ -118,16 +118,16 @@ class Login extends React.Component {
         </div>
 
         <div style={registerButtonStyle}>
-          <Link to="/register"><Button type="secondary" isTransparent="true" value="注册" /></Link>
+          <Link to={api.baseUrl + "/register"}><Button type="secondary" isTransparent="true" value="注册" /></Link>
         </div>
 
         <div style={forgetPasswordStyle}>
-          <Link to="/retrieve_password" style={forgetPasswordLinkStyle}>忘记密码？</Link>
+          <Link to={api.baseUrl + "/retrieve_password"} style={forgetPasswordLinkStyle}>忘记密码？</Link>
         </div>
 
       </div>
     )
-    return <FormContainer title="登录" previousPage="/" innerHtml={content} />
+    return <FormContainer title="登录" previousPage={api.baseUrl + "/"} innerHtml={content} />
   }
 
 }

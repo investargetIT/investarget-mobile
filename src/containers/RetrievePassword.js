@@ -105,7 +105,7 @@ class RetrievePassword extends React.Component {
                     newPassword: this.state.newPassword
                 })
                 api.retrievePassword(param2, () => {
-                    this.props.history.push('/login')
+                    this.props.history.push(api.baseUrl + '/login')
                 }, (error) => {
                     this.props.dispatch(handleError(error))
                 })
@@ -150,7 +150,7 @@ class RetrievePassword extends React.Component {
             </div>
         )
 
-        return <FormContainer previousPage="/login" title="找回密码" innerHtml={content} />
+      return <FormContainer previousPage={api.baseUrl + "/login"} title="找回密码" innerHtml={content} />
     }
 }
 

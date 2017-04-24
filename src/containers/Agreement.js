@@ -1,7 +1,8 @@
 import React from 'react'
 import TransparentNavigationBar from '../components/TransparentNavigationBar'
-
 import api from '../api'
+
+>>>>>>> Add baseUrl to route
 
 const bgStyle = {
     width: '100%',
@@ -38,7 +39,7 @@ class Agreement extends React.Component {
     render() {
         return (
         <div style={bgStyle}>
-            <TransparentNavigationBar title="用户协议" previousPage="/register" />
+            <TransparentNavigationBar title="用户协议" previousPage={api.baseUrl + "/register"} />
             
             <div style={containerStyle}>
                 <div>

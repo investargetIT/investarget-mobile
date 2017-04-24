@@ -173,7 +173,7 @@ class Register2 extends React.Component {
 
   handleSubmitSuccess() {
     this.setState({ showModal: false })
-    this.props.history.push('/')
+    this.props.history.push(api.baseUrl + '/')
   }
 
   render() {
@@ -252,7 +252,7 @@ class Register2 extends React.Component {
 
       </div>
 
-    return <FormContainer previousPage="/register" title="个人信息" innerHtml={content} />
+    return <FormContainer previousPage={api.baseUrl + "/register"} title="个人信息" innerHtml={content} />
   }
 
 }

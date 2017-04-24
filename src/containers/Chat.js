@@ -100,7 +100,7 @@ class Chat extends React.Component {
     }
 
     handleActionButtonClicked() {
-        this.props.history.push('/my_favorite_project')
+        this.props.history.push(api.baseUrl + '/my_favorite_project')
     }
 
     componentDidMount() {
@@ -154,7 +154,7 @@ class Chat extends React.Component {
                         this.state.projects.length ?
                             this.state.projects.map(
                                 (project) => (
-				  <a className="margin-bottom-2" key={project.id} href={'/project/' + project.id + (this.props.userInfo ? '/' + this.props.userInfo.token : '')}>
+				  <a className="margin-bottom-2" key={project.id} href={api.baseUrl + '/project/' + project.id + (this.props.userInfo ? '/' + this.props.userInfo.token : '')}>
                                         <ProjectListCell
                                             title={project.title}
                                             country={project.country}
