@@ -322,7 +322,6 @@ class ProjectDetail extends React.Component {
             textAlign: 'center',
             color: '#fff',
             fontWeight: 'bold',
-            backgroundImage: 'url("../img/background_detail.png")',
             backgroundRepeat: 'no-repeat',
             backgroundSize: '100%',
         }
@@ -460,7 +459,7 @@ class ProjectDetail extends React.Component {
                             <div style={actionFavoriteContinerStyle}>
                                 <img
                                     style={favoriteIconStyle}
-                                    src={this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png"}
+                                    src={api.baseUrl + (this.state.isMyFavoriteProject ? "images/home/projCollected@2x.png" : "images/home/projNoCollect@2x.png")}
                                     onClick={this.handleFavoriteButtonToggle}
                                 />
                             </div>

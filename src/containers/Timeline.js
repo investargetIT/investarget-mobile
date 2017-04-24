@@ -80,11 +80,11 @@ class TimelineStep extends Component {
 	  <img style={stepIconStyle} src={this.props.icon} alt="" />
 	</div>
 	<div style={stepContentContainerStyle}>
-	  <img style={stepTriangleStyle} src="/images/timeline/Triangle.svg" alt="" />
+	  <img style={stepTriangleStyle} src={api.baseUrl + "images/timeline/Triangle.svg"} alt="" />
 	  <div style={stepTitleStyle}>{this.props.title}</div>
 
 	  {Array.isArray(this.props.investors) ? this.props.investors.map((item, index) =>
-	    <img key={index} style={stepAvatarStyle} src={item.investorPhotoUrl || "/images/userCenter/defaultAvatar@2x.png"} alt="" />
+	    <img key={index} style={stepAvatarStyle} src={item.investorPhotoUrl || api.baseUrl + "images/userCenter/defaultAvatar@2x.png"} alt="" />
 	  ) : null}
 
 	</div>
@@ -122,7 +122,7 @@ const titleStyle = {
 const titleContainerStyle = {
   height: '25px',
   overflow: 'hidden',
-  backgroundImage: 'url(/images/timeline/timeline-title-bg.svg)',
+  backgroundImage: 'url(' + api.baseUrl + 'images/timeline/timeline-title-bg.svg)',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'auto 100%',
   backgroundPosition: 'left top',
@@ -206,7 +206,7 @@ class Timeline extends Component {
     return (
       <div>
 	<NavigationBar title="项目进程" />
-	<img style={backgroundImageStyle} src="/images/timeline/timeLineBG@2x.png" alt="" />
+	<img style={backgroundImageStyle} src={api.baseUrl + "images/timeline/timeLineBG@2x.png"} alt="" />
 
 	<div style={titleContainerStyle2}>
 	  <div style={stepIconContainerStyle}></div>
@@ -215,17 +215,17 @@ class Timeline extends Component {
 	  </div>
 	</div>
 
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage1.png" color="#FF6900" title="step1，获取项目概要" investors={this.state.timelines.filter(item=>item.transactionStatusId===1)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage2.png" color="#2AA0AE" title="step2，签署保密协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===2)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage3.png" color="#5649B9" title="step3，获取投资备忘录" investors={this.state.timelines.filter(item=>item.transactionStatusId===3)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage4.png" color="#F94545" title="step4，进入一期资料库" investors={this.state.timelines.filter(item=>item.transactionStatusId===4)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage5.png" color="#0B87C1" title="step5，签署投资意向书/投资条款协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===5)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage6.png" color="#F5C12D" title="step6，进入二期资料库" investors={this.state.timelines.filter(item=>item.transactionStatusId===6)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage7.png" color="#EB090A" title="step7，进场尽职调查" investors={this.state.timelines.filter(item=>item.transactionStatusId===7)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage8.png" color="#2AA0AE" title="step8，签署约束性报告" investors={this.state.timelines.filter(item=>item.transactionStatusId===8)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage9.png" color="#5649B9" title="step9，起草法律协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===9)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage10.png" color="orange" title="step10，签署法律协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===10)} />
-	<TimelineStep handleStepClicked={this.handleStepClicked} icon="/images/timeline/stepImage11.png" color="#10458F" title="step11，完成交易" investors={this.state.timelines.filter(item=>item.transactionStatusId===11)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage1.png"} color="#FF6900" title="step1，获取项目概要" investors={this.state.timelines.filter(item=>item.transactionStatusId===1)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage2.png"} color="#2AA0AE" title="step2，签署保密协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===2)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage3.png"} color="#5649B9" title="step3，获取投资备忘录" investors={this.state.timelines.filter(item=>item.transactionStatusId===3)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage4.png"} color="#F94545" title="step4，进入一期资料库" investors={this.state.timelines.filter(item=>item.transactionStatusId===4)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage5.png"} color="#0B87C1" title="step5，签署投资意向书/投资条款协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===5)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage6.png"} color="#F5C12D" title="step6，进入二期资料库" investors={this.state.timelines.filter(item=>item.transactionStatusId===6)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage7.png"} color="#EB090A" title="step7，进场尽职调查" investors={this.state.timelines.filter(item=>item.transactionStatusId===7)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage8.png"} color="#2AA0AE" title="step8，签署约束性报告" investors={this.state.timelines.filter(item=>item.transactionStatusId===8)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage9.png"} color="#5649B9" title="step9，起草法律协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===9)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage10.png"} color="orange" title="step10，签署法律协议" investors={this.state.timelines.filter(item=>item.transactionStatusId===10)} />
+	<TimelineStep handleStepClicked={this.handleStepClicked} icon={api.baseUrl + "images/timeline/stepImage11.png"} color="#10458F" title="step11，完成交易" investors={this.state.timelines.filter(item=>item.transactionStatusId===11)} />
       </div>
     )
   }

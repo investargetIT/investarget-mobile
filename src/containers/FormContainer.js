@@ -3,12 +3,12 @@ import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import TransparetnNavigationBar from '../components/TransparentNavigationBar'
-
+import api from '../api'
 
 var containerStyle = {
   width: '100%',
   minHeight: '100%',
-  backgroundImage: 'url(images/login/backgroungImage@2x.png)',
+  backgroundImage: 'url(' + api.baseUrl + 'images/login/backgroungImage@2x.png)',
   backgroundRepeat: 'repeat-y',
   backgroundSize: '100% auto',
   backgroundPosition: '50% 0',

@@ -3,6 +3,7 @@ import NavigationBar from '../components/NavigationBar'
 import MasterDetail from '../components/MasterDetail'
 import { connect } from 'react-redux'
 import { toggleFilter, searchProject, clearFilter, cloneTrueFilter } from '../actions'
+import api from '../api'
 
 const CATEGORY_1 = 'area', CATEGORY_2 = 'industry', CATEGORY_3 = 'tag'
 
@@ -82,11 +83,11 @@ function FilterCategory(props) {
     color: '#5B5B5B'
   }
 
-  var icon = "/images/home/filterDown@2x.png"
+  var icon = api.baseUrl + "images/home/filterDown@2x.png"
 
   if (props.isActive) {
     categoryTitleStyle.color = '#10458F'
-    icon = "/images/home/filterUp@2x.png"
+    icon = api.baseUrl + "images/home/filterUp@2x.png"
   }
 
   return (
@@ -210,7 +211,7 @@ class Search extends Component {
   render() {
   return (
     <div style={searchContainerStyle}>
-      <img style={searchIconStyle} src="/images/home/ic_search.svg" />
+      <img style={searchIconStyle} src={api.baseUrl + "images/home/ic_search.svg"} />
       <input style={searchInputStyle} type="text" placeholder="搜索项目标题" onBlur={this.onblur} />
     </div>
   )

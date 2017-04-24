@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import api from '../api'
 
 
 var navbarStyle = {
@@ -31,7 +32,7 @@ function TransparentNavigationBar(props) {
       <div style={navbarStyle}>
           <Link to={props.previousPage}>
               <div style={backIconContainerStyle}>
-                  <img style={backIconStyle} src="images/ic_navigate_before.svg" alt="Back" />
+                  <img style={backIconStyle} src={api.baseUrl + "images/ic_navigate_before.svg"} alt="Back" />
               </div>
           </Link>
           <p style={titleStyle}>{props.title}</p>

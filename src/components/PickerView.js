@@ -1,7 +1,7 @@
 import React from 'react'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch/alloy_touch.css'
-
+import api from '../api'
 
 
 var HEIGHT = 30
@@ -149,8 +149,8 @@ class PickerView extends React.Component {
             <div style={this.props.show ? containerStyle : hiddenStyle}>
                 <div style={titleStyle}>
                     {this.props.title}
-                    <img style={cancelIconStyle} src="/images/x@2x.png" onClick={this.props.onCancel}></img>
-                    <img style={confirmIconStyle} src="/images/v@2x.png" onClick={this.props.onConfirm}></img>
+                    <img style={cancelIconStyle} src={api.baseUrl + "images/x@2x.png"} onClick={this.props.onCancel}></img>
+                    <img style={confirmIconStyle} src={api.baseUrl + "images/v@2x.png"} onClick={this.props.onConfirm}></img>
                 </div>
                 <div style={scrollStyle} ref="container">
                     <div style={maskStyle}></div>

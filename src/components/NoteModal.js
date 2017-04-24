@@ -1,4 +1,5 @@
 import React from 'react'
+import api from '../api'
 
 
 var coverStyle = {
@@ -82,7 +83,7 @@ const Modal = function(props) {
                 <div style={modalStyle}>
                     <div style={headStyle}>
                         <div style={titleStyle}>备注信息</div>
-                        <img style={closeStyle} src="/images/closeView@2x.png" onClick={props.onCancel}></img>
+                        <img style={closeStyle} src={api.baseUrl + "images/closeView@2x.png"} onClick={props.onCancel}></img>
                     </div>
                     <div style={bodyStyle}>
                         <textarea style={textareaStyle} placeholder="新备注" value={props.value} onChange={props.onValueChange}></textarea>

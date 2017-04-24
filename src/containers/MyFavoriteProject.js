@@ -48,13 +48,13 @@ const checkboxStyle = {
   display: 'block',
   width: '24px',
   height: '24px',
-  backgroundImage: 'url(/images/ht-cellnormal@2x.png)',
+  backgroundImage: 'url(' + api.baseUrl + 'images/ht-cellnormal@2x.png)',
   backgroundSize: 'cover',
   backgroundPosition: 'center center',
   backgroundRepeat: 'no-repeat',
 }
 const checkboxCheckedStyle = Object.assign({}, checkboxStyle, {
-  backgroundImage: 'url(/images/ht-cellselected@2x.png)',
+  backgroundImage: 'url(' + api.baseUrl + 'images/ht-cellselected@2x.png)',
 })
 const coverStyle = {
   position: 'absolute',
@@ -280,7 +280,7 @@ class MyFavoriteProject extends Component {
       <div>
         <NavigationBar title="我收藏的项目" backIconClicked={this.handleBackIconClicked} action={ this.props.userInfo.userType === 3 ? "推荐" : null } onActionButtonClicked={this.showSelect} />
         <div style={contentContainerStyle}>
-          {this.state.projects.length > 0 ? content : <img style={emptyPicStyle} src="/images/emptyBox@2x.png" />}
+          {this.state.projects.length > 0 ? content : <img style={emptyPicStyle} src={api.baseUrl + "images/emptyBox@2x.png"} />}
         </div>
         <div style={ this.state.isSelecting ? actionWrapStyle : actionWrapHideStyle }>
           <div style={actionStyle}>

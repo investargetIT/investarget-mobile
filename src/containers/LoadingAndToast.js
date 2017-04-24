@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import api from '../api'
 
 function LoadingAndToast(props) {
 
@@ -44,7 +45,7 @@ function LoadingAndToast(props) {
   var message = props.isError ? props.errorMsg : '请稍等...'
 
   if (props.isFetching) {
-    var loadingIcon = <img src="/images/loading2.svg" style={loadingIconStyle} alt=""/>
+    var loadingIcon = <img src={api.baseUrl + "images/loading2.svg"} style={loadingIconStyle} alt=""/>
   }
 
   return (

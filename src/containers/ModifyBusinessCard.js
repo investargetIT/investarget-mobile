@@ -131,7 +131,7 @@ class ModifyBusinessCard extends Component {
 	    <p style={cardTitleStyle}>我的名片:<span style={cardTipStyle}>(名片请横向放置)</span></p>
 
 	    <div style={cardImageContainerStyle}>
-	      <img style={cardStyle} src={ this.state.businessCard || this.props.userInfo.cardUrl || "/images/userCenter/emptyCardImage@2x.png" } />
+	      <img style={cardStyle} src={ this.state.businessCard || this.props.userInfo.cardUrl || api.baseUrl + "images/userCenter/emptyCardImage@2x.png" } />
 	      <div style={inputContainerStyle}>
 		<input style={inputStyle} id="file" type="file" accept="image/*" onChange={this.handleInputChange} />
 	      </div>

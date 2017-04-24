@@ -44,7 +44,7 @@ function Message(props) {
     <div style={messageContainerStyle}>
 
       <div style={messageIconContainerStyle}>
-        <img style={messageIconStyle} src="/images/ht-notify@2x.png" alt="" />
+        <img style={messageIconStyle} src={api.baseUrl + "images/ht-notify@2x.png"} alt="" />
       </div>
 
       <div style={messageRightContainerStyle}>

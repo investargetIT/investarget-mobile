@@ -129,7 +129,7 @@ class Chat extends React.Component {
                     ? (
                         <NavigationBar title={this.props.location.state.name}
                                        backIconClicked={this.props.history.goBack}
-                                       action={ <img style={iconStyle} src="/images/plus.png"></img> }
+                                       action={ <img style={iconStyle} src={api.baseUrl + 'images/plus.png'}></img> }
                                        onActionButtonClicked={this.handleActionButtonClicked} />
                     )
                     : (

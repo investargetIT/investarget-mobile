@@ -176,7 +176,10 @@ function upload(uri, data) {
   })
 }
 
+const baseUrl = '/'
+
 export default {
+  baseUrl,
   getCurrentUserId,
   getCurrentUserType,
   getCurrentUserInfo,

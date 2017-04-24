@@ -205,12 +205,12 @@ var loadmoreStyle = {
 
           <div className="pull">
             <div id="arrow" className="arrow">
-              <img src="/images/ic_arrow_down.svg" alt="" /><br />
+              <img src={api.baseUrl + 'images/ic_arrow_down.svg'} alt="" /><br />
             </div>
           </div>
 
           <div className="loading">
-            <img src="/images/loading.svg" alt="" />
+            <img src={api.baseUrl + 'images/loading.svg'} alt="" />
           </div>
 
         </div>
@@ -221,7 +221,7 @@ var loadmoreStyle = {
           </div>
           <Link to="/filter">
             <div style={headerActionStyle}>
-              <img style={headerIconStyle} src="/images/home/filter@2x.png" alt="" />
+              <img style={headerIconStyle} src={api.baseUrl + 'images/home/filter@2x.png'} alt="" />
               <span style={headerActionDoStyle}>筛选</span>
             </div>
           </Link>
@@ -232,7 +232,7 @@ var loadmoreStyle = {
             <ul id="list" ref="listContainer">
               { !this.props.isFetching && rows.length === 0 ? <div style={{textAlign: 'center'}}>没有结果，请重新筛选</div> : rows }
             </ul>
-            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src="/images/loading.svg" alt="" /></div>
+            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + 'images/loading.svg'} alt="" /></div>
           </div>
         </div>
 
