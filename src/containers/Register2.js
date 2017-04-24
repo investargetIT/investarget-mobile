@@ -202,7 +202,7 @@ class Register2 extends React.Component {
     
     var showPassword = 
       <div style={showPasswordStyle} onClick={this.togglePassword}>
-        <img src={api.baseUrl + (this.state.showPassword ? "images/login/eyeOpen@2x.png" : "images/login/eyeClose@2x.png")} style={showPasswordIconStyle} alt="" />
+        <img src={api.baseUrl + (this.state.showPassword ? "/images/login/eyeOpen@2x.png" : "/images/login/eyeClose@2x.png")} style={showPasswordIconStyle} alt="" />
       </div>
 
     var content =

@@ -33,7 +33,7 @@ const investarNameStyle = {
 function Investor(props) {
   return (
     <div style={investorContainerStyle}>
-      <img style={investorAvatarStyle} src={props.photoUrl ? props.photoUrl : api.baseUrl + "images/userCenter/defaultAvatar@2x.png"} alt="" />
+      <img style={investorAvatarStyle} src={props.photoUrl ? props.photoUrl : api.baseUrl + "/images/userCenter/defaultAvatar@2x.png"} alt="" />
       <p style={investarOrgStyle}>{props.org}</p>
       <p style={investarNameStyle}>{props.name}</p>
     </div>

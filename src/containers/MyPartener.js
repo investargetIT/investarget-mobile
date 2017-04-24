@@ -37,7 +37,7 @@ const investarNameStyle = {
 function Partener(props) {
   return (
     <div style={partenerContainerStyle}>
-      <img style={partenerAvatarStyle} src={props.photoUrl ? props.photoUrl : api.baseUrl + "images/userCenter/defaultAvatar@2x.png"} alt="" />
+      <img style={partenerAvatarStyle} src={props.photoUrl ? props.photoUrl : api.baseUrl + "/images/userCenter/defaultAvatar@2x.png"} alt="" />
       <p style={investarOrgStyle}>{props.org}</p>
       <p style={investarNameStyle}>{props.name}</p>
     </div>

@@ -104,7 +104,7 @@ class LatestRemark extends Component {
     return (
       <div>
 
-	<img style={backgroundImageStyle} src={api.baseUrl + "images/timeline/timeLineBG@2x.png"} alt="" />
+	<img style={backgroundImageStyle} src={api.baseUrl + "/images/timeline/timeLineBG@2x.png"} alt="" />
 
 	<NavigationBar title="最新备注" />
 

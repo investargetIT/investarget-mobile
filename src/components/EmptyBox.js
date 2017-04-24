@@ -19,7 +19,7 @@ const textStyle = {
 const EmptyBox = (props) => {
     return (
         <div style={containerStyle}>
-            <img style={imageStyle} src={api.baseUrl + "images/emptyBox@2x.png"} />
+            <img style={imageStyle} src={api.baseUrl + "/images/emptyBox@2x.png"} />
             <p style={textStyle}>没有任何项目</p>
         </div>
     )

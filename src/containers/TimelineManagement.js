@@ -9,7 +9,7 @@ import NavigationBar from '../components/NavigationBar'
 
 var containerStyle = {
     height: '100%',
-    backgroundImage: 'url(' + api.baseUrl + 'images/timeline/timeLineBG@2x.png)',
+    backgroundImage: 'url(' + api.baseUrl + '/images/timeline/timeLineBG@2x.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

@@ -45,7 +45,7 @@ function LoadingAndToast(props) {
   var message = props.isError ? props.errorMsg : '请稍等...'
 
   if (props.isFetching) {
-    var loadingIcon = <img src={api.baseUrl + "images/loading2.svg"} style={loadingIconStyle} alt=""/>
+    var loadingIcon = <img src={api.baseUrl + "/images/loading2.svg"} style={loadingIconStyle} alt=""/>
   }
 
   return (

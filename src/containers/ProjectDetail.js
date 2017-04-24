@@ -459,7 +459,7 @@ class ProjectDetail extends React.Component {
                             <div style={actionFavoriteContinerStyle}>
                                 <img
                                     style={favoriteIconStyle}
-                                    src={api.baseUrl + (this.state.isMyFavoriteProject ? "images/home/projCollected@2x.png" : "images/home/projNoCollect@2x.png")}
+                                    src={api.baseUrl + (this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png")}
                                     onClick={this.handleFavoriteButtonToggle}
                                 />
                             </div>

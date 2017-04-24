@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 var containerStyle = {}
 var backgroundStyle  = {
     height: '180px',
-    backgroundImage: 'url(' + api.baseUrl + 'images/userInfoBG@2x.png)',
+    backgroundImage: 'url(' + api.baseUrl + '/images/userInfoBG@2x.png)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
@@ -79,7 +79,7 @@ class UserInfo extends React.Component {
                 <NavigationBar title="个人信息" backIconClicked={this.props.history.goBack} />
                 <div style={backgroundStyle}>
                     <div style={headStyle}>
-                        <img style={imageStyle} src={user.photoUrl || api.baseUrl + 'images/userCenter/defaultAvatar@2x.png'}></img>
+                        <img style={imageStyle} src={user.photoUrl || api.baseUrl + '/images/userCenter/defaultAvatar@2x.png'}></img>
                     </div>
                     <div style={nameWrapStyle}>
                         <span style={nameStyle}>{user.name}</span>

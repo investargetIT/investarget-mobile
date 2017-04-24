@@ -70,7 +70,7 @@ function LeftIconRightLabel(props) {
         </div>
 
         <div style={rightIconContainerStyle}>
-          <img alt="" style={rightIconStyle} src={api.baseUrl + "images/userCenter/ic_chevron_right_black_24px.svg"} />
+          <img alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/ic_chevron_right_black_24px.svg"} />
         </div>
 
         <div style={labelContainerStyle}><span>{props.label}</span></div>
