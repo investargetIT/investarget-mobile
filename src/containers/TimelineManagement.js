@@ -148,7 +148,7 @@ class TimelineManagement extends React.Component {
                                     <div style={detailStyle}>
                                         <Link to={timeline.investorId == userId ? 
                                             'user_info/' + userId : 
-                                            {pathname: 'chat_investor/' + timeline.investorId, state: {investorName: timeline.investorName}}
+                                            {pathname: 'chat/' + timeline.investorId, state: {name: timeline.investorName}}
                                         }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人：</span>
@@ -165,7 +165,7 @@ class TimelineManagement extends React.Component {
 
                                         <Link to={timeline.transactionId == userId ?
                                             'user_info/' + userId :
-                                            {pathname: 'chat_transaction/' + timeline.transactionId, state: {transactionName: timeline.transactionName}}
+                                            {pathname: 'chat/' + timeline.transactionId, state: {name: timeline.transactionName}}
                                         }>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>交易师：</span>

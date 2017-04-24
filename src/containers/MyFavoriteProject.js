@@ -170,7 +170,7 @@ class MyFavoriteProject extends Component {
     if (investorIds.length > 0 && projectIds.length > 0) {
       this.recommend()
     } else if (projectIds.length > 0) {
-      this.props.history.push('/select_investors')
+      this.props.history.push('/select_user')
     }
   }
 
