@@ -4,6 +4,7 @@ import { handleError, requestContents, hideLoading, setRecommendProjects, clearR
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
 import Modal from '../components/Modal'
+import { Link } from 'react-router-dom'
 
 var containerStyle = {
     minHeight: '100%',
@@ -118,6 +119,58 @@ const actionPlaceHolderStyle = {
     height: '40px',
 }
 
+
+const guideWrapperStyle = {
+    position: 'fixed',
+    left: '0',
+    bottom: '0',
+    zIndex: '99',
+    width: '100%',
+}
+const guideWrapperHideStyle = Object.assign({},guideWrapperStyle,{display: 'none'})
+const guideStyle = {
+    display: 'flex',
+    width: '100%',
+    height: '48px',
+    alignItems: 'center',
+    padding: '0 12px',
+    backgroundColor: '#fff',
+    boxShadow: '0 -1px 1px rgba(0,0,0,.1), 0 -2px 2px rgba(255,255,255,.3)',
+}
+const guideCloseStyle = {
+    width: '20px',
+    height: '20px',
+    marginRight: '10px',
+}
+const guideLogoStyle = {
+    width: '40px',
+    height: '40px',
+    marginRight: '10px',
+}
+const guideTextStyle = {
+    flexGrow: '1',
+}
+const guideTitleStyle = {
+    fontSize: '16px',
+    marginBottom: '2px',
+}
+const guideContentStyle = {
+    fontSize: '12px',
+    color: '#999',
+}
+const guideLinkStyle = {
+}
+const guideButtonStyle = {
+    color: '#333',
+    fontSize: '12px',
+    lineHeight: '28px',
+    border: '1px solid #ddd',
+    backgroundColor: '#fff',
+    padding: '0 1em',
+    borderRadius: '4px',
+}
+
+
 class ProjectDetail extends React.Component {
     constructor(props) {
         super(props)
@@ -129,6 +182,7 @@ class ProjectDetail extends React.Component {
             "modalTitle": "",
             "modalContent": "",
             "modalActions": [],
+            "showGuide": false,
         }
 
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
@@ -136,6 +190,7 @@ class ProjectDetail extends React.Component {
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
         this.handleRecommendSuccess = this.handleRecommendSuccess.bind(this)
         this.hideModal = this.hideModal.bind(this)
+        this.handleCloseGuide = this.handleCloseGuide.bind(this)
     }
 
     recommend() {
@@ -206,29 +261,32 @@ class ProjectDetail extends React.Component {
       api.getSingleProject(
         projectId,
         data => {
-	  this.props.dispatch(hideLoading())
-	  document.title = data.titleC
-          this.setState({ result: data }
-        )},
-	error => this.props.dispatch(handleError(error)),
-	token
+            this.props.dispatch(hideLoading())
+            document.title = data.titleC
+            this.setState({ result: data })
+        },
+        error => this.props.dispatch(handleError(error)),
+        token
       )
 
       // 是否收藏了项目
-      if (!this.props.isLogin) return
-      api.getFavoriteProjectIds(
-        {
-            'input.projectId': projectId,
-            'input.userId': api.getCurrentUserId(),
-            'input.ftypes': '3'
-        },
-        projectIds => {
-            this.setState({
-                isMyFavoriteProject: (projectIds.length == 1)
-            })
-        },
-        error => this.props.dispatch(handleError(error))
-      )
+      if (this.props.isLogin) {
+        api.getFavoriteProjectIds(
+            {
+                'input.projectId': projectId,
+                'input.userId': api.getCurrentUserId(),
+                'input.ftypes': '3'
+            },
+            projectIds => {
+                this.setState({
+                    isMyFavoriteProject: (projectIds.length == 1)
+                })
+            },
+            error => this.props.dispatch(handleError(error))
+        )
+      } else {
+          this.setState({ showGuide: true })
+      }
       
     }
 
@@ -305,6 +363,10 @@ class ProjectDetail extends React.Component {
       } else {
 	window.location.href = api.baseUrl + '/'
       }
+    }
+
+    handleCloseGuide() {
+        this.setState({ showGuide: false })
     }
 
     render() {
@@ -468,7 +530,21 @@ class ProjectDetail extends React.Component {
                             </div>
                         </div>
                     </div>
-                : null }
+                :
+                    <div style={this.state.showGuide ? guideWrapperStyle : guideWrapperHideStyle}>
+                        <div style={guideStyle}>
+                            <img style={guideCloseStyle} onClick={this.handleCloseGuide} src={api.baseUrl + "/images/closeView@2x.png"} alt="close"></img>
+                            <img style={guideLogoStyle} src={api.baseUrl + "/images/shareLogo@2x.png"} alt="logo"></img>
+                            <div style={guideTextStyle}>
+                                <p style={guideTitleStyle}>多维海拓</p>
+                                <p style={guideContentStyle}>中国跨境投资生态系统</p>
+                            </div>
+                            <Link style={guideLinkStyle} to={api.baseUrl + "/register"}>
+                                <button style={guideButtonStyle}>立即注册</button>
+                            </Link>
+                        </div> 
+                    </div>
+                }
 
                 <Modal show={this.state.showModal} title={this.state.modalTitle} content={this.state.modalContent} actions={this.state.modalActions} />
             </div>
