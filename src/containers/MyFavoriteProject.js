@@ -13,6 +13,9 @@ const contentContainerStyle = {
   minHeight: window.innerHeight - 48 + 'px',
   paddingTop: '2px'
 }
+const contentContainerSelectStyle = Object.assign({}, contentContainerStyle, {
+  marginBottom: '48px',
+})
 
 const emptyPicStyle = {
   display: 'block',
@@ -285,7 +288,7 @@ class MyFavoriteProject extends Component {
     return (
       <div>
         <NavigationBar title="我收藏的项目" backIconClicked={this.handleBackIconClicked} action={ this.props.userInfo.userType === 3 ? "推荐" : null } onActionButtonClicked={this.showSelect} />
-        <div style={contentContainerStyle}>
+        <div style={this.state.isSelecting? contentContainerSelectStyle : contentContainerStyle}>
           {this.state.projects.length > 0 ? content : <img style={emptyPicStyle} src={api.baseUrl + "/images/emptyBox@2x.png"} />}
         </div>
         <div style={ this.state.isSelecting ? actionWrapStyle : actionWrapHideStyle }>
