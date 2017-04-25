@@ -10,7 +10,6 @@ const containerStyle = {
     height: '100%',
 }
 const contentStyle = {
-    marginTop: '-48px',
     minHeight: '100%',
     backgroundColor: '#eef5f6',
 }
@@ -67,7 +66,7 @@ const emptyUserStyle = {
     width: '100%',
     height: '100%',
     textAlign: 'center',
-    padding: '98px',
+    padding: '50px',
 }
 const emptyUserImageStyle = {
     width: '100px',

@@ -97,7 +97,7 @@ class Login extends React.Component {
   }
 
   handleBackIconClicked() {
-    this.props.history.push('/')
+    this.props.history.push(api.baseUrl + '/')
   }
 
   render() {

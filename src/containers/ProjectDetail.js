@@ -365,6 +365,9 @@ class ProjectDetail extends React.Component {
       this.props.dispatch(setRecommendProjects([]))
       if (this.props.history.length > 1) {
 	this.props.history.goBack()
+    this.timer = setTimeout(() => {
+        this.props.history.push(api.baseUrl + '/')
+    }, 100)
       } else {
 	window.location.href = api.baseUrl + '/'
       }
@@ -372,6 +375,10 @@ class ProjectDetail extends React.Component {
 
     handleCloseGuide() {
         this.setState({ showGuide: false })
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timer)
     }
 
     render() {
