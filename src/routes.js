@@ -9,6 +9,7 @@ import Events from './containers/Events'
 import User from './containers/User'
 import LoadingAndToast from './containers/LoadingAndToast'
 import HandleError from './containers/HandleError'
+import Toast from './containers/Toast'
 import Login from './containers/Login'
 import Register from './containers/Register'
 import Register2 from './containers/Register2'
@@ -88,6 +89,7 @@ const Routes = (props) => {
 
         <LoadingAndToast />
         <HandleError />
+        <Toast />
 
 
         <Route exact path={api.baseUrl + "/"} component={App} />

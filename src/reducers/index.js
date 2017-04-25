@@ -20,7 +20,9 @@ import {
   MODIFY_USER_INFO,
   SET_RECOMMEND_INVESTORS,
   SET_RECOMMEND_PROJECTS,
-  CLEAR_RECOMMEND
+  CLEAR_RECOMMEND,
+  SHOW_TOAST,
+  HIDE_TOAST,
 } from '../actions'
 
 const initialState = {
@@ -40,7 +42,9 @@ const initialState = {
   recommendProcess: {
     investorIds: [],
     projectIds: []
-  }
+  },
+  showToast: false,
+  toastMessage: '',
 }
 
 export default function (state = initialState, action) {
@@ -183,6 +187,16 @@ export default function (state = initialState, action) {
           investorIds: [],
           projectIds: []
         }
+      })
+    case SHOW_TOAST:
+      return Object.assign({}, state, {
+        showToast: true,
+        toastMessage: action.message
+      })
+    case HIDE_TOAST:
+      return Object.assign({}, state, {
+        showToast: false,
+        toastMessage: '',
       })
     default:
       return state

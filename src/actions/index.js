@@ -20,6 +20,8 @@ export const MODIFY_USER_INFO = 'MODIFY_USER_INFO'
 export const SET_RECOMMEND_INVESTORS = 'SET_RECOMMEND_INVESTORS'
 export const SET_RECOMMEND_PROJECTS = 'SET_RECOMMEND_PROJECTS'
 export const CLEAR_RECOMMEND = 'CLEAR_RECOMMEND'
+export const SHOW_TOAST = 'SHOW_TOAST'
+export const HIDE_TOAST = 'HIDE_TOAST'
 
 export function requestContents(param) {
   return {
@@ -167,3 +169,17 @@ export function clearRecommend() {
     type: CLEAR_RECOMMEND
   }
 }
+
+export function showToast(message) {
+  return {
+    type: SHOW_TOAST,
+    message
+  }
+}
+
+export function hideToast() {
+  return {
+    type: HIDE_TOAST
+  }
+}
+
