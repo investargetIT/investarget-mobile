@@ -1,8 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://192.168.1.253:8082/api/'
-// const url = 'https://api.investarget.com/api/'
-
+const url = process.env.NODE_ENV === 'development' ? 'http://192.168.1.253:8082/api/' : 'https://api.investarget.com/api/'
 const baseUrl = process.env.PUBLIC_URL
 
 function ApiError(object) {
