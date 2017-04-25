@@ -10,6 +10,7 @@ const containerStyle = {
     height: '100%',
 }
 const contentStyle = {
+    marginTop: '-48px',
     minHeight: '100%',
     backgroundColor: '#eef5f6',
 }
@@ -59,6 +60,20 @@ const userNameStyle = {
 }
 const userTitleStyle = {
     flexGrow: '1',
+    fontSize: '13px',
+    color: '#999',
+}
+const emptyUserStyle = {
+    width: '100%',
+    height: '100%',
+    textAlign: 'center',
+    padding: '98px',
+}
+const emptyUserImageStyle = {
+    width: '100px',
+    marginBottom: '10px',
+}
+const emptyUserTextStyle = {
     fontSize: '13px',
     color: '#999',
 }
@@ -182,7 +197,7 @@ class SelectUser extends React.Component {
                     object.title = item.title.titleName
                     return object
                 })
-                this.setState({myUsers: myUsers})
+                this.setState({myUsers: []})
             },
             error => this.props.dispatch(handleError(error))
         )
@@ -198,7 +213,7 @@ class SelectUser extends React.Component {
                                onActionButtonClicked={this.confirmSelect} />  
 
                 <div style={contentStyle}>
-                    {
+                    { this.state.myUsers.length ?
                         this.state.myUsers.map(user => 
                             (
                                 <div style={userWrapStyle} key={user.id}>
@@ -218,6 +233,11 @@ class SelectUser extends React.Component {
                                 </div>
                             )
                         )
+                        :
+                        <div style={emptyUserStyle}>
+                            <img style={emptyUserImageStyle} src={api.baseUrl + "/images/emptyUser@2x.png"} alt="emptyUser"></img>
+                            <p style={emptyUserTextStyle}>{this.props.userType === 1 ? '您还没有交易师' : '您还没有投资人'}</p>
+                        </div>
                     }
                 </div>
 
