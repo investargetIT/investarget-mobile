@@ -5,6 +5,8 @@ import Button from '../components/Button'
 import api from '../api'
 import { handleError } from '../actions'
 import { connect } from 'react-redux'
+import Modal from '../components/Modal'
+
 
 const VERIFICATION_CODE_TOKEN = 'VERIFICATION_CODE_TOKEN'
 
@@ -43,11 +45,13 @@ class RetrievePassword extends React.Component {
             newPassword: '',
             fetchCodeWaitingTime: 0,
             timer: null,
+            showModal: false,
         }
 
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSendVerificationCode = this.handleSendVerificationCode.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleRetrievePasswordSuccess = this.handleRetrievePasswordSuccess.bind(this)
     }
 
     handleInputChange(event) {
@@ -105,7 +109,7 @@ class RetrievePassword extends React.Component {
                     newPassword: this.state.newPassword
                 })
                 api.retrievePassword(param2, () => {
-                    this.props.history.push(api.baseUrl + '/login')
+                    this.setState({ showModal: true })
                 }, (error) => {
                     this.props.dispatch(handleError(error))
                 })
@@ -113,6 +117,11 @@ class RetrievePassword extends React.Component {
             error => this.props.dispatch(handleError(error))
         )
         
+    }
+
+    handleRetrievePasswordSuccess() {
+        this.setState({ showModal: false })
+        this.props.history.goBack()
     }
 
     componentWillUnmount() {
@@ -147,6 +156,8 @@ class RetrievePassword extends React.Component {
                 <div style={buttonStyle}>
                     <Button name="confirm" type="primary" disabled={disabled} onClick={this.handleSubmit} value="确认" />
                 </div>
+
+                <Modal show={this.state.showModal} title="通知" content="密码重置成功" actions={ [{name: '确定', handler: this.handleRetrievePasswordSuccess}] } />
             </div>
         )
 
