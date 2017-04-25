@@ -1,6 +1,6 @@
 import React from 'react'
 import api from '../api'
-import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend } from '../actions'
+import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend, showToast, hideToast } from '../actions'
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
 import Modal from '../components/Modal'
@@ -299,7 +299,12 @@ class ProjectDetail extends React.Component {
       }
 
       this.state.isMyFavoriteProject ?
-        api.projectCancelFavorite(param, ()=>{}, error=>{}) :
+        api.projectCancelFavorite(param, ()=>{
+            this.props.dispatch(showToast('取消收藏成功'))
+            setTimeout(() => {
+                this.props.dispatch(hideToast())
+            }, 2000)
+        }, error=>{}) :
         api.favoriteProject(param, ()=>{}, error=>{})
         
       this.setState({

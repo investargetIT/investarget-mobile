@@ -197,7 +197,7 @@ class SelectUser extends React.Component {
                     object.title = item.title.titleName
                     return object
                 })
-                this.setState({myUsers: []})
+                this.setState({myUsers: myUsers})
             },
             error => this.props.dispatch(handleError(error))
         )
