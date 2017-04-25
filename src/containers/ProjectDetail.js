@@ -388,7 +388,8 @@ class ProjectDetail extends React.Component {
             color: '#fff',
             fontWeight: 'bold',
             backgroundRepeat: 'no-repeat',
-            backgroundSize: '100%',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
         }
         bgImageStyle.backgroundImage = 'url(' + info.industrys[0].imgUrl + ')'
 

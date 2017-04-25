@@ -13,10 +13,14 @@ var contentWapperStyle = {
   width: '66%'
 }
 
-var imgWrapper = {
+var imgBaseWrapper = {
+  float: 'left',
   display: 'block',
   width: '34%',
-  height: '104px'
+  height: '104px',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center center',
 }
 
 var titleStyle = {
@@ -55,8 +59,12 @@ const placeholderStyle = {
 }
 
 function ProjectListCell(props) {
+  var imgWrapper = Object.assign({}, imgBaseWrapper, {
+    backgroundImage: 'url("' + props.imgUrl + '")',
+  })
+
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} className="clearfix">
 
       <div style={contentWapperStyle}>
         <p style={titleStyle}>{sliceStringIfTooLong(props.title, 20)}</p>
@@ -69,7 +77,7 @@ function ProjectListCell(props) {
         <p style={amountContainerStyle}>交易规模：<span style={amount}>${new Intl.NumberFormat().format(props.amount)}</span></p>
       </div>
 
-      <img style={imgWrapper} src={props.imgUrl} alt={props.title} />
+      <div style={imgWrapper}></div>
 
       <div style={placeholderStyle} data-id={props.id}></div>
 
