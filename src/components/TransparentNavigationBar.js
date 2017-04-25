@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import api from '../api'
 
 
@@ -30,14 +30,12 @@ var backIconStyle = {
 function TransparentNavigationBar(props) {
   return (
       <div style={navbarStyle}>
-          <Link to={props.previousPage}>
-              <div style={backIconContainerStyle}>
-                  <img style={backIconStyle} src={api.baseUrl + "/images/ic_navigate_before.svg"} alt="Back" />
-              </div>
-          </Link>
+          <div style={backIconContainerStyle} onClick={props.backIconClicked || props.history.goBack}>
+              <img style={backIconStyle} src={api.baseUrl + "/images/ic_navigate_before.svg"} alt="Back" />
+          </div>
           <p style={titleStyle}>{props.title}</p>
       </div>
   )
 }
 
-export default TransparentNavigationBar
+export default withRouter(TransparentNavigationBar)

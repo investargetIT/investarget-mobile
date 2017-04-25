@@ -59,6 +59,7 @@ class Login extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.togglePassword = this.togglePassword.bind(this)
+    this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
   }
 
   handleInputChange(event) {
@@ -95,6 +96,10 @@ class Login extends React.Component {
     })
   }
 
+  handleBackIconClicked() {
+    this.props.history.push('/')
+  }
+
   render() {
 
     var showPassword = 
@@ -127,7 +132,7 @@ class Login extends React.Component {
 
       </div>
     )
-    return <FormContainer title="登录" previousPage={api.baseUrl + "/"} innerHtml={content} />
+    return <FormContainer title="登录" backIconClicked={this.handleBackIconClicked} innerHtml={content} />
   }
 
 }

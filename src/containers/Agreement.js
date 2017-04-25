@@ -37,7 +37,7 @@ class Agreement extends React.Component {
     render() {
         return (
         <div style={bgStyle}>
-            <TransparentNavigationBar title="用户协议" previousPage={api.baseUrl + "/register"} />
+            <TransparentNavigationBar title="用户协议" />
             
             <div style={containerStyle}>
                 <div>

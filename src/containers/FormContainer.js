@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import api from '../api'
-import TransparetnNavigationBar from '../components/TransparentNavigationBar'
+import TransparentNavigationBar from '../components/TransparentNavigationBar'
 
 var containerStyle = {
   width: '100%',
@@ -52,9 +52,9 @@ function FormContainer(props) {
   }
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} >
     
-      <TransparetnNavigationBar title={props.title} previousPage={props.previousPage} />
+      <TransparentNavigationBar title={props.title} backIconClicked={props.backIconClicked} />
       
       <div style={formContainer}>
         {props.innerHtml}
