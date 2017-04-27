@@ -23,6 +23,7 @@ import {
   CLEAR_RECOMMEND,
   SHOW_TOAST,
   HIDE_TOAST,
+  SAVE_REDIRECT_URL,
 } from '../actions'
 
 const initialState = {
@@ -45,6 +46,7 @@ const initialState = {
   },
   showToast: false,
   toastMessage: '',
+  redirectUrl: null
 }
 
 export default function (state = initialState, action) {
@@ -197,6 +199,10 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         showToast: false,
         toastMessage: '',
+      })
+    case SAVE_REDIRECT_URL:
+      return Object.assign({}, state, {
+	redirectUrl: action.url
       })
     default:
       return state

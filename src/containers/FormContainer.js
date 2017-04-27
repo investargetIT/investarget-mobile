@@ -45,12 +45,6 @@ var formContainer = {
 
 function FormContainer(props) {
 
-  if (props.isLogin) {
-    return (
-      <Redirect to={api.baseUrl + "/"} />
-    )
-  }
-
   return (
     <div style={containerStyle} >
     
@@ -65,8 +59,8 @@ function FormContainer(props) {
 }
 
 function mapStateToProps(state) {
-  const isLogin = state.isLogin
-  return {isLogin}
+  const { isLogin, redirectUrl } = state
+  return { isLogin, redirectUrl }
 }
 
 export default connect(mapStateToProps)(FormContainer)

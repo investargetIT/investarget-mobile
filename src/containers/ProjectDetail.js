@@ -1,6 +1,6 @@
 import React from 'react'
 import api from '../api'
-import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend, showToast, hideToast } from '../actions'
+import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend, showToast, hideToast, saveRedirectUrl } from '../actions'
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
 import Modal from '../components/Modal'
@@ -247,6 +247,7 @@ class ProjectDetail extends React.Component {
     componentDidMount() {
       var urlTokenArr = /token=([^&]+)(&|$)/.exec(this.props.location.search)
       if (!urlTokenArr || urlTokenArr.length < 2) {
+	this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
         this.props.history.push(api.baseUrl + '/login')
         return
       }

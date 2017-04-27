@@ -3,7 +3,7 @@ import TabBar from './TabBar'
 import LeftIconRightLabel from '../components/LeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
-import { logout, handleError, requestContents, hideLoading, modifyUserInfo } from '../actions'
+import { logout, handleError, requestContents, hideLoading, modifyUserInfo, saveRedirectUrl } from '../actions'
 import api from '../api'
 
 const groupStyle = {
@@ -176,6 +176,7 @@ class User extends Component {
 
   render () {
     if (!this.props.isLogin) {
+      this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
       return (
         <Redirect to={api.baseUrl + "/login"} />
       )

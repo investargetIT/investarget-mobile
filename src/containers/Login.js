@@ -62,6 +62,12 @@ class Login extends React.Component {
     this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
   }
 
+  componentDidMount() {
+    if (this.props.isLogin) {
+      this.props.history.push(api.baseUrl + "/")
+    }
+  }
+
   handleInputChange(event) {
     const target = event.target
     const value = target.value
@@ -83,7 +89,17 @@ class Login extends React.Component {
     this.props.dispatch(requestContents(''))
     api.loginAndGetUserInfo(
       param,
-      (authToken, userInfo) => this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password)),
+      (authToken, userInfo) => {
+	this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
+	var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
+	const isProjectRoute = /project\/\d+/g.exec(redirectUrl)
+	if (isProjectRoute) {
+	  redirectUrl += this.props.userInfo ? '?token=' + this.props.userInfo.token : ''
+	  window.location.replace(redirectUrl)
+	} else {
+	  this.props.history.push(redirectUrl)
+	}
+      },
       error => this.props.dispatch(handleError(error))
     )
 
@@ -137,4 +153,9 @@ class Login extends React.Component {
 
 }
 
-export default connect()(Login)
+function mapStateToProps(state) {
+  const { redirectUrl, userInfo, isLogin } = state
+  return { redirectUrl, userInfo, isLogin }
+}
+
+export default connect(mapStateToProps)(Login)

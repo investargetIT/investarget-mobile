@@ -22,6 +22,7 @@ export const SET_RECOMMEND_PROJECTS = 'SET_RECOMMEND_PROJECTS'
 export const CLEAR_RECOMMEND = 'CLEAR_RECOMMEND'
 export const SHOW_TOAST = 'SHOW_TOAST'
 export const HIDE_TOAST = 'HIDE_TOAST'
+export const SAVE_REDIRECT_URL = 'SAVE_REDIRECT_URL'
 
 export function requestContents(param) {
   return {
@@ -183,3 +184,9 @@ export function hideToast() {
   }
 }
 
+export function saveRedirectUrl(url) {
+  return {
+    type: SAVE_REDIRECT_URL,
+    url
+  }
+}
