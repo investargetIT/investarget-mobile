@@ -18,4 +18,4 @@ if (this.preventDefault && !preventDefaultTest(evt.target, this.preventDefaultEx
 
 ## 功能
 
-* [记住登录前所在页面并在登录后跳转到该页面](https://github.com/investargetIT/investarget-mobile/commit/5646098f651162460a27084213cf4865428c38a2)
+* 记住登录前所在页面并在登录后跳转到该页面，见[#5646098](https://github.com/investargetIT/investarget-mobile/commit/5646098f651162460a27084213cf4865428c38a2)
