@@ -176,3 +176,10 @@ a {
   display: block;
   margin-bottom: 2px;
 }
+
+#cnzz_stat_icon_1261874622 {
+  display: none;
+}
+a[title="站长统计"] {
+  display: none;
+}
