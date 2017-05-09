@@ -127,7 +127,10 @@ const guideWrapperStyle = {
     zIndex: '99',
     width: '100%',
 }
-const guideWrapperHideStyle = Object.assign({},guideWrapperStyle,{display: 'none'})
+const guidePlaceholderStyle = {
+    width: '100%',
+    height: '48px',
+}
 const guideStyle = {
     display: 'flex',
     width: '100%',
@@ -545,18 +548,21 @@ class ProjectDetail extends React.Component {
                         </div>
                     </div>
                 :
-                    <div style={this.state.showGuide ? guideWrapperStyle : guideWrapperHideStyle}>
-                        <div style={guideStyle}>
-                            <img style={guideCloseStyle} onClick={this.handleCloseGuide} src={api.baseUrl + "/images/closeView@2x.png"} alt="close"></img>
-                            <img style={guideLogoStyle} src={api.baseUrl + "/images/shareLogo@2x.png"} alt="logo"></img>
-                            <div style={guideTextStyle}>
-                                <p style={guideTitleStyle}>多维海拓</p>
-                                <p style={guideContentStyle}>中国跨境投资生态系统</p>
-                            </div>
-                            <Link style={guideLinkStyle} to={api.baseUrl + "/register"}>
-                                <button style={guideButtonStyle}>立即注册</button>
-                            </Link>
-                        </div> 
+                    <div style={{ display: this.state.showGuide ? 'block' : 'none' }}>
+                        <div style={guidePlaceholderStyle}></div>
+                        <div style={guideWrapperStyle}>
+                            <div style={guideStyle}>
+                                <img style={guideCloseStyle} onClick={this.handleCloseGuide} src={api.baseUrl + "/images/closeView@2x.png"} alt="close"></img>
+                                <img style={guideLogoStyle} src={api.baseUrl + "/images/shareLogo@2x.png"} alt="logo"></img>
+                                <div style={guideTextStyle}>
+                                    <p style={guideTitleStyle}>多维海拓</p>
+                                    <p style={guideContentStyle}>中国跨境投资生态系统</p>
+                                </div>
+                                <Link style={guideLinkStyle} to={api.baseUrl + "/register"}>
+                                    <button style={guideButtonStyle}>立即注册</button>
+                                </Link>
+                            </div> 
+                        </div>
                     </div>
                 }
 
