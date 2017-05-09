@@ -192,11 +192,12 @@ class Register extends React.Component {
       clearInterval(this.state.timer)
     }
     const isMobileInvalid = /^1[34578]\d{9}$/.test(this.state.mobile) ? false : true
-    const sendCodeStyle = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0 ? sendCodeButtonDisabledStyle : sendCodeButtonStyle
+    const sendCodeDisabled = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0
+    const sendCodeStyle = sendCodeDisabled ? sendCodeButtonDisabledStyle : sendCodeButtonStyle
     const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
     
-    var sendCode = <button disabled={isMobileInvalid} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
-    
+    var sendCode = <button disabled={sendCodeDisabled} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
+
 
     var disabled;
     if (isMobileInvalid) {

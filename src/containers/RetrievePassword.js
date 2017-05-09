@@ -78,6 +78,7 @@ class RetrievePassword extends React.Component {
                     token: token
                 })
 
+                clearInterval(this.state.timer)
                 var timer = setInterval(
                     () => react.setState({ fetchCodeWaitingTime: react.state.fetchCodeWaitingTime - 1 }),
                     1000
@@ -134,10 +135,11 @@ class RetrievePassword extends React.Component {
         }
         const isMobileInvalid = /^1[34578]\d{9}$/.test(this.state.mobile) ? false : true
         const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
-        const sendCodeStyle = (isMobileInvalid || this.state.fetchCodeWaitingTime !== 0) 
+        const sendCodeDisabled = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0
+        const sendCodeStyle = sendCodeDisabled
                                 ? sendCodeButtonDisabledStyle
                                 : sendCodeButtonStyle
-        var sendCode = <button disabled={isMobileInvalid} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
+        var sendCode = <button disabled={sendCodeDisabled} style={sendCodeStyle} onClick={this.handleSendVerificationCode}>{sendCodeButtonValue}</button>
 
         var disabled = isMobileInvalid || this.state.code === '' || this.state.email === ''
 
