@@ -108,8 +108,17 @@ class App extends Component {
       },
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
-	if (projectID) {
-	  window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + react.props.userInfo.token : '')
+        if (!projectID) return
+
+        const isMarketPlace = evt.target.dataset.isMarketPlace
+        if (isMarketPlace === 'false') {
+          window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + react.props.userInfo.token : '')
+        } else {
+          api.getPdfFileUrl(
+            projectID,
+            fileUrl => window.location.href = ('/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)),
+            error => react.props.dispatch(handleError(error))
+          )
         }
       }
     })
@@ -178,6 +187,7 @@ class App extends Component {
       rows.push(
         <div className="margin-bottom-2" key={element.id}>
           <ProjectListCell
+            isMarketPlace={element.isMarketPlace}
             title={element.title}
             country={element.country}
             industrys={element.industrys.join('')}

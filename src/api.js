@@ -208,6 +208,7 @@ export default {
         obj['country'] = item.country.countryName
         obj['imgUrl'] = item.industrys[0].imgUrl
         obj['industrys'] = item.industrys.map(i => i.industryName)
+        obj['isMarketPlace'] = item.isMarketPlace
         return obj
       })
       cb(projects)
@@ -268,18 +269,23 @@ export default {
   },
 
   getSingleProject(id, cb, errCb, token) {
-
-    axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
-      headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
+    return new Promise((resolve, reject) => {
+      axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
+        headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
+      })
+      .then(response => {
+        if (response.data.success) {
+          if (cb) cb(response.data.result)
+          resolve(response.data.result)
+        } else {
+          throw new ApiError(response.data.error)
+        }
+      })
+      .catch(error => {
+        if (errCb) errCb(error)
+        reject(error)
+      })
     })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
   },
 
   sendVerificationCode(mobile, cb, errCb) {
@@ -776,6 +782,13 @@ export default {
 
   readMessage(id, cb, errCb) {
     return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
+  },
+
+  getPdfFileUrl(id, cb, errCb) {
+    this.getSingleProject(id)
+    .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
+    .then(url => cb(url))
+    .catch(error => errCb(error))
   },
 
 }

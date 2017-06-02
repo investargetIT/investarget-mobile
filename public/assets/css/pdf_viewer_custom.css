@@ -1,0 +1,293 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  /* Font size is needed to make the activity bar the correct size. */
+  font-size: 10px;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(246, 249, 252);
+    /*background-color: #404040;*/
+    font: message-box;
+    outline: none;
+}
+
+#printContainer {
+  display: none;
+}
+
+#viewerContainer {
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.toolbar-container {
+  position: fixed;
+  left: 0;
+  bottom: 40px;
+  z-index: 1;
+  width: 100%;
+}
+
+.toolbar-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 4px;
+  color: #fff;
+  background-color: #3D464D;
+  text-align: center;
+  user-select: none;
+  padding: 6px 12px;
+}
+
+.toolbar-text {
+  font-size: 13px;
+  font-weight: 200;
+}
+
+.toolbar-number {
+  display: inline-block;
+  min-width: 2em;
+}
+
+.toolbar-icon {
+  cursor: pointer;
+}
+
+.toolbar-icon.disabled > .sprite_web {
+  opacity: 0.4;
+}
+
+.sprite_web {
+  display: block;
+  background-image: url(/assets/img/web_sprites-vflry1KkC.png);
+  background-repeat: no-repeat;
+  margin-left: 10px;
+}
+
+.s_web_zoomout {
+  background-position: left -7817px;
+  width: 19px;
+  height: 19px;
+}
+
+.s_web_zoom {
+  background-position: left -7796.5px;
+  width: 19px;
+  height: 19px;
+}
+
+.s_web_up {
+  background-position: left -7727.5px;
+  width: 19px;
+  height: 19px;
+}
+
+.s_web_down {
+  background-position: left -7513px;
+  width: 19px;
+  height: 19px;
+}
+
+.s_web_print {
+  background-position: left -7617px;
+  width: 19px;
+  height: 19px;
+}
+
+/*clearfix*/
+
+.clearfix::before, .clearfix::after {
+  content: ' ';
+  display: table;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+
+/**
+ * 打印样式
+ */
+
+@media print {
+  /* General rules for printing. */
+  body {
+    background: transparent none;
+  }
+
+  /* Rules for browsers that don't support mozPrintCallback. */
+  .toolbar {
+    display: none;
+  }
+  #viewerContainer {
+    overflow: visible;
+  }
+
+  #viewerContainer, .page, .page canvas {
+    position: static;
+    padding: 0;
+    margin: 0;
+  }
+
+  .page {
+    float: left;
+    display: none;
+    border: none;
+    box-shadow: none;
+    background-clip: content-box;
+    background-color: white;
+  }
+
+  .page[data-loaded] {
+    display: block;
+  }
+
+  .fileInput {
+    display: none;
+  }
+
+  /* Rules for browsers that support mozPrintCallback */
+  body[data-mozPrintCallback] #viewerContainer {
+    display: none;
+  }
+  body[data-mozPrintCallback] #printContainer {
+    display: block;
+  }
+  #printContainer {
+    height: 100%;
+  }
+  /* wrapper around (scaled) print canvas elements */
+  #printContainer > div {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow: hidden;
+    /*page-break-after: always;*/
+    /*page-break-inside: avoid;*/
+  }
+  #printContainer canvas {
+    display: block;
+  }
+}
+
+
+
+@page {
+  margin: 0;
+}
+
+
+/* Loading Icon */
+.loading-container {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.loading-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fefefe;
+}
+.loading {
+  text-align: center;
+}
+.loading-icon {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+.loading-text {
+  display: block;
+  font-size: 16px;
+  font-weight: 200;
+  font-family: helvetica, Arial;
+  color: #333;
+}
+.loading-error {
+  text-align: center;
+}
+.loading-error-icon {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+.loading-error-text {
+  display: block;
+  font-size: 16px;
+  font-weight: 200;
+  font-family: helvetica, Arial;
+  color: #333;
+}
+
+
+.scale {
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: #fff;
+  border-radius: 2px;
+  margin-left: 10px;
+}
+.scale-input {
+  width: 40px;
+  height: 20px;
+  line-height: 20px;
+  border: none;
+  outline: none;
+  vertical-align: middle;
+}
+.scale-select-icon {
+  width: 12px;
+  height: 6px;
+  vertical-align: middle;
+}
+.scale-select {
+  position: absolute;
+  right: 0;
+  bottom: 22px;
+  z-index: 1;
+  width: 100px;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #eaeaea;
+  box-shadow: 1px 1px 2px 0px rgba(0,0,0,.15), 1px 1px 4px 0px rgba(255,255,255,.3);
+}
+.scale-select-option {
+  padding: 4px 0 4px 25px;
+  height: 20px;
+  line-height: 20px;
+  text-align: left;
+}
+.scale-select-option:hover {
+  background-color: #eee;
+}

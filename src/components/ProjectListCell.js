@@ -79,7 +79,7 @@ function ProjectListCell(props) {
 
       <div style={imgWrapper}></div>
 
-      <div style={placeholderStyle} data-id={props.id}></div>
+      <div style={placeholderStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}></div>
 
     </div>
   )

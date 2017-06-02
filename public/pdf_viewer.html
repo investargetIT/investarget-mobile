@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="google" content="notranslate">
+  <title>文档预览</title>
+
+  <link rel="stylesheet" href="/assets/css/pdf_viewer.css">
+  <link rel="stylesheet" href="/assets/css/pdf_viewer_custom.css">
+  
+  <script src="/lib/pdfjs/compatibility.js"></script>
+  <script src="/lib/jquery/jquery.min.js"></script>
+  <script src="/lib/vue.min.js"></script>
+</head>
+
+<body>
+  <div id="viewerContainer">
+    <div id="viewer" class="pdfViewer"></div>
+  </div>
+
+  <div class="toolbar-container">
+    <div class="toolbar-wrap">
+      <div id="toolbar" class="toolbar">
+
+        <div class="toolbar-text">
+          第<span id="pageNumber" class="toolbar-number">{{pageNumber}}</span>页，共<span id="pagesCount" class="toolbar-number">{{pagesCount}}</span>页
+        </div>
+
+        
+        <div class="toolbar-icon" :class="{ disabled: !this.allowAction || isFirstPage }" id="pageUp" @click="prev">
+          <span class="sprite_web s_web_up"></span>
+        </div>
+
+        <div class="toolbar-icon" :class="{ disabled: !this.allowAction || isLastPage }" id="pageDown" @click="next">
+          <span class="sprite_web s_web_down"></span>
+        </div>
+
+        <div class="scale">
+          <input class="scale-input" type="text" v-model="scaleText" @keyup.enter="inputScale" @blur="getScale">
+          <img class="scale-select-icon" :src="collapsed ? '/assets/img/pdf-arrow-up.png' : '/assets/img/pdf-arrow-down.png'" @click="collapsed=!collapsed">
+
+          <div class="scale-select" v-show="!collapsed">
+            <div class="scale-select-option" v-for="option in scaleOptions" @click="selectScale(option.value)">{{option.name}}</div>
+          </div>
+        </div>
+
+        <div class="toolbar-icon" :class="{ disabled: !this.allowAction || isMinScale }" id="zoomOut" @click="zoomOut">
+          <span class="sprite_web s_web_zoomout"></span>
+        </div>
+
+        <div class="toolbar-icon" :class="{ disabled: !this.allowAction || isMaxScale }" id="zoomIn" @click="zoomIn">
+          <span class="sprite_web s_web_zoom"></span>
+        </div>
+
+        <div class="toolbar-icon" :class="{ disabled: !this.allowAction || !allowPrint }" id="print" @click="print">
+          <span class="sprite_web s_web_print"></span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="printContainer"></div>
+
+  <div class="loading-container">
+    <div class="loading-wrap">
+      <div class="loading">
+        <img class="loading-icon" src="/assets/img/pdf-loading.svg" onerror="this.src='/assets/img/pdf-loading.gif'" alt="loading">
+        <span class="loading-text">多维海拓·InvesTarget</span>
+      </div>
+      <div class="loading-error" style="display: none;">
+        <img class="loading-error-icon" src="/assets/img/pdf-error.svg" onerror="this.src='/assets/img/pdf-error.png'" alt="error">
+        <span class="loading-error-text">Default Error</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="/lib/pdfjs/pdf.js"></script>
+  <script src="/lib/pdfjs/pdf_viewer.js"></script>
+  <script src="/lib/pdfjs/pdf_viewer_custom.js"></script>
+
+</body>
+</html>
