@@ -23,6 +23,14 @@ export const CLEAR_RECOMMEND = 'CLEAR_RECOMMEND'
 export const SHOW_TOAST = 'SHOW_TOAST'
 export const HIDE_TOAST = 'HIDE_TOAST'
 export const SAVE_REDIRECT_URL = 'SAVE_REDIRECT_URL'
+export const UPDATE_PROJECT_STRUCTURE = 'UPDATE_PROJECT_STRUCTURE'
+
+export function updateProjectStructure(structure) {
+  return {
+    type: UPDATE_PROJECT_STRUCTURE,
+    structure
+  }
+}
 
 export function requestContents(param) {
   return {

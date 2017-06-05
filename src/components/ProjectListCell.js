@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import api from '../api'
 
 var containerStyle = {
   position: 'relative',
@@ -25,7 +26,8 @@ var imgBaseWrapper = {
 
 var titleStyle = {
   color: '#666666',
-  fontSize: '15px'
+  fontSize: '15px',
+  verticalAlign: 'middle'
 }
 
 var countryAndIndustrys = {
@@ -46,10 +48,6 @@ var amountContainerStyle = {
   color: '#666666'
 }
 
-var amount = {
-  color: '#FF8F40'
-}
-
 const placeholderStyle = {
   position: 'absolute',
   top: 0,
@@ -67,14 +65,14 @@ function ProjectListCell(props) {
     <div style={containerStyle} className="clearfix">
 
       <div style={contentWapperStyle}>
-        <p style={titleStyle}>{sliceStringIfTooLong(props.title, 20)}</p>
+        <p>{ !props.isMarketPlace ? <img style={{ verticalAlign: 'middle', marginRight: 4 }} src={api.baseUrl + '/images/tag.png'} alt="" /> : null }<span style={titleStyle}>{sliceStringIfTooLong(props.title, 20)}</span></p>
 
         <p style={countryAndIndustrys}>
           <span style={countryStyle}>{sliceStringIfTooLong(props.country, 3)}</span>
           <span>{sliceStringIfTooLong(props.industrys, 6)}</span>
         </p>
 
-        <p style={amountContainerStyle}>交易规模：<span style={amount}>${new Intl.NumberFormat().format(props.amount)}</span></p>
+        <p style={amountContainerStyle}>交易规模：<span style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{ props.amount > 0 ? "$" + new Intl.NumberFormat().format(props.amount) : "N/A" }</span></p>
       </div>
 
       <div style={imgWrapper}></div>

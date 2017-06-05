@@ -24,6 +24,7 @@ import {
   SHOW_TOAST,
   HIDE_TOAST,
   SAVE_REDIRECT_URL,
+  UPDATE_PROJECT_STRUCTURE,
 } from '../actions'
 
 const initialState = {
@@ -31,6 +32,7 @@ const initialState = {
   isFetching: false,
   isError: false,
   projects: [],
+  projectStructure: [],
   posts: [],
   eventUrl: '',
   continentsAndCountries: [],
@@ -83,7 +85,6 @@ export default function (state = initialState, action) {
       localStorage.setItem('userInfo', JSON.stringify(userInfo))
 
       return Object.assign({}, state, {
-        isFetching: false,
         isLogin: true,
         userInfo: userInfo
       })
@@ -203,6 +204,10 @@ export default function (state = initialState, action) {
     case SAVE_REDIRECT_URL:
       return Object.assign({}, state, {
 	redirectUrl: action.url
+      })
+    case UPDATE_PROJECT_STRUCTURE:
+      return Object.assign({}, state, {
+        projectStructure: action.structure
       })
     default:
       return state

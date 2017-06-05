@@ -1,5 +1,5 @@
 import React from 'react'
-import { requestContents, receiveCurrentUserInfo, handleError } from '../actions'
+import { requestContents, receiveCurrentUserInfo, handleError, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
@@ -90,6 +90,7 @@ class Login extends React.Component {
     api.loginAndGetUserInfo(
       param,
       (authToken, userInfo) => {
+        this.props.dispatch(hideLoading())
 	this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
 	var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
 	const isProjectRoute = /project\/\d+/g.exec(redirectUrl)

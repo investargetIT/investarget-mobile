@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import { connect } from 'react-redux'
-import { requestContents, receiveContents, appendProjects, handleError } from '../actions'
+import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError } from '../actions'
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
@@ -50,11 +50,13 @@ class App extends Component {
   }
 
   componentDidMount() {
+
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
       api.getProjects(
         filterToParams(this.props.filter),
-        projects => {
+        (projects, dataStructure) => {
+          this.props.dispatch(updateProjectStructure(dataStructure))
           this.props.dispatch(receiveContents('', projects))
         },
         error => this.props.dispatch(handleError(error))
@@ -116,7 +118,13 @@ class App extends Component {
         } else {
           api.getPdfFileUrl(
             projectID,
-            fileUrl => window.location.href = ('/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)),
+            fileUrl => {
+              let url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)
+              if (react.props.userInfo && react.props.userInfo.emailAddress) {
+                url += '&watermark=' + encodeURIComponent(react.props.userInfo.emailAddress)
+              }
+              window.location.href = url
+            },
             error => react.props.dispatch(handleError(error))
           )
         }
@@ -130,7 +138,8 @@ class App extends Component {
 
     function loadMore() {
       react.setState({ isLoadingMore: true })
-      api.getProjects(
+      api.getMoreProjects(
+        react.props.projectStructure,
         filterToParams(react.props.filter),
         projects => {
           loading = false
@@ -139,7 +148,7 @@ class App extends Component {
           if (projects.length > 0) {
             react.props.dispatch(appendProjects(projects))
           } else {
-            alloyTouch.to(alloyTouch.min + 50)
+            alloyTouch.to(alloyTouch.min + 50, 0)
           }
         },
         error => {
@@ -159,10 +168,11 @@ class App extends Component {
 
       api.getProjects(
         filterToParams(react.props.filter),
-        projects => {
+        (projects, dataStructure) => {
           arrow.classList.remove("arrow_up");
           pull_refresh.classList.remove("refreshing");
           at.to(at.initialValue);
+          react.props.dispatch(updateProjectStructure(dataStructure))
           react.props.dispatch(receiveContents('', projects))
         },
         error => react.props.dispatch(handleError(error))
@@ -254,9 +264,9 @@ var loadmoreStyle = {
 }
 
 function mapStateToProps(state) {
-  const { projects, needRefresh, userInfo, isFetching } = state
+  const { projects, needRefresh, userInfo, isFetching, projectStructure } = state
   const filter = state.trueFilter
-  return { projects, filter, needRefresh, userInfo, isFetching }
+  return { projects, filter, needRefresh, userInfo, isFetching, projectStructure }
 }
 
 function filterToParams(data) {

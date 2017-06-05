@@ -191,6 +191,47 @@ function upload(uri, data) {
   })
 }
 
+function getPublicAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+}
+
+function getPublicAndMarketPlaceProjects(params, skipCount, maxResultCount) {
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+}
+
+function getClosedAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+}
+
+function getClosedAndMarketPlaceProjects(params, skipCount, maxResultCount) {
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+}
+
+const getProjectsArray = [
+  getPublicAndNotMarketPlaceProjects,
+  getPublicAndMarketPlaceProjects,
+  getClosedAndNotMarketPlaceProjects,
+  getClosedAndMarketPlaceProjects,
+]
+
+function convertIntToArray(start, length) {
+  const array = []
+  for (var i = start; i < (start + length); i++) {
+    array.push(i)
+  }
+  return array
+}
+
+function intersectArray(array1, array2) {
+  const result = []
+  array1.forEach(item => {
+    if (array2.includes(item)) {
+      result.push(item)
+    }
+  })
+  return result
+}
+
 export default {
   baseUrl,
   getCurrentUserId,
@@ -198,22 +239,90 @@ export default {
   getCurrentUserInfo,
   
   getProjects(params, cb, errCb, skipCount = 0) {
-    axios.get(url + 'services/InvestargetApi/project/GetProjects?input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount)
-    .then(response => {
-      const projects = response.data.result.items.map(item => {
-        var obj = {}
-        obj['id'] = item.id
-        obj['title'] = item.titleC
-        obj['amount'] = item.financedAmount
-        obj['country'] = item.country.countryName
-        obj['imgUrl'] = item.industrys[0].imgUrl
-        obj['industrys'] = item.industrys.map(i => i.industryName)
-        obj['isMarketPlace'] = item.isMarketPlace
-        return obj
+    const count = []
+    let newArray = []
+    getPublicAndNotMarketPlaceProjects(params, 0, 1)
+      .then(result => {
+        count.push(result.totalCount)
+        return getPublicAndMarketPlaceProjects(params, 0, 1)
       })
-      cb(projects)
+      .then(result => {
+        count.push(result.totalCount)
+        return getClosedAndNotMarketPlaceProjects(params, 0, 1)
+      })
+      .then(result => {
+        count.push(result.totalCount)
+        return getClosedAndMarketPlaceProjects(params, 0, 1)
+      })
+      .then(result => {
+        count.push(result.totalCount)
+        newArray = count.reduce((acc, val) => {
+          var startIndex = 0
+          if (acc.length > 0) {
+            for (var a = acc.length -1; a >=0; a--) {
+              var startArr = acc[a]
+              if (startArr.length > 0) {
+                startIndex = startArr[startArr.length -1]
+                break
+              }
+            }
+          }
+          acc.push(convertIntToArray(startIndex+1, val))
+          return acc
+        }, [])
+        const intersect = newArray.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+        const requestArr = []
+        intersect.forEach((item, index) => {
+          if(item.length > 0) {
+            requestArr.push(getProjectsArray[index](params, item[0]-newArray[index][0], item.length))
+          }
+        })
+        return Promise.all(requestArr)
+      })
+      .then(result => {
+        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+          var obj = {}
+          obj['id'] = item.id
+          obj['title'] = item.titleC
+          obj['amount'] = item.financedAmount
+          obj['country'] = item.country.countryName
+          obj['imgUrl'] = item.industrys[0].imgUrl
+          obj['industrys'] = item.industrys.map(i => i.industryName)
+          obj['isMarketPlace'] = item.isMarketPlace
+          return obj
+        })
+        cb(projects, newArray)
+      })
+      .catch(error => errCb(error))
+  },
+
+  getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
+    const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+    const requestArr = []
+    intersect.forEach((item, index) => {
+      if(item.length > 0) {
+        requestArr.push(getProjectsArray[index](params, item[0] - dataStructure[index][0], item.length))
+      }
     })
-    .catch(error => errCb(error))
+    if (requestArr.length === 0) {
+      requestArr.push(getClosedAndMarketPlaceProjects(params, 10000, 10))
+    }
+    Promise.all(requestArr)
+      .then(result => {
+        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+          var obj = {}
+          obj['id'] = item.id
+          obj['title'] = item.titleC
+          obj['amount'] = item.financedAmount
+          obj['country'] = item.country.countryName
+          obj['imgUrl'] = item.industrys[0].imgUrl
+          obj['industrys'] = item.industrys.map(i => i.industryName)
+          obj['isMarketPlace'] = item.isMarketPlace
+          return obj
+        })
+        cb(projects)
+      })
+      .catch(error => errCb(error))
   },
 
   loginAndGetUserInfo(param, cb, errCb) {
