@@ -65,19 +65,26 @@ function ProjectListCell(props) {
     <div style={containerStyle} className="clearfix">
 
       <div style={contentWapperStyle}>
-        <p>{ !props.isMarketPlace ? <img style={{ verticalAlign: 'middle', marginRight: 4 }} src={api.baseUrl + '/images/tag.png'} alt="" /> : null }<span style={titleStyle}>{sliceStringIfTooLong(props.title, 20)}</span></p>
-
-        <p style={countryAndIndustrys}>
-          <span style={countryStyle}>{sliceStringIfTooLong(props.country, 3)}</span>
-          <span>{sliceStringIfTooLong(props.industrys, 6)}</span>
+        <p data-id={props.id} data-is-market-place={props.isMarketPlace}>
+          {!props.isMarketPlace ? <img style={{ verticalAlign: 'middle', marginRight: 4 }} src={api.baseUrl + '/images/tag.png'} alt="" /> : null}
+          <span style={titleStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>{sliceStringIfTooLong(props.title, 20)}</span>
         </p>
 
-        <p style={amountContainerStyle}>交易规模：<span style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{ props.amount > 0 ? "$" + new Intl.NumberFormat().format(props.amount) : "N/A" }</span></p>
+        <p style={countryAndIndustrys} data-id={props.id} data-is-market-place={props.isMarketPlace}>
+          <span style={countryStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>{sliceStringIfTooLong(props.country, 3)}</span>
+          <span data-id={props.id} data-is-market-place={props.isMarketPlace}>{sliceStringIfTooLong(props.industrys, 6)}</span>
+        </p>
+
+        {!props.isMarketPlace ?
+          <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{props.amount > 0 ? "$" + new Intl.NumberFormat().format(props.amount) : "N/A"}</span></p>
+          :
+          <div style={{ marginTop: 8 }} data-id={props.id} data-is-market-place={props.isMarketPlace}>
+            <a href="tel:13816225193"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/phone@2x.png'} alt="" /></a>
+            <a href="mailto:sidu.he@investarget.com"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/email@2x.png'} alt="" /></a>
+          </div>}
       </div>
 
-      <div style={imgWrapper}></div>
-
-      <div style={placeholderStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}></div>
+      <div style={imgWrapper} data-id={props.id} data-is-market-place={props.isMarketPlace}></div>
 
     </div>
   )
