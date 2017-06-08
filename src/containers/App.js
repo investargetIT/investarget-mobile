@@ -119,7 +119,7 @@ class App extends Component {
           api.getPdfFileUrl(
             projectID,
             fileUrl => {
-              let url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)
+              let url = api.baseUrl + '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)
               if (react.props.userInfo && react.props.userInfo.emailAddress) {
                 url += '&watermark=' + encodeURIComponent(react.props.userInfo.emailAddress)
               }
