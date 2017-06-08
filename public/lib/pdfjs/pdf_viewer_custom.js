@@ -197,7 +197,7 @@ function pageDown() {
 }
 
 var toolbarComponent = new Vue({
-  el: '#toolbar',
+  el: '#toobar_container',
   data: {
     pageNumber: 0,
     pagesCount: 0,
@@ -315,7 +315,7 @@ var toolbarComponent = new Vue({
 window.addEventListener('resize', handleWindowResize);
 
 function handleWindowResize(evt) {
-  pdfViewer.scale = 'page-width';
+  pdfViewer.currentScaleValue = 'page-width';
 }
 
 window.addEventListener('wheel', handleMouseWheel);

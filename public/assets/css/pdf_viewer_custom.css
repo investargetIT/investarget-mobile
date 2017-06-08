@@ -31,10 +31,11 @@ body {
 
 .toolbar-container {
   position: fixed;
-  left: 0;
+  left: 50%;
   bottom: 40px;
   z-index: 1;
-  width: 100%;
+  width: 200px;
+  margin-left: -100px;
 }
 
 .toolbar-wrap {
