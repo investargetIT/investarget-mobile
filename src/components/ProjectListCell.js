@@ -61,6 +61,13 @@ function ProjectListCell(props) {
     backgroundImage: 'url("' + props.imgUrl + '")',
   })
 
+  function handleClickEmail() {
+    const userAgent = window.navigator.userAgent
+    if (userAgent.indexOf('iPhone') == -1 && userAgent.indexOf('iPad') == -1) {
+      props.showEmail()
+    }
+  }
+
   return (
     <div style={containerStyle} className="clearfix">
 
@@ -80,12 +87,11 @@ function ProjectListCell(props) {
           :
           <div style={{ marginTop: 8 }} data-id={props.id} data-is-market-place={props.isMarketPlace}>
             <a href="tel:13816225193"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/phone@2x.png'} alt="" /></a>
-            <a href="mailto:sidu.he@investarget.com"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/email@2x.png'} alt="" /></a>
+            <a href="mailto:sidu.he@investarget.com" onClick={handleClickEmail}><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/email@2x.png'} alt="" /></a>
           </div>}
       </div>
 
       <div style={imgWrapper} data-id={props.id} data-is-market-place={props.isMarketPlace}></div>
-
     </div>
   )
 }

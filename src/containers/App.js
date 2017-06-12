@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ProjectListCell from '../components/ProjectListCell'
+import Modal from '../components/Modal'
 import { connect } from 'react-redux'
 import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError } from '../actions'
 import TabBar from './TabBar'
@@ -46,7 +47,17 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { isLoadingMore: false }
+    this.state = { isLoadingMore: false, showEmail: false }
+    this.showEmailModal = this.showEmailModal.bind(this)
+    this.hideEmailModal = this.hideEmailModal.bind(this)
+  }
+
+  showEmailModal() {
+    this.setState({ showEmail: true })
+  }
+
+  hideEmailModal() {
+    this.setState({ showEmail: false })
   }
 
   componentDidMount() {
@@ -191,7 +202,7 @@ class App extends Component {
   }
 
   render() {
-
+    var self = this
     var rows = []
     this.props.projects.forEach(function(element) {
       rows.push(
@@ -203,7 +214,8 @@ class App extends Component {
             industrys={element.industrys.join('')}
             imgUrl={element.imgUrl}
             amount={element.amount}
-            id={element.id} />
+            id={element.id}
+            showEmail={self.showEmailModal} />
         </div>
       )
     }, this)
@@ -257,6 +269,8 @@ var loadmoreStyle = {
         </div>
 
         <TabBar />
+
+        <Modal show={this.state.showEmail} title="邮箱" content="sidu.he@investarget.com" actions={[{name: '确定', handler: this.hideEmailModal}]} />
 
       </div>
     )
