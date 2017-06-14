@@ -722,8 +722,8 @@ export default {
     .catch(error => errCb(error))
   },
 
-  modifyUser(param, cb, errCb) {
-    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param, {
+  modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
+    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
       headers: {'Authorization': 'Bearer ' + getToken() }
     })
     .then(response => {

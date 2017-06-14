@@ -78,7 +78,11 @@ class HandleError extends Component {
 	case 'Please wait patient':
 	  showError = true
 	  errMsg = "图像更新需要时间，请耐心等待"
-	  break
+          break
+        case 'content can not be empty':
+          showError = true
+          errMsg = "内容不能为空"
+          break
         default:
           console.error(error)
       }

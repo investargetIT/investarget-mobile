@@ -46,6 +46,13 @@ const buttonStyle = {
   lineHeight: '48px'
 }
 
+const iconStyle = {
+  position: 'absolute',
+  top: '12px',
+  right: '18px',
+  width: '24px'
+}
+
 const NavigationBar = (props) => {
 
   return (
@@ -59,7 +66,9 @@ const NavigationBar = (props) => {
 
         <div style={titleStyle}>{props.title}</div>
 
-       {props.action ? <button style={buttonStyle} onClick={props.onActionButtonClicked}>{props.action}</button> : null}
+        { props.action ? <button style={buttonStyle} onClick={props.onActionButtonClicked}>{props.action}</button> : null }
+
+        { props.rightContent || null }
 
       </div>
 

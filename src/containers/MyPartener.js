@@ -55,6 +55,30 @@ const itemStyle = {
   margin: '8px ' + 75/375/6*100+'%',
 }
 
+const iconStyle = {
+  width: 24
+}
+
+const avatarContainerStyle = {
+  position: 'absolute',
+  display: 'inline-block',
+  top: 12,
+  right: 18,
+  width: 24
+}
+
+const inputContainerStyle = {
+  position: 'absolute',
+  left: 0,
+  top: 0
+}
+
+const inputStyle = {
+  width: '24px',
+  height: '24px',
+  opacity: 0
+}
+
 class MyPartener extends Component {
 
   constructor(props) {
@@ -85,6 +109,56 @@ class MyPartener extends Component {
     )
   }
 
+
+  handleAvatarChange(e) {
+    var file = e.target.files[0];
+
+    if (file) {
+      if (/^image\//i.test(file.type)) {
+        this.readFile(file);
+      } else {
+        alert('Not a valid image!');
+      }
+    }
+  }
+
+  readFile(file) {
+
+    var react = this
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+
+      react.setState({ avatar: reader.result });
+
+      var formData = new FormData()
+      formData.append('file', file)
+      formData.append('key', 'photoKey')
+
+      //api.uploadUserAvatar(
+        //formData,
+        //(key, url) => {
+          //react.props.dispatch(hideLoading())
+          //react.props.dispatch(handleError(new Error('Please wait patient')))
+          //const newUserInfo = Object.assign({}, react.props.userInfo, {
+            //photoKey: key,
+            //photoUrl: url
+          //})
+          //react.props.dispatch(modifyUserInfo(newUserInfo))
+        //},
+        //error => react.props.dispatch(handleError(error)),
+        //react.props.userInfo.photoKey || null
+      //)
+    }
+
+    reader.onerror = function () {
+      alert('There was an error reading the file!');
+    }
+
+    reader.readAsDataURL(file);
+    this.props.dispatch(requestContents(''))
+  }
+
   render() {
 
     const content = this.state.myPartener.map(
@@ -97,15 +171,24 @@ class MyPartener extends Component {
       )
     )
 
+    const rightContent = (
+      <div style={avatarContainerStyle}>
+        <img style={iconStyle} src={api.baseUrl + "/images/plus.png"} alt="" />
+        <div style={inputContainerStyle}><input style={inputStyle} id="file" type="file" accept="image/*" onChange={this.handleAvatarChange} /></div>
+      </div>
+    )
+
     return (
       <div>
 
-        <NavigationBar title={this.props.userInfo.userType === 1 ? "我的交易师" : "我的投资人"} backIconClicked={this.props.history.goBack} />
+        <NavigationBar
+          title={this.props.userInfo.userType === 1 ? "我的交易师" : "我的投资人"}
+          rightContent={rightContent} />
 
         <div style={floatContainerStyle}>
           {content}
         </div>
-        
+
       </div>
     )
   }
