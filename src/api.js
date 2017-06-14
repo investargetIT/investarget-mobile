@@ -900,6 +900,37 @@ export default {
     .catch(error => errCb(error))
   },
 
+  checkUserExist(account, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account, cb, errCb)
+  },
+
+  uploadImage(formData, key) {
+    const base = 'services/InvestargetApi/qiniuUploadService/'
+    const extend = key ? 'Coverupload?bucket=image&key=' + key : 'Upload?bucket=image'
+    return upload(base + extend, formData)
+  },
+
+  updateUser(userId, param, cb, errCb) {
+    return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + userId, param, cb, errCb)
+  },
+
+  addUser(param, cb, errCb) {
+    return simplyPost('services/InvestargetApi/user/CreateUser', param, cb, errCb)
+  },
+
+  addUserCommonTransaction(userId, cb, errCb) {
+    return simplyPost(
+      'services/InvestargetApi/user/AddUserCommonTransaction',
+      { 'userId': userId, 'transactionId': getCurrentUserId() },
+      cb,
+      errCb
+    )
+  },
+
+  checkUserCommonTransaction(investorId, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
+  },
+
 }
 
 var md5 = function (string) {

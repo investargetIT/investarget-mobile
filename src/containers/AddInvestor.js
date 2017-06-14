@@ -58,26 +58,54 @@ class AddInvestor extends React.Component {
     }   
 
     const body = {
-      name: this.state.name,
-      titleId: this.state.title,
-      mobile: this.state.mobile,
-      emailAddress: this.state.email
+      'name': this.state.name,
+      'titleId': this.state.title,
+      'emailAddress': this.state.email,
+      'mobile': this.state.mobile,
+      'password': '123456',
+      'cardBucket': 'image',
+      'cardKey': null,
+      'gender': 0,
+      'company': null,
+      'registerSource': 3,
+      'userType': 1,
+      'userTagses': [],
+      'mobileAreaCode': 86,
+      'countryId': 42,
+      'auditStatus': 1,
     }
 
     this.props.dispatch(requestContents(''))
 
-    api.checkMobileOrEmailExist(
-      this.state.mobile,
-      user => {
-        console.log(user)
-        if (user) {
-          // 调用修改用户和新增弱关联交易师接口
+    let existUser
+    api.checkUserExist(this.state.mobile)
+      .then(user => {
+        console.log('CHECK USER RESULT', user)
+        existUser = user
+        if (existUser) {
+          return api.checkUserCommonTransaction(existUser.id)
         } else {
-          // 调用新增用户和分配交易师接口
+          return Promise.resolve("The investor is not exist in our database!")
         }
-      },
-      error => console.error(error)
-    )
+      })
+      .then(relationId => {
+        console.log('checkUserCommonTransaction', relationId)
+        if (existUser && relationId === null) {
+          return api.addUserCommonTransaction(existUser.id)
+        } else {
+          return Promise.resolve("The investor is not exist or the relationship has already been established!")
+        }
+      })
+      .then(data => {
+        console.log('addUserCommonTransaction', data)
+        if (existUser) {
+          return api.updateUser(existUser.id, body)
+        } else {
+          const partnerId = this.props.userInfo.id
+          return api.addUser({...body, partnerId})
+        }
+      })
+      .catch(error => console.error(error))
 
     setTimeout(
       () => {
@@ -113,4 +141,9 @@ class AddInvestor extends React.Component {
   }
 }
 
-export default connect()(AddInvestor)
+function mapStateToProps(state) {
+  const { userInfo } = state
+  return { userInfo}
+}
+
+export default connect(mapStateToProps)(AddInvestor)
