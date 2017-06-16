@@ -931,6 +931,30 @@ export default {
     return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
   },
 
+  uploadCamCard(data, size) {
+    return new Promise((resolve, reject) => {
+      axios.post(
+        'http://bcr2.intsig.net/BCRService/BCR_Crop?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
+        data,
+        //{ headers: { 'Access-Control-Allow-Origin': 'http://192.168.1.122:3000', 'Access-Control-Allow-Credentials': 'true' } },
+      ).then(response => {
+        console.log('YXM result', response)
+        resolve(data)
+      })
+        .catch(error => {
+          console.log('YXM error', error.response)
+          if (error.response) {
+            console.log('YXM', error.response)
+          }
+          //reject(error)
+        })
+    })
+  },
+
+  getSingleUserInfo(userId, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
+  },
+
 }
 
 var md5 = function (string) {

@@ -4,6 +4,7 @@ import api from '../api'
 import LeftLabelRightContent from '../components/LeftLabelRightContent'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
+import Select from '../components/Select'
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -24,20 +25,35 @@ const inputStyle = {
   border: 'none'
 }
 
+const tagContainerStyle = {
+  position: 'fixed',
+  left: '0',
+  bottom: '0',
+  width: '100%',
+  height: '50%',
+  zIndex: '1',
+}
+
 class AddInvestor extends React.Component {
 
   constructor(props) {
     super(props)
 
     this.state = {
-      name: "堂小名",
-      title: "副总裁",
-      mobile: "18616324385",
-      email: "summer.xia@investarget.com"
+      name: props.location.state ?  props.location.state.name : "",
+      title: props.location.state ? props.location.state.title : null,
+      mobile: props.location.state ? props.location.state.mobile : "",
+      email: props.location.state ? props.location.state.email : "",
+      image: props.location.state ? props.location.state.image : null,
+      company: props.location.state ? props.location.state.company : "",
+      showTitle: false,
+      file: props.location.state ? props.location.state.file : null
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.showTitleSelect = this.showTitleSelect.bind(this)
+    this.handleSelectTitle = this.handleSelectTitle.bind(this)
   }
 
   handleInputChange(event) {
@@ -52,7 +68,7 @@ class AddInvestor extends React.Component {
 
   handleSubmit() {
 
-    if (this.state.name === '' || this.state.title === '' || this.state.mobile === '' || this.state.email === '') {
+    if (this.state.name === '' || this.state.title === '' || this.state.mobile === '' ) {
       this.props.dispatch(handleError(new Error('content can not be empty')))
       return
     }   
@@ -62,6 +78,7 @@ class AddInvestor extends React.Component {
       'titleId': this.state.title,
       'emailAddress': this.state.email,
       'mobile': this.state.mobile,
+      'company': this.state.company,
       'password': '123456',
       'cardBucket': 'image',
       'cardKey': null,
@@ -80,8 +97,21 @@ class AddInvestor extends React.Component {
     let existUser
     api.checkUserExist(this.state.mobile)
       .then(user => {
-        console.log('CHECK USER RESULT', user)
+        console.log('checkMobileExist', user)
         existUser = user
+        if (!user && this.state.email) {
+          return api.checkUserExist(this.state.email)
+        } else if (!user && !this.state.email) {
+          throw new Error('Please input valid Email')
+        } else {
+          return Promise.resolve("The mobile has already been exist in our database!")
+        }
+      })
+      .then(user => {
+        console.log('checkEmailExist', user)
+        if (user instanceof Object) {
+          throw new Error("mobile_not_exist_but_email_exist")
+        }
         if (existUser) {
           return api.checkUserCommonTransaction(existUser.id)
         } else {
@@ -96,27 +126,88 @@ class AddInvestor extends React.Component {
           return Promise.resolve("The investor is not exist or the relationship has already been established!")
         }
       })
-      .then(data => {
-        console.log('addUserCommonTransaction', data)
+      .then(relationId => {
+        console.log('addUserCommonTransaction', relationId)
         if (existUser) {
-          return api.updateUser(existUser.id, body)
+          return api.getSingleUserInfo(existUser.id)
         } else {
-          const partnerId = this.props.userInfo.id
-          return api.addUser({...body, partnerId})
+          return Promise.resolve("The investor is not exist in our database!")
         }
       })
-      .catch(error => console.error(error))
+      .then(userInfo => {
+        console.log('getSingleUserInfo', userInfo)
+        let cardKey
+        if (existUser) {
+          existUser = userInfo
+          cardKey = existUser.cardKey
+        }
+        const formData = new FormData()
+        formData.append('file', this.state.file)
+        return api.uploadImage(formData, cardKey)
+      })
+      .then(data => {
+        console.log('uploadCard', data)
+        const cardKey = data.key
+        const cardUrl = data.url
+        if (existUser) {
+          const userTagses = existUser.userTags.map(tag => tag.id)
+          const orgId = existUser.org ? existUser.org.id : null
+          const orgAreaId = existUser.orgArea ? existUser.orgArea.id : null
+          const titleId = this.state.title || (existUser.title ? existUser.title.id : null)
+          const emailAddress = this.state.email || existUser.emailAddress
+          const company = this.state.company || existUser.company
+          const name = this.state.name || existUser.name
+          return api.updateUser(existUser.id, {...existUser, userTagses, orgId, orgAreaId, titleId, emailAddress, company, name, cardKey, cardUrl})
+        } else {
+          const partnerId = this.props.userInfo.id
+          return api.addUser({...body, partnerId, cardKey, cardUrl})
+        }
+      })
+      .catch(error => this.props.dispatch(handleError(error)))
 
     setTimeout(
       () => {
         this.props.dispatch(hideLoading())
-        this.props.history.goBack()
+        //this.props.history.goBack()
       },
       1000
     )
   }
 
+  showTitleSelect() {
+    this.setState({
+      showTitle: true
+    })
+  }
+
+  handleSelectTitle(ids) {
+    console.log(ids)
+    var id = ids.length ? ids[0] : null
+    this.setState({
+      title: id,
+      showTitle: false
+    })
+  }
+
   render() {
+    const titleOptions = this.props.titles.map(item => {
+      return {id: item.id, name: item.titleName}
+    })
+
+    const titleText = this.state.title != null
+      ? titleOptions.filter(option => this.state.title == option.id)[0].name
+      : '点击选择职位'
+
+    const transparentStyle = {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      height: window.innerHeight - 48 + 'px',
+      width: '100%',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      display: this.state.showTitle ? 'block': 'none',
+    }
+
     return (
       <div>
         <NavigationBar title="新增投资人" action="提交" onActionButtonClicked={this.handleSubmit} />
@@ -124,16 +215,25 @@ class AddInvestor extends React.Component {
         <div style={containerStyle}>
 
           <div style={cardImageContainerStyle}>
-            <img style={cardStyle} alt="" src={ api.baseUrl + "/images/userCenter/emptyCardImage@2x.png" } />
+            <img style={cardStyle} alt="" src={ this.state.image || api.baseUrl + "/images/userCenter/emptyCardImage@2x.png" } />
           </div>
 
           <div>
             <LeftLabelRightContent label="姓名" content={<input name="name" style={inputStyle} value={this.state.name} onChange={this.handleInputChange} />} />
-            <LeftLabelRightContent label="职位" content={<input name="title" style={inputStyle} value={this.state.title} onChange={this.handleInputChange} />} />
+            <LeftLabelRightContent label="职位" content={<div style={{ fontSize: 16, width: '96%' }} onClick={this.showTitleSelect} >{ titleText }</div>} />
             <LeftLabelRightContent label="手机" content={<input name="mobile" style={inputStyle} value={this.state.mobile} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
+            <LeftLabelRightContent label="公司" content={<input name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} />
           </div>
 
+        </div>
+
+        <div style={transparentStyle}></div>
+
+        <div style={{ display: this.state.showTitle ? 'block' : 'none' }}>
+          <div style={tagContainerStyle}>
+            <Select title="请选择职位" multiple={false} options={titleOptions} onConfirm={this.handleSelectTitle} />
+          </div>
         </div>
 
       </div>
@@ -142,8 +242,8 @@ class AddInvestor extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { userInfo } = state
-  return { userInfo}
+  const { userInfo, titles } = state
+  return { userInfo, titles }
 }
 
 export default connect(mapStateToProps)(AddInvestor)

@@ -83,6 +83,10 @@ class HandleError extends Component {
           showError = true
           errMsg = "内容不能为空"
           break
+        case 'mobile_not_exist_but_email_exist':
+          showError = true
+          errMsg = "该邮箱已被占用"
+          break
         default:
           console.error(error)
       }
