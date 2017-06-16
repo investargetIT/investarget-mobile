@@ -87,7 +87,6 @@ class MyPartener extends Component {
     this.state = { myPartener: [] }
 
     this.readFile = this.readFile.bind(this)
-    window.addEventListener("message", this.receiveMessage, false)
     this.handleAvatarChange = this.handleAvatarChange.bind(this)
   }
 
@@ -115,14 +114,21 @@ class MyPartener extends Component {
 
 
   handleAvatarChange(e) {
-    var file = e.target.files[0];
+    var file = e.target.files[0]
 
     if (file) {
       if (/^image\//i.test(file.type)) {
-        console.log(file)
-        //readFile(file)
-        var react = this
-    var reader = new FileReader();
+        this.readFile(file)
+      } else {
+        alert('Not a valid image!')
+      }
+    }
+  }
+
+  readFile(file) {
+
+    var react = this
+    var reader = new FileReader()
 
     reader.onloadend = function () {
 
@@ -130,7 +136,10 @@ class MyPartener extends Component {
       var formData = new FormData()
       formData.append('file', file)
 
-      console.log('YXM', react.props)
+      api.uploadCamCard(formData, file.size)
+
+      return
+
       react.props.history.push(
         api.baseUrl + '/add_investor',
         {
@@ -143,51 +152,6 @@ class MyPartener extends Component {
           file: file
         }
       )
-
-      //document.getElementById("myForm").submit()
-
-      //api.uploadCamCard(formData, file.size)
-      //api.uploadUserAvatar(
-        //formData,
-        //(key, url) => {
-          //react.props.dispatch(hideLoading())
-          //react.props.dispatch(handleError(new Error('Please wait patient')))
-          //const newUserInfo = Object.assign({}, react.props.userInfo, {
-            //photoKey: key,
-            //photoUrl: url
-          //})
-          //react.props.dispatch(modifyUserInfo(newUserInfo))
-        //},
-        //error => react.props.dispatch(handleError(error)),
-        //react.props.userInfo.photoKey || null
-      //)
-    }
-
-    reader.onerror = function () {
-      alert('There was an error reading the file!');
-    }
-
-    reader.readAsDataURL(file);
-
-      } else {
-        alert('Not a valid image!');
-      }
-    }
-  }
-
-  readFile(file) {
-
-    var react = this
-    var reader = new FileReader();
-
-    reader.onloadend = function () {
-
-      react.setState({ avatar: reader.result });
-
-      var formData = new FormData()
-      formData.append('file', file)
-      formData.append('key', 'photoKey')
-
       
       //document.getElementById("myForm").submit()
       //api.uploadCamCard(formData)
@@ -215,14 +179,9 @@ class MyPartener extends Component {
     this.props.dispatch(requestContents(''))
   }
 
-  onLoad(a, b, c) {
-    window.aa = a.target
-    window.frames["upload_target"].parent.postMessage(JSON.parse(JSON.stringify(a.target)), '*')
-    console.log('YXXXM', JSON.stringify(a.target), b, c, window.document.body.innerHtml)
-  }
-
-  receiveMessage(event) {
-    console.log('YXXXM', event.data)
+  parseData(data) {
+    const name = data.formatted_name ? data.formatted_name[0].item : null
+    const email = data.email ? data.email[0].item : null
   }
 
   render() {
@@ -241,16 +200,7 @@ class MyPartener extends Component {
       <div style={avatarContainerStyle}>
         <img style={iconStyle} src={api.baseUrl + "/images/plus.png"} alt="" />
         <div style={inputContainerStyle}>
-          <form
-            id="myForm"
-            encType="multipart/form-data"
-            action="http://bcr2.intsig.net/BCRService/BCR_Crop?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=4821"
-            method="POST"
-            target="upload_target">
-
-            <input style={inputStyle} id="file" name="upfile" type="file" accept="image/*" onChange={this.handleAvatarChange} />
-
-          </form>
+          <input style={inputStyle} id="file" name="upfile" type="file" accept="image/*" onChange={this.handleAvatarChange} />
         </div>
       </div>
     )
@@ -265,10 +215,6 @@ class MyPartener extends Component {
         <div style={floatContainerStyle}>
           {content}
         </div>
-
-        <iframe id="iframe_id" name="upload_target" onLoad={this.onLoad}>
-          { console.log('YXM', window.document.body.innerHtml) }
-        </iframe>
 
       </div>
     )

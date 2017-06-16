@@ -34,6 +34,15 @@ const tagContainerStyle = {
   zIndex: '1',
 }
 
+const placeholderStyle = {
+  position: 'fixed',
+  backgroundColor: '#EEF3F4',
+  minHeight: window.innerHeight + 'px',
+  top: 48,
+  width: '100%',
+  zIndex: -1
+}
+
 class AddInvestor extends React.Component {
 
   constructor(props) {
@@ -98,19 +107,22 @@ class AddInvestor extends React.Component {
     api.checkUserExist(this.state.mobile)
       .then(user => {
         console.log('checkMobileExist', user)
-        existUser = user
-        if (!user && this.state.email) {
+        if (user) {
+          existUser = user
+        }
+        if (this.state.email) {
           return api.checkUserExist(this.state.email)
-        } else if (!user && !this.state.email) {
-          throw new Error('Please input valid Email')
         } else {
-          return Promise.resolve("The mobile has already been exist in our database!")
+          return Promise.resolve("The Email is empty!")
         }
       })
       .then(user => {
         console.log('checkEmailExist', user)
         if (user instanceof Object) {
-          throw new Error("mobile_not_exist_but_email_exist")
+          if (existUser && existUser.id !== user.id) {
+            throw new Error("mobile_or_email_possessed")
+          }
+          existUser = user
         }
         if (existUser) {
           return api.checkUserCommonTransaction(existUser.id)
@@ -157,7 +169,8 @@ class AddInvestor extends React.Component {
           const emailAddress = this.state.email || existUser.emailAddress
           const company = this.state.company || existUser.company
           const name = this.state.name || existUser.name
-          return api.updateUser(existUser.id, {...existUser, userTagses, orgId, orgAreaId, titleId, emailAddress, company, name, cardKey, cardUrl})
+          const mobile = this.state.mobile || existUser.mobile
+          return api.updateUser(existUser.id, {...existUser, userTagses, orgId, orgAreaId, titleId, emailAddress, company, name, cardKey, cardUrl, mobile})
         } else {
           const partnerId = this.props.userInfo.id
           return api.addUser({...body, partnerId, cardKey, cardUrl})
@@ -190,11 +203,12 @@ class AddInvestor extends React.Component {
   }
 
   render() {
+
     const titleOptions = this.props.titles.map(item => {
       return {id: item.id, name: item.titleName}
     })
 
-    const titleText = this.state.title != null
+    const titleText = this.state.title != null && titleOptions.length > 0
       ? titleOptions.filter(option => this.state.title == option.id)[0].name
       : '点击选择职位'
 
@@ -211,6 +225,8 @@ class AddInvestor extends React.Component {
     return (
       <div>
         <NavigationBar title="新增投资人" action="提交" onActionButtonClicked={this.handleSubmit} />
+
+        { /* <div style={placeholderStyle} /> */ }
 
         <div style={containerStyle}>
 

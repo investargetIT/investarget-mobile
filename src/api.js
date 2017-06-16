@@ -934,7 +934,7 @@ export default {
   uploadCamCard(data, size) {
     return new Promise((resolve, reject) => {
       axios.post(
-        'http://bcr2.intsig.net/BCRService/BCR_Crop?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
+        'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
         data,
         //{ headers: { 'Access-Control-Allow-Origin': 'http://192.168.1.122:3000', 'Access-Control-Allow-Credentials': 'true' } },
       ).then(response => {
