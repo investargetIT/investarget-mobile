@@ -203,13 +203,7 @@ class User extends Component {
         <div style={settingContainerStyle}>
           <ul>
             <Group>
-              {
-                this.props.userInfo.userType !== 1 ?
-                  <Link to={api.baseUrl + "/add_investor"}>
-                    <LeftIconRightLabel icon={api.baseUrl + "/images/notification.svg"} label="新增投资人" />
-                  </Link> : null
-              }
-              <Link to={api.baseUrl + "/my_partener"}>
+               <Link to={api.baseUrl + "/my_partener"}>
                 {
                   this.props.userInfo.userType === 1 ?
                     <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-6@2x.png"} label="我的交易师" /> :

@@ -145,7 +145,11 @@ class MyPartener extends Component {
           react.props.history.push(api.baseUrl + '/add_investor', state)
         }).catch(error => {
           console.error(error)
-          react.props.dispatch(handleError(new Error('parse_business_card_failed')))
+          react.props.dispatch(hideLoading())
+          const image = reader.result
+          const file = fileDa
+          const state = { image, file }
+          react.props.history.push(api.baseUrl + '/add_investor', state)
         })
     }
 
@@ -194,14 +198,14 @@ class MyPartener extends Component {
       )
     )
 
-    const rightContent = (
+    const rightContent = this.props.userInfo.userType === 3 ? (
       <div style={avatarContainerStyle}>
         <img style={iconStyle} src={api.baseUrl + "/images/plus.png"} alt="" />
         <div style={inputContainerStyle}>
           <input style={inputStyle} id="file" name="upfile" type="file" accept="image/*" onChange={this.handleAvatarChange} />
         </div>
       </div>
-    )
+    ) : null
 
     return (
       <div>
