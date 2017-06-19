@@ -959,6 +959,30 @@ export default {
     return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
   },
 
+  uploadBusiness(file, cb, errCb) {
+    console.log('in the method')
+    return new Promise((resolve, reject) => {
+      axios.post(
+        url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
+        file,
+        { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
+      )
+        .then(response => {
+          console.log('Yxxxm', response.data)
+          if (!response.data.success) {
+            throw new ApiError(response.data.error)
+          }
+          const data = response.data.result
+          if (cb) cb(data)
+          resolve(data)
+        })
+        .catch(error => {
+          if (errCb) errCb(error)
+          reject(error)
+        })
+    })
+  },
+
 }
 
 var md5 = function (string) {

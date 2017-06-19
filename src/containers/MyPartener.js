@@ -136,13 +136,16 @@ class MyPartener extends Component {
       var formData = new FormData()
       formData.append('file', file)
 
-      //api.uploadBusinessCard(
-        //formData,
-        //data => console.log('YXXXM', data),
-        //error => console.error(error)
-      //)
+      api.uploadBusinessCard(
+        formData,
+        data => console.log('YXXXM', data),
+        error => {
+          react.props.dispatch(hideLoading())
+          console.error(error)
+        }
+      )
 
-      //return
+      return
 
       react.props.history.push(
         api.baseUrl + '/add_investor',
@@ -180,7 +183,7 @@ class MyPartener extends Component {
     }
 
     reader.readAsDataURL(file);
-    this.props.dispatch(requestContents(''))
+    //this.props.dispatch(requestContents(''))
   }
 
   parseData(data) {
