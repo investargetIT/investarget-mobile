@@ -136,9 +136,13 @@ class MyPartener extends Component {
       var formData = new FormData()
       formData.append('file', file)
 
-      api.uploadCamCard(formData, file.size)
+      //api.uploadBusinessCard(
+        //formData,
+        //data => console.log('YXXXM', data),
+        //error => console.error(error)
+      //)
 
-      return
+      //return
 
       react.props.history.push(
         api.baseUrl + '/add_investor',
@@ -182,6 +186,26 @@ class MyPartener extends Component {
   parseData(data) {
     const name = data.formatted_name ? data.formatted_name[0].item : null
     const email = data.email ? data.email[0].item : null
+    let title = data.title ? data.title[0].item : null
+    if (title) {
+      const index = this.props.titles.map(item => item.name).indexOf(title)
+      if (index > -1) {
+        title = this.props.titles[index].id
+      }
+    }
+    let mobile
+    if (data.telephone) {
+      const mobileArr = data.telephone.filter(f => /1[34578]\d{9}/.exec(f.item.number))
+      if (mobileArr.length > 0) {
+        mobile = /1[34578]\d{9}/.exec(mobileArr[0].item.number)[0]
+      }
+    }
+    let company = null
+    if (data.organization) {
+      const companyObj = data.organization[0].item
+      company = companyObj.name || companyObj.positional || companyObj.unit
+    }
+    return { name, email, title, mobile, company }
   }
 
   render() {
@@ -223,8 +247,8 @@ class MyPartener extends Component {
 }
 
 function mapStateToProps(state) {
-  const { userInfo } = state
-  return { userInfo }
+  const { userInfo, titles } = state
+  return { userInfo, titles }
 }
 
 export default connect(mapStateToProps)(MyPartener)

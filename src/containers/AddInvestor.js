@@ -77,10 +77,19 @@ class AddInvestor extends React.Component {
 
   handleSubmit() {
 
-    if (this.state.name === '' || this.state.title === '' || this.state.mobile === '' ) {
+    if (!this.state.name || !this.state.title || !this.state.mobile || !this.state.email || !this.state.company) {
       this.props.dispatch(handleError(new Error('content can not be empty')))
       return
-    }   
+    }
+    if (!/^1[34578]\d{9}$/.test(this.state.mobile)) {
+      this.props.dispatch(handleError(new Error('mobile_not_valid')))
+      return
+    }
+
+    if(!/[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/.test(this.state.email)) {
+      this.props.dispatch(handleError(new Error('Please input valid Email')))
+      return
+    }
 
     const body = {
       'name': this.state.name,
@@ -92,7 +101,6 @@ class AddInvestor extends React.Component {
       'cardBucket': 'image',
       'cardKey': null,
       'gender': 0,
-      'company': null,
       'registerSource': 3,
       'userType': 1,
       'userTagses': [],
@@ -176,15 +184,15 @@ class AddInvestor extends React.Component {
           return api.addUser({...body, partnerId, cardKey, cardUrl})
         }
       })
-      .catch(error => this.props.dispatch(handleError(error)))
-
-    setTimeout(
-      () => {
+      .then(data => {
+        console.log('YXXXM', data)
         this.props.dispatch(hideLoading())
-        //this.props.history.goBack()
-      },
-      1000
-    )
+        this.props.history.goBack()
+      })
+      .catch(error => {
+        this.props.dispatch(hideLoading())
+        this.props.dispatch(handleError(error))
+      })
   }
 
   showTitleSelect() {
