@@ -88,6 +88,7 @@ class MyPartener extends Component {
 
     this.readFile = this.readFile.bind(this)
     this.handleAvatarChange = this.handleAvatarChange.bind(this)
+    this.parseData = this.parseData.bind(this)
   }
 
   componentDidMount() {
@@ -131,51 +132,21 @@ class MyPartener extends Component {
     var reader = new FileReader()
 
     reader.onloadend = function () {
-
-
       var formData = new FormData()
       formData.append('file', file)
-
-      api.uploadBusinessCard(
-        formData,
-        data => console.log('YXXXM', data),
-        error => {
+      const fileDa = file
+      api.uploadBusinessCard(formData)
+        .then(data => {
           react.props.dispatch(hideLoading())
+          const parsedData = react.parseData(JSON.parse(data))
+          const image = reader.result
+          const file = fileDa
+          const state = { ...parsedData, image, file }
+          react.props.history.push(api.baseUrl + '/add_investor', state)
+        }).catch(error => {
           console.error(error)
-        }
-      )
-
-      return
-
-      react.props.history.push(
-        api.baseUrl + '/add_investor',
-        {
-          name: "YXM",
-          image: reader.result,
-          mobile: "18616324385",
-          email: "fancy@gmail.com",
-          company: "三一重工",
-          title: 6,
-          file: file
-        }
-      )
-      
-      //document.getElementById("myForm").submit()
-      //api.uploadCamCard(formData)
-      //api.uploadUserAvatar(
-        //formData,
-        //(key, url) => {
-          //react.props.dispatch(hideLoading())
-          //react.props.dispatch(handleError(new Error('Please wait patient')))
-          //const newUserInfo = Object.assign({}, react.props.userInfo, {
-            //photoKey: key,
-            //photoUrl: url
-          //})
-          //react.props.dispatch(modifyUserInfo(newUserInfo))
-        //},
-        //error => react.props.dispatch(handleError(error)),
-        //react.props.userInfo.photoKey || null
-      //)
+          react.props.dispatch(handleError(new Error('parse_business_card_failed')))
+        })
     }
 
     reader.onerror = function () {
@@ -183,15 +154,15 @@ class MyPartener extends Component {
     }
 
     reader.readAsDataURL(file);
-    //this.props.dispatch(requestContents(''))
+    react.props.dispatch(requestContents(''))
   }
 
   parseData(data) {
     const name = data.formatted_name ? data.formatted_name[0].item : null
     const email = data.email ? data.email[0].item : null
-    let title = data.title ? data.title[0].item : null
-    if (title) {
-      const index = this.props.titles.map(item => item.name).indexOf(title)
+    let title
+    if (data.title) {
+      const index = this.props.titles.map(item => item.titleName).indexOf(data.title[0].item)
       if (index > -1) {
         title = this.props.titles[index].id
       }

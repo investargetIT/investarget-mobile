@@ -91,6 +91,10 @@ class HandleError extends Component {
           showError = true
           errMsg = "手机或邮箱已被占用"
           break
+        case 'parse_business_card_failed':
+          showError = true
+          errMsg = "名片解析失败"
+          break
         default:
           console.error(error)
       }

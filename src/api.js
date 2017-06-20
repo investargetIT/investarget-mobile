@@ -936,18 +936,11 @@ export default {
       axios.post(
         'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
         data,
-        //{ headers: { 'Access-Control-Allow-Origin': 'http://192.168.1.122:3000', 'Access-Control-Allow-Credentials': 'true' } },
       ).then(response => {
-        console.log('YXM result', response)
-        resolve(data)
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
       })
-        .catch(error => {
-          console.log('YXM error', error.response)
-          if (error.response) {
-            console.log('YXM', error.response)
-          }
-          //reject(error)
-        })
     })
   },
 
