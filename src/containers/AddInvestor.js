@@ -81,10 +81,11 @@ class AddInvestor extends React.Component {
       this.props.dispatch(handleError(new Error('content can not be empty')))
       return
     }
-    if (!/^1[34578]\d{9}$/.test(this.state.mobile)) {
-      this.props.dispatch(handleError(new Error('mobile_not_valid')))
-      return
-    }
+    
+    // if (!/^1[34578]\d{9}$/.test(this.state.mobile)) {
+    //   this.props.dispatch(handleError(new Error('mobile_not_valid')))
+    //   return
+    // }
 
     if(!/[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/.test(this.state.email)) {
       this.props.dispatch(handleError(new Error('Please input valid Email')))
