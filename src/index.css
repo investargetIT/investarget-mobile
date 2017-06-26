@@ -82,6 +82,16 @@ a {
   background: #F4F4F4;
   overflow: hidden;
 }
+#wrapper1 {
+  position: absolute;
+  z-index: 8;
+  top: 45px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #F4F4F4;
+  overflow: hidden;
+}
 #scroller {
   position: absolute;
   z-index: 8;
