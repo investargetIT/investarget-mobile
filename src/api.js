@@ -192,19 +192,19 @@ function upload(uri, data) {
 }
 
 function getPublicAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getPublicAndMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getClosedAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getClosedAndMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 const getProjectsArray = [
@@ -284,7 +284,7 @@ export default {
           var obj = {}
           obj['id'] = item.id
           obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount
+          obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
@@ -313,7 +313,7 @@ export default {
           var obj = {}
           obj['id'] = item.id
           obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount
+          obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
