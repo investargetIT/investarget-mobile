@@ -204,7 +204,7 @@ function getClosedAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
 }
 
 function getClosedAndMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 const getProjectsArray = [

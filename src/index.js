@@ -7,6 +7,8 @@ import rootReducer from './reducers'
 import { createStore, applyMiddleware } from 'redux'
 import createLogger from 'redux-logger'
 
+window.LANG = 'cn'
+localStorage.setItem('source', 1)
 const loggerMiddleware = createLogger()
 
 const store = createStore(

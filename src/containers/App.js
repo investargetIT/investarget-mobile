@@ -7,6 +7,7 @@ import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
 import { Link } from 'react-router-dom'
 import api from '../api.js'
+import * as newApi from '../api3.0.js'
 
 
 const loadingStyle = {
@@ -50,6 +51,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+
+    newApi.getProj();
 
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
