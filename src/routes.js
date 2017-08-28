@@ -38,6 +38,7 @@ import Timeline from './containers/Timeline'
 import LatestRemark from './containers/LatestRemark'
 import NotificationDetail from './containers/NotificationDetail'
 import SelectUser from './containers/SelectUser'
+import AddInvestor from './containers/AddInvestor'
 
 const Routes = (props) => {
 
@@ -94,7 +95,7 @@ const Routes = (props) => {
 
         <Route exact path={api.baseUrl + "/"} component={App} />
         <Route path={api.baseUrl + "/posts"} component={Posts} />
-	<Route path={api.baseUrl + "/events"} component={Events} />
+        <Route path={api.baseUrl + "/events"} component={Events} />
         <Route path={api.baseUrl + "/user"} component={User} />
         <Route path={api.baseUrl + "/login"} component={Login} />
         <Route path={api.baseUrl + "/register"} component={Register} />
@@ -117,9 +118,10 @@ const Routes = (props) => {
         <Route path={api.baseUrl + "/contact" } component={Contact} />
         <Route path={api.baseUrl + "/organization/:id" } component={OrganizationDetail} />
         <Route path={api.baseUrl + "/timeline/:id" } component={Timeline} />
-	      <Route path={api.baseUrl + "/latest_remark" } component={LatestRemark} />
-	      <Route path={api.baseUrl + "/notifications/:id" } component={NotificationDetail} />
+        <Route path={api.baseUrl + "/latest_remark" } component={LatestRemark} />
+        <Route path={api.baseUrl + "/notifications/:id" } component={NotificationDetail} />
         <Route path={api.baseUrl + "/select_user" } component={SelectUser} />
+        <Route path={api.baseUrl + "/add_investor" } component={AddInvestor} />
 
       </div>
     </Router>

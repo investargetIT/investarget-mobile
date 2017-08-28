@@ -9,9 +9,9 @@ function LoadingAndToast(props) {
   }
   
   var style = {
-    position: 'absolute',
+    position: 'fixed',
     left: '50%',
-    top: '200px',
+    top: '40%',
     zIndex: 99,
     marginLeft: '-50px',
     display: props.isFetching || props.isError ? 'flex' : 'none',

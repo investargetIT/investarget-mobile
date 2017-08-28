@@ -83,7 +83,7 @@ function ProjectListCell(props) {
         </p>
 
         {!props.isMarketPlace ?
-          <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{props.amount > 0 ? "$" + new Intl.NumberFormat().format(props.amount) : "N/A"}</span></p>
+          <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{props.amount > 0 ? "$" + formatNumber(props.amount) : "N/A"}</span></p>
           :
           <div style={{ marginTop: 8 }} data-id={props.id} data-is-market-place={props.isMarketPlace}>
             <a href="tel:13816225193"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/phone@2x.png'} alt="" /></a>
@@ -102,6 +102,20 @@ function sliceStringIfTooLong(str, maxLength) {
   } else {
     return str.substr(0, maxLength) + '...'
   }
+}
+
+function formatNumber(number) {
+  const reverseStrArr = (number + "").split("").reverse()
+  const arr = reverseStrArr.reduce((pre, cur) => {
+    if (pre.length > 0 && pre[pre.length - 1].length < 3) {
+      const maxIndexValue = pre[pre.length - 1]
+      pre[pre.length - 1] = maxIndexValue + cur
+    } else {
+      pre.push(cur)
+    }
+    return pre
+  }, [])
+  return arr.map(m => m.split("").reverse().join("")).reverse().join(",")
 }
 
 export default ProjectListCell

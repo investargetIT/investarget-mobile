@@ -55,6 +55,10 @@ class HandleError extends Component {
           showError = true
           errMsg = '请输入有效的邮箱'
           break
+        case 'mobile_not_valid':
+          showError = true
+          errMsg = '请输入有效的手机号码'
+          break
         case 'Request failed with status code 401':
           showError = true
           errMsg = '验证失败，请重新登录'
@@ -78,7 +82,19 @@ class HandleError extends Component {
 	case 'Please wait patient':
 	  showError = true
 	  errMsg = "图像更新需要时间，请耐心等待"
-	  break
+          break
+        case 'content can not be empty':
+          showError = true
+          errMsg = "内容不能为空"
+          break
+        case 'mobile_or_email_possessed':
+          showError = true
+          errMsg = "手机或邮箱已被占用"
+          break
+        case 'parse_business_card_failed':
+          showError = true
+          errMsg = "名片解析失败"
+          break
         default:
           console.error(error)
       }

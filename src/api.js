@@ -192,19 +192,19 @@ function upload(uri, data) {
 }
 
 function getPublicAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getPublicAndMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=4&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getClosedAndNotMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=false&input.revenueFrom=0&input.revenueTo=100000000000&input.netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 function getClosedAndMarketPlaceProjects(params, skipCount, maxResultCount) {
-  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=10000000000&netIncomeFrom=-2000000000&input.netIncomeTo=1000000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
+  return simplyGet('services/InvestargetApi/project/GetProjects?input.bStatus=8&input.isMarketPlace=true&input.revenueFrom=0&input.revenueTo=100000000000&netIncomeFrom=-100000000000&input.netIncomeTo=100000000000&input.lang=cn' + params + '&input.skipCount=' + skipCount + '&input.maxResultCount=' + maxResultCount)
 }
 
 const getProjectsArray = [
@@ -284,7 +284,7 @@ export default {
           var obj = {}
           obj['id'] = item.id
           obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount
+          obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
@@ -313,7 +313,7 @@ export default {
           var obj = {}
           obj['id'] = item.id
           obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount
+          obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
@@ -705,8 +705,8 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getUsers(cb, errCb) {
-    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.userId=' + getCurrentUserId(), cb, errCb)
+  getUsers(cb, errCb, skipCount=0) {
+    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
   },
 
   getUserMessages(cb, errCb) {
@@ -722,8 +722,8 @@ export default {
     .catch(error => errCb(error))
   },
 
-  modifyUser(param, cb, errCb) {
-    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param, {
+  modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
+    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
       headers: {'Authorization': 'Bearer ' + getToken() }
     })
     .then(response => {
@@ -898,6 +898,82 @@ export default {
     .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
     .then(url => cb(url))
     .catch(error => errCb(error))
+  },
+
+  checkUserExist(account, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account, cb, errCb)
+  },
+
+  uploadImage(formData, key) {
+    const base = 'services/InvestargetApi/qiniuUploadService/'
+    const extend = key ? 'Coverupload?bucket=image&key=' + key : 'Upload?bucket=image'
+    return upload(base + extend, formData)
+  },
+
+  updateUser(userId, param, cb, errCb) {
+    return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + userId, param, cb, errCb)
+  },
+
+  addUser(param, cb, errCb) {
+    return simplyPost('services/InvestargetApi/user/CreateUser', param, cb, errCb)
+  },
+
+  addUserCommonTransaction(userId, cb, errCb) {
+    return simplyPost(
+      'services/InvestargetApi/user/AddUserCommonTransaction',
+      { 'userId': userId, 'transactionId': getCurrentUserId() },
+      cb,
+      errCb
+    )
+  },
+
+  checkUserCommonTransaction(investorId, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
+  },
+
+  uploadCamCard(data, size) {
+    return new Promise((resolve, reject) => {
+      axios.post(
+        'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
+        data,
+      ).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  getSingleUserInfo(userId, cb, errCb) {
+    return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
+  },
+
+  uploadBusinessCard(formData) {
+    return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
+  },
+
+  uploadBusiness(file, cb, errCb) {
+    console.log('in the method')
+    return new Promise((resolve, reject) => {
+      axios.post(
+        url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
+        file,
+        { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
+      )
+        .then(response => {
+          console.log('Yxxxm', response.data)
+          if (!response.data.success) {
+            throw new ApiError(response.data.error)
+          }
+          const data = response.data.result
+          if (cb) cb(data)
+          resolve(data)
+        })
+        .catch(error => {
+          if (errCb) errCb(error)
+          reject(error)
+        })
+    })
   },
 
 }
