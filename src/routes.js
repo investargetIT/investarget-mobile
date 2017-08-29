@@ -20,6 +20,7 @@ import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
 import * as newApi from './api3.0'
+import { getContinentsAndCountries, getIndustries, getTags, getTitles } from './utils'
 import TimelineManagement from './containers/TimelineManagement'
 import Chat from './containers/Chat'
 import UserInfo from './containers/UserInfo'
@@ -50,25 +51,24 @@ const Routes = (props) => {
 
   props.dispatch(readUserInfoFromLocalStorage())
 
-  api.getContinentsAndCountries(
-    continentsAndCountries => props.dispatch(receiveContinentsAndCountries(continentsAndCountries)),
-    error => console.error(error) 
-  )
 
-  api.getIndustries(
-    industries => props.dispatch(receiveIndustries(industries)),
-    error => console.error(error)
-  )
+  getContinentsAndCountries().then(continentsAndCountries => {
+    props.dispatch(receiveContinentsAndCountries(continentsAndCountries))
+  })
 
-  api.getTags(
-    tags => props.dispatch(receiveTags(tags)),
-    error => console.error(error)
-  )
+  getIndustries().then(industries => {
+    props.dispatch(receiveIndustries(industries))
+  })
 
-  api.getTitles(
-    titles => props.dispatch(receiveTitles(titles)),
-    error => console.error(error)
-  )
+  getTags().then(tags => {
+    props.dispatch(receiveTags(tags))
+  })
+
+  getTitles().then(titles => {
+    props.dispatch(receiveTitles(titles))
+  })
+
+
 
   const userInfo = localStorage.getItem('userInfo')
   if (userInfo) {
