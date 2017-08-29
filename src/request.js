@@ -59,6 +59,6 @@ export default async function request(url, options) {
   // Only when request our own server should we parse response data
   parseErrorMessage(data);
 
-  return { data: data.result };
+  return data.result;
 
 }
