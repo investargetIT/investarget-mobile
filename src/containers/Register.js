@@ -4,6 +4,7 @@ import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import { Link } from 'react-router-dom'
 import api from '../api'
+import * as newApi from '../api3.0'
 import { handleError } from '../actions'
 import { connect } from 'react-redux'
 
@@ -110,9 +111,19 @@ class Register extends React.Component {
   handleSendVerificationCode(event) {
     const react = this
 
-    api.sendVerificationCode(
-      this.state.mobile,
-      token => {
+    // api.sendVerificationCode
+    const param = {
+      mobile: this.state.mobile,
+      areacode: '86',
+    }
+    newApi.sendSmsCode(param)
+      .then(data => {
+
+        const { status, smstoken: token, msg } = data.data
+
+        if (status !== 'success') {
+          throw new Error(msg)
+        }
 
         localStorage.setItem(VERIFICATION_CODE_TOKEN, token)
 
@@ -127,23 +138,29 @@ class Register extends React.Component {
         )
 
         react.setState({ timer: timer })
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
   }
 
   checkPhoneExist() {
-    api.checkMobileOrEmailExist(
-        this.state.mobile,
-        (result) => {
-          if (result) {
-            this.setState({userExist: true})
-            this.props.history.push(api.baseUrl + '/set_password', {mobile: this.state.mobile})
-          } else {
-            this.setState({userExist: false})
-          }
-        },
-        (error) => this.props.dispatch(handleError(error)))
+    
+    // api.checkMobileOrEmailExist
+    newApi.checkUserExist(this.state.mobile)
+      .then(data => {
+        const exist = data.data.result
+        if (exist) {
+          this.setState({userExist: true})
+          this.props.history.push(api.baseUrl + '/set_password', {mobile: this.state.mobile})
+        } else {
+          this.setState({userExist: false})
+        }
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
+
   }
 
   checkEmailFormat() {
@@ -152,34 +169,28 @@ class Register extends React.Component {
   }
 
   handleSubmit(userType) {
-      const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
-      if (!token) {
-        this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
-        return
-      }
-      if (!this.checkEmailFormat()) {
-        this.props.dispatch(handleError(new Error('Please input valid Email')))
-        console.log(this.checkEmailFormat())
-        return
-      }
-      const param = {
-        mobile: this.state.mobile,
-        token: token,
-        code: this.state.code
-      }
-      api.checkVerificationCode(
-        param,
-        () => {
-          var registerBasicInfo = Object.assign({}, param, {
-            email: this.state.email,
-            userType: userType
-          })
-          delete registerBasicInfo.token
-          localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
-          this.props.history.push(api.baseUrl + '/register2')
-        },
-        error => this.props.dispatch(handleError(error))
-      )
+
+    const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
+    if (!token) {
+      this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
+      return
+    }
+    if (!this.checkEmailFormat()) {
+      this.props.dispatch(handleError(new Error('Please input valid Email')))
+      console.log(this.checkEmailFormat())
+      return
+    }
+
+    var registerBasicInfo = {
+      mobile: this.state.mobile,
+      token: token,
+      code: this.state.code,
+      email: this.state.email,
+      userType: userType
+    }
+    localStorage.setItem(REGISTER_BASIC_INFO, JSON.stringify(registerBasicInfo))
+    this.props.history.push(api.baseUrl + '/register2')
+
   }
 
   componentWillUnmount() {
@@ -226,11 +237,11 @@ class Register extends React.Component {
         </div>
 
         <div style={this.state.userExist === false ? buttonStyle : {display: 'none'}}>
-          <Button name="transaction" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 3)} value="我是交易师" />
+          <Button name="transaction" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 'trader')} value="我是交易师" />
         </div>
 
         <div style={this.state.userExist === false ? buttonStyle : {display: 'none'}}>
-          <Button name="investor" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 1)} value="我是投资人" />
+          <Button name="investor" type="primary" disabled={disabled} onClick={this.handleSubmit.bind(this, 'investor')} value="我是投资人" />
         </div>
 
         <div style={this.state.userExist === false ? licenseStyle : {display: 'none'}}>

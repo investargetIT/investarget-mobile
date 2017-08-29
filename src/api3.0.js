@@ -428,6 +428,11 @@ export function login(values) {
   return r('/user/login/', 'POST', param)
 }
 
+// { mobile, mobilecode, password, mobilecodetoken }
+export function retrievePassword(param) {
+  return r('/user/password/', 'POST', param)
+}
+
 export function get({ page }) {
   return r(`/user/?page_index=${page}&page_size=5`)
 }

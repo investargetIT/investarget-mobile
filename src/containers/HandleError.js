@@ -117,6 +117,18 @@ class HandleError extends Component {
         case 200:
           showError = true
           errMsg = '旧密码错误'
+          break
+        case 2001:
+        case 2002:
+        case 20021:
+        case 2003:
+        case 2004:
+        case 20042:
+        case 2005:
+        case 20051:
+          showError = true
+          errMsg = error.message
+          break
         default:
           console.error(error)
       }

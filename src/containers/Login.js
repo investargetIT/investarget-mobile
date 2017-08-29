@@ -6,6 +6,7 @@ import Button from '../components/Button'
 import FormContainer from './FormContainer'
 import { Link } from 'react-router-dom'
 import api from '../api'
+import * as newApi from '../api3.0'
 
 
 var usernameInputStyle = {
@@ -81,28 +82,31 @@ class Login extends React.Component {
   handleSubmit(event) {
 
     const param = {
-      mobileOrEmailAddress: this.state.username,
+      username: this.state.username,
       password: this.state.password,
-      app: 3
+      // app: 3
     }
 
     this.props.dispatch(requestContents(''))
-    api.loginAndGetUserInfo(
-      param,
-      (authToken, userInfo) => {
+
+    // api.loginAndGetUserInfo
+    newApi.login(param)
+      .then(data => {
+        const { token: authToken, user_info: userInfo } = data.data
         this.props.dispatch(hideLoading())
-	this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
-	var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
-	const isProjectRoute = /project\/\d+/g.exec(redirectUrl)
-	if (isProjectRoute) {
-	  redirectUrl += this.props.userInfo ? '?token=' + this.props.userInfo.token : ''
-	  window.location.replace(redirectUrl)
-	} else {
-	  this.props.history.push(redirectUrl)
-	}
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+        this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
+        var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
+        const isProjectRoute = /project\/\d+/g.exec(redirectUrl)
+        if (isProjectRoute) {
+          redirectUrl += this.props.userInfo ? '?token=' + this.props.userInfo.token : ''
+          window.location.replace(redirectUrl)
+        } else {
+          this.props.history.push(redirectUrl)
+        }
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
 
   }
 

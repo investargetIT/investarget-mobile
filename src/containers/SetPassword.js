@@ -3,6 +3,7 @@ import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import api from '../api'
+import * as newApi from '../api3.0'
 import { handleError } from '../actions'
 import { connect } from 'react-redux'
 
@@ -65,9 +66,18 @@ class SetPassword extends React.Component {
     handleSendVerificationCode(event) {
         const react = this
 
-        api.sendVerificationCode(
-            this.state.mobile,
-            token => {
+        // api.sendVerificationCode(
+        const param = {
+            mobile: this.state.mobile,
+            areacode: '86',
+        }
+        newApi.sendSmsCode(param)
+            .then(data => {
+
+                const { status, smstoken: token, msg } = data.data
+                if (status !== 'success') {
+                    throw new Error(msg)
+                }
 
                 localStorage.setItem(VERIFICATION_CODE_TOKEN, token)
 
@@ -82,9 +92,11 @@ class SetPassword extends React.Component {
                 )
 
                 react.setState({ timer: timer })
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+
     }
 
     handleSubmit(event) {
@@ -97,23 +109,18 @@ class SetPassword extends React.Component {
 
         const param = {
             mobile: this.state.mobile,
-            token: token,
-            code: this.state.code
+            mobilecodetoken: token,
+            mobilecode: this.state.code,
+            password: this.state.newPassword,
+            datasource: 1, // TODO 等军柯代码部署到测试服务器时，删掉这行
         }
-        api.checkVerificationCode(
-            param,
-            () => {
-                const param2 = Object.assign({}, param, {
-                    newPassword: this.state.newPassword
-                })
-                api.retrievePassword(param2, () => {
-                    this.props.history.push(api.baseUrl + '/login')
-                }, (error) => {
-                    this.props.dispatch(handleError(error))
-                })
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+        newApi.retrievePassword(param)
+            .then(data => {
+                this.props.history.push(api.baseUrl + '/login')
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
         
     }
 

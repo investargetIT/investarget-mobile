@@ -19,6 +19,7 @@ import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountrie
 import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
+import * as newApi from './api3.0'
 import TimelineManagement from './containers/TimelineManagement'
 import Chat from './containers/Chat'
 import UserInfo from './containers/UserInfo'
@@ -73,15 +74,16 @@ const Routes = (props) => {
   if (userInfo) {
     const user = JSON.parse(userInfo)
     const param = { 
-      mobileOrEmailAddress: user.username,
+      username: user.username,
       password: user.password,
-      app: 3
+      // app: 3
     }
-    api.loginAndGetUserInfo(
-      param,
-      (authToken, userInfo) => props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password)),
-      error => console.error(error)
-    )   
+    newApi.login(param)
+      .then(data => {
+        const { token: authToken, user_info: userInfo } = data.data
+        props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
+      })
+      .catch(error => console.error(error))
   }
 
   return (
