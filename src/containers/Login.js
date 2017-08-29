@@ -7,6 +7,7 @@ import FormContainer from './FormContainer'
 import { Link } from 'react-router-dom'
 import api from '../api'
 import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 
 var usernameInputStyle = {
@@ -92,8 +93,9 @@ class Login extends React.Component {
     // api.loginAndGetUserInfo
     newApi.login(param)
       .then(data => {
-        const { token: authToken, user_info: userInfo } = data
+        const { token: authToken, user_info } = data
         this.props.dispatch(hideLoading())
+        const userInfo = utils.convertUserInfo(user_info)
         this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
         var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
         const isProjectRoute = /project\/\d+/g.exec(redirectUrl)

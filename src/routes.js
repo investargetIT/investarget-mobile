@@ -20,7 +20,7 @@ import Filter from './containers/Filter'
 import { receivePosts } from './actions'
 import api from './api'
 import * as newApi from './api3.0'
-import { getContinentsAndCountries, getIndustries, getTags, getTitles } from './utils'
+import * as utils from './utils'
 import TimelineManagement from './containers/TimelineManagement'
 import Chat from './containers/Chat'
 import UserInfo from './containers/UserInfo'
@@ -52,19 +52,19 @@ const Routes = (props) => {
   props.dispatch(readUserInfoFromLocalStorage())
 
 
-  getContinentsAndCountries().then(continentsAndCountries => {
+  utils.getContinentsAndCountries().then(continentsAndCountries => {
     props.dispatch(receiveContinentsAndCountries(continentsAndCountries))
   })
 
-  getIndustries().then(industries => {
+  utils.getIndustries().then(industries => {
     props.dispatch(receiveIndustries(industries))
   })
 
-  getTags().then(tags => {
+  utils.getTags().then(tags => {
     props.dispatch(receiveTags(tags))
   })
 
-  getTitles().then(titles => {
+  utils.getTitles().then(titles => {
     props.dispatch(receiveTitles(titles))
   })
 
@@ -78,9 +78,11 @@ const Routes = (props) => {
       password: user.password,
       // app: 3
     }
+
     newApi.login(param)
       .then(data => {
-        const { token: authToken, user_info: userInfo } = data
+        const { token: authToken, user_info } = data
+        const userInfo = utils.convertUserInfo(user_info)  
         props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
       })
       .catch(error => console.error(error))
