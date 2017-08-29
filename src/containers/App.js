@@ -50,10 +50,87 @@ class App extends Component {
     this.state = { isLoadingMore: false }
   }
 
+  getProjects = () => {
+
+    const publicAndNotMarketPlace = {
+      projstatus: 4,
+      ismarketplace: false,
+    }
+    function convertIntToArray(start, length) {
+      const array = []
+      for (var i = start; i < (start + length); i++) {
+        array.push(i)
+      }
+      return array
+    }
+    const publicAndMarketPlace = {
+      projstatus: 4,
+      ismarketplace: true,
+    }
+    const closeAndNotMarketPlace = {
+      projstatus: 8,
+      ismarketplace: false,
+    }
+    const closeAndMarketPlace = {
+      projstatus: 8,
+      ismarketplace: true,
+    }
+    const justLoadOneRecord = {
+      page_index: 1,
+      page_size: 1
+    }
+    const count = []
+    let newArray = []
+    newApi.getProj(Object.assign(
+      publicAndNotMarketPlace,
+      filterToObject(this.props.filter),
+      justLoadOneRecord
+    ))
+    .then(data => {
+      count.push(data.count);
+      return newApi.getProj(Object.assign(
+        publicAndMarketPlace,
+        filterToObject(this.props.filter),
+        justLoadOneRecord
+      ));
+    })
+    .then(data => {
+      count.push(data.count);
+      return newApi.getProj(Object.assign(
+        closeAndNotMarketPlace,
+        filterToObject(this.props.filter),
+        justLoadOneRecord
+      ));
+    })
+    .then(data => {
+      count.push(data.count);
+      return newApi.getProj(Object.assign(
+        closeAndMarketPlace,
+        filterToObject(this.props.filter),
+        justLoadOneRecord
+      ));
+    })
+    .then(data => {
+      count.push(data.count);
+      newArray = count.reduce((acc, val) => {
+        var startIndex = 0
+        if (acc.length > 0) {
+          for (var a = acc.length - 1; a >= 0; a--) {
+            var startArr = acc[a]
+            if (startArr.length > 0) {
+              startIndex = startArr[startArr.length - 1]
+              break
+            }
+          }
+        }
+        acc.push(convertIntToArray(startIndex + 1, val))
+        return acc
+      }, [])
+    })
+  }
+
   componentDidMount() {
-
-    newApi.getProj();
-
+    this.getProjects();
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
       api.getProjects(
@@ -296,6 +373,14 @@ function filterToParams(data) {
   }
 
   return params
+}
+
+function filterToObject(data) {
+  const country = data.filter(item => item.type === 'area').map(item => item.id)
+  const industries = data.filter(item => item.type === 'industry').map(item => item.id)
+  const tags = data.filter(item => item.type === 'tag').map(item => item.id)
+  const search = data.filter(item => item.type === 'title').map(item => item.title)[0]
+  return { country, industries, tags, search }
 }
 
 export default connect(mapStateToProps)(App);
