@@ -119,7 +119,7 @@ class Register extends React.Component {
     newApi.sendSmsCode(param)
       .then(data => {
 
-        const { status, smstoken: token, msg } = data.data
+        const { status, smstoken: token, msg } = data
 
         if (status !== 'success') {
           throw new Error(msg)
@@ -149,7 +149,7 @@ class Register extends React.Component {
     // api.checkMobileOrEmailExist
     newApi.checkUserExist(this.state.mobile)
       .then(data => {
-        const exist = data.data.result
+        const exist = data.result
         if (exist) {
           this.setState({userExist: true})
           this.props.history.push(api.baseUrl + '/set_password', {mobile: this.state.mobile})

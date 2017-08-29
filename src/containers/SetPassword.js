@@ -74,7 +74,7 @@ class SetPassword extends React.Component {
         newApi.sendSmsCode(param)
             .then(data => {
 
-                const { status, smstoken: token, msg } = data.data
+                const { status, smstoken: token, msg } = data
                 if (status !== 'success') {
                     throw new Error(msg)
                 }

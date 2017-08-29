@@ -5,7 +5,7 @@ export function getContinentsAndCountries() {
     return newApi.getSource('country')
         .then(data => {
         
-            const rawCountries = data.data.map(item => {
+            const rawCountries = data.map(item => {
                 const { areaCode, bucket, country, id, key, level, parent, url } = item
                 if (level == 1) {
                 return { continentName: country, id }
@@ -31,7 +31,7 @@ export function getIndustries() {
     return newApi.getSource('industry')
         .then(data => {
 
-            const rawIndustries = data.data.map(item => {
+            const rawIndustries = data.map(item => {
                 const { Pindustry, bucket, id, industry, isPindustry, key, url } = item
                 return { bucket, id, imgUrl: url, industryName: industry, key, pIndustryId: Pindustry }
             })
@@ -55,7 +55,7 @@ export function getTags() {
     return newApi.getSource('tag')
         .then(data => {
 
-            const tags = data.data.map(item => {
+            const tags = data.map(item => {
                 const { hotpoint, id, name } = item
                 return { id, tagName: name }
             })
@@ -72,7 +72,7 @@ export function getTitles() {
     return newApi.getSource('title')
         .then(data => {
 
-            const titles = data.data.map(item => {
+            const titles = data.map(item => {
                 const { id, name } = item
                 return { id, titleName: name }
             })
