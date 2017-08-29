@@ -22,7 +22,7 @@ function r(url, method, body) {
     }
   }
 
-  const userStr = localStorage.getItem('user_info')
+  const userStr = localStorage.getItem('userInfo')
   const user = userStr ? JSON.parse(userStr) : null
 
   if (user) {
@@ -59,7 +59,7 @@ function r2(url, method, body) {
     }
   }
 
-  const userStr = localStorage.getItem('user_info')
+  const userStr = localStorage.getItem('userInfo')
   const user = userStr ? JSON.parse(userStr) : null
 
   if (user) {
@@ -254,7 +254,7 @@ export function qiniuUpload(bucket, file) {
     throw new ApiError(1299, 'data source missing')
   }
 
-  const userStr = localStorage.getItem('user_info')
+  const userStr = localStorage.getItem('userInfo')
   const user = userStr ? JSON.parse(userStr) : null
 
   let headers = {

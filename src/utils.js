@@ -188,3 +188,14 @@ export function getTitles() {
             console.error(error)
         })
 }
+
+
+export function getCurrentUserId() {
+    var id
+    var userInfoStr = localStorage.getItem('userInfo')
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr)
+      id = userInfo.id
+    }
+    return id
+}
