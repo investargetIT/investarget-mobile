@@ -81,8 +81,8 @@ const Routes = (props) => {
 
     newApi.login(param)
       .then(data => {
-        const { token: authToken, user_info } = data
-        const userInfo = utils.convertUserInfo(user_info)  
+        const { token: authToken, user_info, permissions } = data
+        const userInfo = utils.convertUserInfo(user_info, permissions)  
         props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
       })
       .catch(error => console.error(error))

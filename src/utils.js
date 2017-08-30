@@ -36,25 +36,38 @@ export function convertOrgArea(item) {
     return { id, areaName: name }
 }
 
-export function convertUserType(groups) {
-    const groupIds = groups.map(item => item.id)
-    if (groupIds.includes(3)) {
-        return 4 // 管理员
-    } else {
-        if (groupIds.includes(1) || groupIds.includes(4)) {
-            return 1 // 投资人
-        } else if (groupIds.includes(2) || groupIds.includes(5)) {
-            return 3 // 交易师
-        } else {
-            // 暂时不管
-        }
-    }
+// export function convertUserType(groups) {
+//     const groupIds = groups.map(item => item.id)
+//     if (groupIds.includes(3)) {
+//         return 4 // 管理员
+//     } else {
+//         if (groupIds.includes(1) || groupIds.includes(4)) {
+//             return 1 // 投资人
+//         } else if (groupIds.includes(2) || groupIds.includes(5)) {
+//             return 3 // 交易师
+//         } else {
+//             // 暂时不管
+//         }
+//     }
+// }
+
+
 }
 
 
 
+export function convertUserInfo(user_info, permissions) {
+    var userType
+    if (permissions.includes('usersys.as_admin')) {
+        userType = 4
+    } else {
+        if (permissions.includes('usersys.as_trader')) {
+            userType = 3
+        } else {
+            userType = 1
+        }
+    }
 
-export function convertUserInfo(user_info) {
     return {
         auditStatus: user_info.userstatus.id,
         cardBucket: user_info.cardBucket,
@@ -97,7 +110,7 @@ export function convertUserInfo(user_info) {
         token: user_info.token,
         userTags: user_info.tags && user_info.tags.map(i => convertTag(i)),
         // 暂时使用用户组转换，后面加上权限后，这里可以删除了
-        userType: user_info.groups && convertUserType(user_info.groups),
+        userType: userType,
         // 好像没用到
         // username: user_info.username,
         weChat: user_info.wechat,

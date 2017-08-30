@@ -93,9 +93,9 @@ class Login extends React.Component {
     // api.loginAndGetUserInfo
     newApi.login(param)
       .then(data => {
-        const { token: authToken, user_info } = data
+        const { token: authToken, user_info, permissions } = data
         this.props.dispatch(hideLoading())
-        const userInfo = utils.convertUserInfo(user_info)
+        const userInfo = utils.convertUserInfo(user_info, permissions)
         this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
         var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
         const isProjectRoute = /project\/\d+/g.exec(redirectUrl)
