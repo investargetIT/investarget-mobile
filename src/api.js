@@ -325,37 +325,37 @@ export default {
       .catch(error => errCb(error))
   },
 
-  loginAndGetUserInfo(param, cb, errCb) {
-    var authToken = ''
-    axios.post(url + 'Account', param)
-    .then(response => {
-      if (response.data.success && response.data.result.access_token) {
-        var id = response.data.result.id
-        authToken = response.data.result.access_token
-        return axios.get(url + 'services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + id, {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        })
-      } else if (response.data.success && !response.data.result.access_token) {
-        throw new ApiError({code: 100, message: response.data.result.msg})
-      } else {
-        // Login failed
-        throw new ApiError({
-          code: 120, 
-          message: response.data.error.message, 
-          details: response.data.error.detail
-        })
-      }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(authToken, response.data.result)
-      } else {
-        // Get current user info failed
-        throw response.data.error
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // loginAndGetUserInfo(param, cb, errCb) {
+  //   var authToken = ''
+  //   axios.post(url + 'Account', param)
+  //   .then(response => {
+  //     if (response.data.success && response.data.result.access_token) {
+  //       var id = response.data.result.id
+  //       authToken = response.data.result.access_token
+  //       return axios.get(url + 'services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + id, {
+  //         headers: { 'Authorization': 'Bearer ' + authToken }
+  //       })
+  //     } else if (response.data.success && !response.data.result.access_token) {
+  //       throw new ApiError({code: 100, message: response.data.result.msg})
+  //     } else {
+  //       // Login failed
+  //       throw new ApiError({
+  //         code: 120, 
+  //         message: response.data.error.message, 
+  //         details: response.data.error.detail
+  //       })
+  //     }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(authToken, response.data.result)
+  //     } else {
+  //       // Get current user info failed
+  //       throw response.data.error
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   getPostsAndEvent(cb, errCb) {
     axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
@@ -397,178 +397,178 @@ export default {
     })
   },
 
-  sendVerificationCode(mobile, cb, errCb) {
-    var time = getCurrentTime();
-    var apiToken = md5(mobile + time);
-    const param = { rec_num: mobile, apiToken: apiToken, timestamp: time }
-    axios.post(url + 'services/InvestargetApi/smsService/SendVerificationCode', param)
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result.token)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // sendVerificationCode(mobile, cb, errCb) {
+  //   var time = getCurrentTime();
+  //   var apiToken = md5(mobile + time);
+  //   const param = { rec_num: mobile, apiToken: apiToken, timestamp: time }
+  //   axios.post(url + 'services/InvestargetApi/smsService/SendVerificationCode', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result.token)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  checkVerificationCode(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/smsService/CheckVerificationCode', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError({
-          code: 110, 
-          message: response.data.error.message
-        })
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // checkVerificationCode(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/smsService/CheckVerificationCode', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError({
+  //         code: 110, 
+  //         message: response.data.error.message
+  //       })
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getContinentsAndCountries(cb, errCb) {
+  // getContinentsAndCountries(cb, errCb) {
 
-    var continents = []
+  //   var continents = []
 
-    axios.get(url + 'services/InvestargetApi/location/GetContinents?input.lang=cn')
-    .then(response => {
+  //   axios.get(url + 'services/InvestargetApi/location/GetContinents?input.lang=cn')
+  //   .then(response => {
 
-      if (response.data.success) {
-        continents = response.data.result
-        const all = continents.map(
-          item => axios.get(url + 'services/InvestargetApi/location/GetCountryies?input.lang=cn&input.continentId=' + item.id)
-        )
-        return Promise.all(all)
-      } else {
-        throw new ApiError(response.data.error)
-      }
+  //     if (response.data.success) {
+  //       continents = response.data.result
+  //       const all = continents.map(
+  //         item => axios.get(url + 'services/InvestargetApi/location/GetCountryies?input.lang=cn&input.continentId=' + item.id)
+  //       )
+  //       return Promise.all(all)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
 
-    })
-    .then(values => {
+  //   })
+  //   .then(values => {
       
-      const countries = values.map(item => {
-        if (item.data.success) {
-          return {
-            continentId: item.data.result[0].continentId,
-            result: item.data.result
-          }
-        } else {
-          throw new ApiError(item.data.error)
-        }
-      })
+  //     const countries = values.map(item => {
+  //       if (item.data.success) {
+  //         return {
+  //           continentId: item.data.result[0].continentId,
+  //           result: item.data.result
+  //         }
+  //       } else {
+  //         throw new ApiError(item.data.error)
+  //       }
+  //     })
 
-      const continentsAndCountries = continents.map(item => {
-        item['countries'] = countries.find(country => country.continentId === item.id).result
-        return item
-      })
+  //     const continentsAndCountries = continents.map(item => {
+  //       item['countries'] = countries.find(country => country.continentId === item.id).result
+  //       return item
+  //     })
 
-      cb(continentsAndCountries)
-    })
-    .catch(error => errCb(error))
-  },
+  //     cb(continentsAndCountries)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getIndustries(cb, errCb) {
+  // getIndustries(cb, errCb) {
 
-    var parentIndustries = []
+  //   var parentIndustries = []
 
-    axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=P&input.lang=cn')
-    .then(response => {
+  //   axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=P&input.lang=cn')
+  //   .then(response => {
 
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
 
-      parentIndustries = response.data.result
-      const all = parentIndustries.map(
-        item => axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=S&input.lang=cn&input.pid=' + item.id)
-      )
+  //     parentIndustries = response.data.result
+  //     const all = parentIndustries.map(
+  //       item => axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=S&input.lang=cn&input.pid=' + item.id)
+  //     )
 
-      return Promise.all(all)
+  //     return Promise.all(all)
 
-    })
-    .then(values => {
+  //   })
+  //   .then(values => {
 
-      const subIndustries = values.map(item => {
-        if (!item.data.success) {
-          throw new ApiError(item.data.error)
-        }
-        return {
-          pIndustryId: item.data.result[0].pIndustryId,
-          result: item.data.result
-        }
-      })
+  //     const subIndustries = values.map(item => {
+  //       if (!item.data.success) {
+  //         throw new ApiError(item.data.error)
+  //       }
+  //       return {
+  //         pIndustryId: item.data.result[0].pIndustryId,
+  //         result: item.data.result
+  //       }
+  //     })
 
-      const industries = parentIndustries.map(item => {
-        item['subIndustries'] = subIndustries.find(
-          subIndustry => subIndustry.pIndustryId === item.id
-        ).result
-        return item
-      })
+  //     const industries = parentIndustries.map(item => {
+  //       item['subIndustries'] = subIndustries.find(
+  //         subIndustry => subIndustry.pIndustryId === item.id
+  //       ).result
+  //       return item
+  //     })
 
-      cb(industries)
+  //     cb(industries)
 
-    })
-    .catch(error => errCb(error))
-  },
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTags(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/tag/GetTags?input.lang=cn')
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getTags(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/tag/GetTags?input.lang=cn')
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTitles(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/title/GetTitles?input.lang=cn')
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getTitles(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/title/GetTitles?input.lang=cn')
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  retrievePassword(param, cb, errCb) {
-    axios.post(url + '/services/InvestargetApi/user/RetrievePassword', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // retrievePassword(param, cb, errCb) {
+  //   axios.post(url + '/services/InvestargetApi/user/RetrievePassword', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  createUser(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/user/CreateUser', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // createUser(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/user/CreateUser', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  checkMobileOrEmailExist(account, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account)
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // checkMobileOrEmailExist(account, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   getSingleOrganization(id, cb, errCb) {
     axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
@@ -722,41 +722,41 @@ export default {
     .catch(error => errCb(error))
   },
 
-  modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
-    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb()
-    })
-    .catch(error => errCb(error))
-  },
+  // modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
+  //   axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb()
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  modifyPassword(old, newP, cb, errCb) {
+  // modifyPassword(old, newP, cb, errCb) {
   
-    const param = {
-      userId: getCurrentUserId(),
-      oldPassword: old,
-      newPassword: newP
-    }
+  //   const param = {
+  //     userId: getCurrentUserId(),
+  //     oldPassword: old,
+  //     newPassword: newP
+  //   }
 
-    axios.post(
-      url + 'services/InvestargetApi/user/ModifyPassword',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError({code: 200})
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  //   axios.post(
+  //     url + 'services/InvestargetApi/user/ModifyPassword',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError({code: 200})
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   changeTimeLine(param, cb, errCb) {
     axios.post(url + 'services/InvestargetApi/projectTimeLine/ChangeTimeLine',
@@ -853,37 +853,37 @@ export default {
     return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
   },
 
-  uploadUserAvatar(formData, cb, errCb, key) {
+  // uploadUserAvatar(formData, cb, errCb, key) {
 
-    var uri
-    if (key) {
-      uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
-    } else {
-      uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
-    }
+  //   var uri
+  //   if (key) {
+  //     uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
+  //   } else {
+  //     uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
+  //   }
 
-    var resKey, resUrl
-    upload(uri, formData)
-      .then(data => {
-	resKey = data.key
-	resUrl = data.url
-	var userInfo = getCurrentUserInfo()
-	const param = Object.assign({}, userInfo, {
-	        orgId: userInfo.org ? userInfo.org.id : null,
-	        orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
-	  titleId: userInfo.title ? userInfo.title.id : null,
-	  photoBucket: 'image',
-	  cardBucket: 'image'
-	      })
+  //   var resKey, resUrl
+  //   upload(uri, formData)
+  //     .then(data => {
+	// resKey = data.key
+	// resUrl = data.url
+	// var userInfo = getCurrentUserInfo()
+	// const param = Object.assign({}, userInfo, {
+	//         orgId: userInfo.org ? userInfo.org.id : null,
+	//         orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
+	//   titleId: userInfo.title ? userInfo.title.id : null,
+	//   photoBucket: 'image',
+	//   cardBucket: 'image'
+	//       })
 
-	param[formData.get('key')] = data.key
-      return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
-    })
-      .then(data => {
-	cb(resKey, resUrl)
-      })
-    .catch(error => errCb(error))
-  },
+	// param[formData.get('key')] = data.key
+  //     return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
+  //   })
+  //     .then(data => {
+	// cb(resKey, resUrl)
+  //     })
+  //   .catch(error => errCb(error))
+  // },
 
   getNotificationDetail(id, cb, errCb) {
     return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
