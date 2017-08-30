@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import ProjectListCell from '../components/ProjectListCell'
@@ -232,19 +234,24 @@ class MyFavoriteProject extends Component {
 
   componentDidMount() {
     this.props.dispatch(requestContents(''))
-    api.getFavoriteProjects(
-      {
-        'input.userId': api.getCurrentUserId(),
-        'input.ftypes': '3',
-        'input.maxResultCount': 10,
-        'input.skipCount': 0,
-      },
-      favoriteProjects => {
-        this.props.dispatch(hideLoading())
-        this.setState({ projects: favoriteProjects })
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+
+    const userId = utils.getCurrentUserId()
+    const param = {
+        page_size: 10,
+        page_index: 1,
+        favoritetype: 3,
+        user: userId,
+    }
+    newApi.getFavoriteProj(param)
+      .then(data => {
+          const projects = data.data.map(item => utils.convertFavoriteProject(item.proj))
+          this.setState({ projects })
+          this.props.dispatch(hideLoading())
+      })
+      .catch(error => {
+          this.props.dispatch(handleError(error))
+      })
+
   }
 
   removeFavoriteProject(id) {

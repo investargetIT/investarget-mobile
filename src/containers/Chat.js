@@ -2,6 +2,8 @@ import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { connect } from 'react-redux'
 import { requestContents, hideLoading, handleError, setRecommendInvestors } from '../actions'
 import { Link } from  'react-router-dom'
@@ -65,10 +67,10 @@ class Chat extends React.Component {
             activeTab: tab,
         })
         var map = {
-            'interest': 4,
-            'favorite': 3,
-            'recommend': 1,
-            'system': 0
+            'interest': 5,
+            'favorite': 4,
+            'recommend': 3,
+            'system': 1
         }
         var ftype = map[tab]
 
@@ -76,27 +78,43 @@ class Chat extends React.Component {
     }
 
     getFavoriteProjects(ftype) {
-        var userId
-        if (this.props.userType === 1) {
-            userId = this.props.userId
-        } else if (this.props.userType === 3) {
-            userId = this.props.match.params.id
-        }
-        var ftypes = [ftype]
+
         this.props.dispatch(requestContents(''))
-        api.getFavoriteProjects(
-            {
-                'input.maxResultCount': 10,
-                'input.skipCount': 0,
-                'input.userId': userId,
-                'input.ftypes': ftypes.join(',')
-            },
-            (projects) => {
-                this.setState({ projects: projects })
+
+        var userType = this.props.userType
+        var userId = this.props.userId
+        var targetUserId = this.props.match.params.id
+        var investorId = userType == 1 ? userId : targetUserId
+        var traderId = userType == 1 ? targetUserId : userId
+
+        var param = {
+            page_size: 10,
+            page_index: 1,
+            favoritetype: ftype
+        }
+        
+        if (ftype == 1) {
+            param['user'] = investorId
+        } else if (ftype == 3) {
+            param['user'] = investorId
+            param['trader'] = traderId
+        } else if (ftype == 4) {
+            param['user'] = investorId
+        } else if (ftype == 5) {
+            param['user'] = investorId
+            param['trader'] = traderId
+        }
+
+        newApi.getFavoriteProj(param)
+            .then(data => {
+                const projects = data.data.map(item => utils.convertFavoriteProject(item.proj))
+                this.setState({ projects })
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+
     }
 
     handleActionButtonClicked() {

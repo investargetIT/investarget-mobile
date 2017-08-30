@@ -52,6 +52,9 @@ export function convertOrgArea(item) {
 // }
 
 
+export function convertProjStatus(item) {
+    const { id, name } = item
+    return { id, statusName: name }
 }
 
 
@@ -117,6 +120,58 @@ export function convertUserInfo(user_info, permissions) {
     }
 }
 
+
+export function convertFavoriteProject(proj) {
+
+    const item = {
+        id: proj.id,
+        titleC: proj.projtitle,
+        financedAmount: proj.financedAmount,
+        country: proj.country && convertCountry(proj.country),
+        industrys: proj.industries ? proj.industries.map(item => convertIndustry(item)) : [],
+    }
+
+    return {
+        'id': item.id,
+        'title': item.titleC,
+        'amount': item.financedAmount,
+        'country': item.country && item.country.countryName,
+        'imgUrl': item.industrys[0] && item.industrys[0].imgUrl,
+        'industrys': item.industrys.map(i => i.industryName),
+    }
+}
+
+
+export function convertListProject(project) {
+    return {
+        basic_Status: convertProjStatus(project.projstatus),
+        // code
+        // companyValuation
+        // companyValuation_USD
+        // companyYear
+        // contactPerson
+        country: project.country && convertCountry(project.country),
+        // creationTime
+        // currencyType
+        // eMail
+        // financeIsPublic
+        financedAmount: project.financedAmount,
+        financedAmount_USD: project.financedAmount_USD,
+        // finances
+        // hasPublicDataRoom
+        id: project.id,
+        industrys: project.industries ? project.industries.map(item => convertIndustry(item)) : [],
+        isMarketPlace: project.ismarketplace,
+        ishidden: project.isHidden,
+        // phoneNumber
+        // realNameC
+        // realNameE
+        tags: project.tags ? project.tags.map(item => convertTag(item)) : [],
+        titleC: project.projtitle,
+        // titleE
+        userId: project.supportUser.id,
+    }
+}
 
 
 export function getContinentsAndCountries() {

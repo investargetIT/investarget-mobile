@@ -791,33 +791,33 @@ export default {
 
   getFavoriteProjectIds,
 
-  getFavoriteProjects(param, cb, errCb) {
-    param = Object.assign({ 'input.lang': 'cn' }, param)
-    getFavoriteProjectIds(param)
-    .then(ids => {
-      const all = ids.map(id => {
-        return new Promise((resolve, reject) => {
-          this.getSingleProject(
-            id,
-            item => {
-              var obj = {}
-              obj['id'] = item.id
-              obj['title'] = item.titleC
-              obj['amount'] = item.financedAmount
-              obj['country'] = item.country.countryName
-              obj['imgUrl'] = item.industrys[0].imgUrl
-              obj['industrys'] = item.industrys.map(i => i.industryName)
-              resolve(obj)
-            },
-            error => reject(error)
-          )
-        })
-      })
-      return Promise.all(all)
-    })
-    .then(projects => cb(projects))
-    .catch(error => errCb(error))
-  },
+  // getFavoriteProjects(param, cb, errCb) {
+  //   param = Object.assign({ 'input.lang': 'cn' }, param)
+  //   getFavoriteProjectIds(param)
+  //   .then(ids => {
+  //     const all = ids.map(id => {
+  //       return new Promise((resolve, reject) => {
+  //         this.getSingleProject(
+  //           id,
+  //           item => {
+  //             var obj = {}
+  //             obj['id'] = item.id
+  //             obj['title'] = item.titleC
+  //             obj['amount'] = item.financedAmount
+  //             obj['country'] = item.country.countryName
+  //             obj['imgUrl'] = item.industrys[0].imgUrl
+  //             obj['industrys'] = item.industrys.map(i => i.industryName)
+  //             resolve(obj)
+  //           },
+  //           error => reject(error)
+  //         )
+  //       })
+  //     })
+  //     return Promise.all(all)
+  //   })
+  //   .then(projects => cb(projects))
+  //   .catch(error => errCb(error))
+  // },
 
   favoriteProject(param, cb, errCb) {
     axios.post(

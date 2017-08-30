@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -102,24 +104,45 @@ class MyPartener extends Component {
 
   componentDidMount() {
 
-    this.props.dispatch(requestContents(''))
-    
-    api.getUsers(
-      data => {
-        this.props.dispatch(hideLoading())
+    const userId = utils.getCurrentUserId()
 
-        const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+    if (this.props.userType == 1 || this.props.userType == 3) {
+
+      let param = this.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      this.props.dispatch(requestContents(''))
+      newApi.getUserRelation(param)
+        .then(data => {
+          const myPartener = data.data.map(item => {
+            const user = this.props.userType == 1 ? item.traderuser : item.investoruser
+            const { id, username, org, photourl } = user
+            return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+          })
+          this.setState({ myPartener })
+          this.props.dispatch(hideLoading())
         })
-        this.setState({myPartener: myPartener})
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+        .catch(error => {
+          this.props.dispatch(handleError(error))
+        })      
+    } 
+
+    
+    
+    // api.getUsers(
+    //   data => {
+    //     this.props.dispatch(hideLoading())
+
+    //     const myPartener = data.items.map(item => {
+    //       var object = {}
+    //       object.id = item.id
+    //       object.name = item.name
+    //       object.org = item.org ? item.org.name : item.company
+    //       object.photoUrl = item.photoUrl
+    //       return object
+    //     })
+    //     this.setState({myPartener: myPartener})
+    //   },
+    //   error => this.props.dispatch(handleError(error))
+    // )
 
     var scroller = document.querySelector("#scroller"),
       arrow = document.querySelector("#arrow"),
@@ -392,7 +415,7 @@ var loadmoreStyle = {
 
 function mapStateToProps(state) {
   const { userInfo, titles } = state
-  return { userInfo, titles }
+  return { userInfo, titles, userType: userInfo.userType }
 }
 
 export default connect(mapStateToProps)(MyPartener)
