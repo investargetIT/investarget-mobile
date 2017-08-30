@@ -3,6 +3,8 @@ import NavigationBar from '../components/NavigationBar'
 import Select from '../components/Select'
 import { connect } from 'react-redux'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
 
 class MyTag extends Component {
@@ -31,15 +33,23 @@ class MyTag extends Component {
     })
 
     this.props.dispatch(requestContents(''))
-    api.modifyUser(
-      param,
-      () => {
+
+
+    const userId = utils.getCurrentUserId()
+
+    newApi.editUser([userId], { tags: items })
+      .then(data => {
         this.props.dispatch(hideLoading())
+        console.log(this.props.tags, items)
+        const userTags = this.props.tags.filter(item => items.includes(item.id))
+        const newUserInfo = { ...this.props.userInfo, userTags }
         this.props.dispatch(modifyUserInfo(newUserInfo))
         this.props.dispatch(handleError(new Error('update success')))
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
+
   }
 
   render() {
