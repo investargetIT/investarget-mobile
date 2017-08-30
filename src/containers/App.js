@@ -50,12 +50,8 @@ class App extends Component {
     this.state = { isLoadingMore: false }
   }
 
-  getProjects = () => {
+  getProjects = callback => {
 
-    const publicAndNotMarketPlace = {
-      projstatus: 4,
-      ismarketplace: false,
-    }
     function convertIntToArray(start, length) {
       const array = []
       for (var i = start; i < (start + length); i++) {
@@ -63,52 +59,81 @@ class App extends Component {
       }
       return array
     }
-    const publicAndMarketPlace = {
-      projstatus: 4,
-      ismarketplace: true,
+    function intersectArray(array1, array2) {
+      const result = []
+      array1.forEach(item => {
+        if (array2.includes(item)) {
+          result.push(item)
+        }
+      })
+      return result
     }
-    const closeAndNotMarketPlace = {
-      projstatus: 8,
-      ismarketplace: false,
-    }
-    const closeAndMarketPlace = {
-      projstatus: 8,
-      ismarketplace: true,
-    }
-    const justLoadOneRecord = {
-      page_index: 1,
-      page_size: 1
-    }
+    const getPublicAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+      Object.assign(
+        filterToObject(this.props.filter),
+        {
+          projstatus: 4,
+          ismarketplace: false,
+          skip_count: skipCount,
+          max_size: maxSize,
+        },
+      )
+    )
+    const getPublicAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+      Object.assign(
+        filterToObject(this.props.filter),
+        {
+          projstatus: 4,
+          ismarketplace: true,
+          skip_count: skipCount,
+          max_size: maxSize,
+        },
+      )
+    )
+    const getClosedAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+      Object.assign(
+        filterToObject(this.props.filter),
+        {
+          projstatus: 8,
+          ismarketplace: false,
+          skip_count: skipCount,
+          max_size: maxSize,
+        },
+      )
+    )
+    const getClosedAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+      Object.assign(
+        filterToObject(this.props.filter),
+        {
+          projstatus: 8,
+          ismarketplace: true,
+          skip_count: skipCount,
+          max_size: maxSize,
+        },
+      )
+    )
+    const getProjectsArray = [
+      getPublicAndNotMarketPlaceProjects,
+      getPublicAndMarketPlaceProjects,
+      getClosedAndNotMarketPlaceProjects,
+      getClosedAndMarketPlaceProjects,
+    ]
+
     const count = []
     let newArray = []
-    newApi.getProj(Object.assign(
-      publicAndNotMarketPlace,
-      filterToObject(this.props.filter),
-      justLoadOneRecord
-    ))
+    window.echo();
+    getPublicAndNotMarketPlaceProjects(0, 1)
     .then(data => {
       count.push(data.count);
-      return newApi.getProj(Object.assign(
-        publicAndMarketPlace,
-        filterToObject(this.props.filter),
-        justLoadOneRecord
-      ));
+      return getPublicAndMarketPlaceProjects(0, 1);
     })
     .then(data => {
       count.push(data.count);
-      return newApi.getProj(Object.assign(
-        closeAndNotMarketPlace,
-        filterToObject(this.props.filter),
-        justLoadOneRecord
-      ));
+      return getClosedAndNotMarketPlaceProjects(0, 1);
     })
     .then(data => {
       count.push(data.count);
-      return newApi.getProj(Object.assign(
-        closeAndMarketPlace,
-        filterToObject(this.props.filter),
-        justLoadOneRecord
-      ));
+      return getClosedAndMarketPlaceProjects(0, 1);
     })
     .then(data => {
       count.push(data.count);
@@ -126,21 +151,39 @@ class App extends Component {
         acc.push(convertIntToArray(startIndex + 1, val))
         return acc
       }, [])
+      const intersect = newArray.map(item => intersectArray(item, convertIntToArray(1, 10)))
+      const requestArr = []
+      intersect.forEach((item, index) => {
+        if (item.length > 0) {
+          requestArr.push(getProjectsArray[index](item[0] - newArray[index][0], item.length))
+        }
+      })
+      return Promise.all(requestArr)
     })
+    .then(result => {
+      const projects = result.map(item => item.data).reduce((acc, val) => acc.concat(val), []).map(item => {
+        var obj = {}
+        obj['id'] = item.id
+        obj['title'] = item.projtitle
+        obj['amount'] = item.financeAmount_USD
+        obj['country'] = item.country.country
+        obj['imgUrl'] = item.industries[0].url
+        obj['industrys'] = item.industries.map(i => i.name)
+        obj['isMarketPlace'] = item.ismarketplace
+        return obj
+      })
+      callback(projects, newArray);
+    })
+    .catch(error => this.props.dispatch(handleError(error)))
   }
 
   componentDidMount() {
-    this.getProjects();
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
-      api.getProjects(
-        filterToParams(this.props.filter),
-        (projects, dataStructure) => {
-          this.props.dispatch(updateProjectStructure(dataStructure))
-          this.props.dispatch(receiveContents('', projects))
-        },
-        error => this.props.dispatch(handleError(error))
-      )
+      this.getProjects((projects, dataStructure) => {
+        this.props.dispatch(updateProjectStructure(dataStructure))
+        this.props.dispatch(receiveContents('', projects))
+      })
     }
 
     var scroller = document.querySelector("#scroller"),
@@ -246,17 +289,13 @@ class App extends Component {
 
       pull_refresh.classList.add("refreshing");
 
-      api.getProjects(
-        filterToParams(react.props.filter),
-        (projects, dataStructure) => {
-          arrow.classList.remove("arrow_up");
-          pull_refresh.classList.remove("refreshing");
-          at.to(at.initialValue);
-          react.props.dispatch(updateProjectStructure(dataStructure))
-          react.props.dispatch(receiveContents('', projects))
-        },
-        error => react.props.dispatch(handleError(error))
-      )
+      react.getProjects((projects, dataStructure) => {
+        arrow.classList.remove("arrow_up");
+        pull_refresh.classList.remove("refreshing");
+        at.to(at.initialValue);
+        react.props.dispatch(updateProjectStructure(dataStructure))
+        react.props.dispatch(receiveContents('', projects))
+      })
     }
 
     document.ontouchmove = function (evt) {

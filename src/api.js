@@ -238,63 +238,63 @@ export default {
   getCurrentUserType,
   getCurrentUserInfo,
   
-  getProjects(params, cb, errCb, skipCount = 0) {
-    const count = []
-    let newArray = []
-    getPublicAndNotMarketPlaceProjects(params, 0, 1)
-      .then(result => {
-        count.push(result.totalCount)
-        return getPublicAndMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        return getClosedAndNotMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        return getClosedAndMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        newArray = count.reduce((acc, val) => {
-          var startIndex = 0
-          if (acc.length > 0) {
-            for (var a = acc.length -1; a >=0; a--) {
-              var startArr = acc[a]
-              if (startArr.length > 0) {
-                startIndex = startArr[startArr.length -1]
-                break
-              }
-            }
-          }
-          acc.push(convertIntToArray(startIndex+1, val))
-          return acc
-        }, [])
-        const intersect = newArray.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
-        const requestArr = []
-        intersect.forEach((item, index) => {
-          if(item.length > 0) {
-            requestArr.push(getProjectsArray[index](params, item[0]-newArray[index][0], item.length))
-          }
-        })
-        return Promise.all(requestArr)
-      })
-      .then(result => {
-        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
-          var obj = {}
-          obj['id'] = item.id
-          obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount_USD
-          obj['country'] = item.country.countryName
-          obj['imgUrl'] = item.industrys[0].imgUrl
-          obj['industrys'] = item.industrys.map(i => i.industryName)
-          obj['isMarketPlace'] = item.isMarketPlace
-          return obj
-        })
-        cb(projects, newArray)
-      })
-      .catch(error => errCb(error))
-  },
+  // getProjects(params, cb, errCb, skipCount = 0) {
+  //   const count = []
+  //   let newArray = []
+  //   getPublicAndNotMarketPlaceProjects(params, 0, 1)
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getPublicAndMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getClosedAndNotMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getClosedAndMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       newArray = count.reduce((acc, val) => {
+  //         var startIndex = 0
+  //         if (acc.length > 0) {
+  //           for (var a = acc.length -1; a >=0; a--) {
+  //             var startArr = acc[a]
+  //             if (startArr.length > 0) {
+  //               startIndex = startArr[startArr.length -1]
+  //               break
+  //             }
+  //           }
+  //         }
+  //         acc.push(convertIntToArray(startIndex+1, val))
+  //         return acc
+  //       }, [])
+  //       const intersect = newArray.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+  //       const requestArr = []
+  //       intersect.forEach((item, index) => {
+  //         if(item.length > 0) {
+  //           requestArr.push(getProjectsArray[index](params, item[0]-newArray[index][0], item.length))
+  //         }
+  //       })
+  //       return Promise.all(requestArr)
+  //     })
+  //     .then(result => {
+  //       const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+  //         var obj = {}
+  //         obj['id'] = item.id
+  //         obj['title'] = item.titleC
+  //         obj['amount'] = item.financedAmount_USD
+  //         obj['country'] = item.country.countryName
+  //         obj['imgUrl'] = item.industrys[0].imgUrl
+  //         obj['industrys'] = item.industrys.map(i => i.industryName)
+  //         obj['isMarketPlace'] = item.isMarketPlace
+  //         return obj
+  //       })
+  //       cb(projects, newArray)
+  //     })
+  //     .catch(error => errCb(error))
+  // },
 
   getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
     const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
