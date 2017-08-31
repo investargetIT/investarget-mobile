@@ -109,6 +109,8 @@ class MyPartener extends Component {
     if (this.props.userType == 1 || this.props.userType == 3) {
 
       let param = this.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = 15
+      param.page_index = 1
       this.props.dispatch(requestContents(''))
       newApi.getUserRelation(param)
         .then(data => {
@@ -124,25 +126,6 @@ class MyPartener extends Component {
           this.props.dispatch(handleError(error))
         })      
     } 
-
-    
-    
-    // api.getUsers(
-    //   data => {
-    //     this.props.dispatch(hideLoading())
-
-    //     const myPartener = data.items.map(item => {
-    //       var object = {}
-    //       object.id = item.id
-    //       object.name = item.name
-    //       object.org = item.org ? item.org.name : item.company
-    //       object.photoUrl = item.photoUrl
-    //       return object
-    //     })
-    //     this.setState({myPartener: myPartener})
-    //   },
-    //   error => this.props.dispatch(handleError(error))
-    // )
 
     var scroller = document.querySelector("#scroller"),
       arrow = document.querySelector("#arrow"),
@@ -200,62 +183,55 @@ class MyPartener extends Component {
 
     function loadMore() {
       react.setState({ isLoadingMore: true })
-      api.getUsers(
-        data => {
 
-          resetMin()
-          if (data.items.length > 0) {
-
-                    const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+      let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = react.state.myPartener.length
+      param.page_index = 1
+      newApi.getUserRelation(param)
+      .then(data => {
+        resetMin()
+        if (data.data.length > 0) {
+        const myPartener = data.data.map(item => {
+          const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+          const { id, username, org, photourl } = user
+          return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
         })
         const partner = react.state.myPartener.concat(myPartener)
-        react.setState({myPartener: partner})
-
-          } else {
-            alloyTouch.to(alloyTouch.min + 50, 0)
-          }
-                    loading = false
+        react.setState({ myPartener: partner })
+        } else {
+          alloyTouch.to(alloyTouch.min + 50, 0)
+        }
+        loading = false
           react.setState({ isLoadingMore: false })
-        },
-        error => {
-          loading = false
-          resetMin()
-          alloyTouch.to(alloyTouch.min + 50)
-          react.props.dispatch(handleError(error))
-        },
-        react.state.myPartener.length
-      )
+      })
+    
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
 
     }
 
     function mockRequest(at) {
 
       pull_refresh.classList.add("refreshing");
-
-      api.getUsers(
-        data => {
-          arrow.classList.remove("arrow_up")
-          pull_refresh.classList.remove("refreshing")
-          at.to(at.initialValue)
-
-        const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+      let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = 15
+      param.page_index = 1
+      newApi.getUserRelation(param)
+      .then(data => {
+        arrow.classList.remove("arrow_up")
+        pull_refresh.classList.remove("refreshing")
+        at.to(at.initialValue)
+        const myPartener = data.data.map(item => {
+          const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+          const { id, username, org, photourl } = user
+          return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
         })
-        react.setState({myPartener: myPartener})
-        },
-        error => react.props.dispatch(handleError(error))
-      )
+        react.setState({ myPartener })
+      })
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
     }
 
     document.ontouchmove = function (evt) {
