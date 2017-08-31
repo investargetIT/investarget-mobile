@@ -91,6 +91,9 @@ function ProjectListCell(props) {
 }
 
 function sliceStringIfTooLong(str, maxLength) {
+  if (str == null) {
+    return ''
+  }
   if (str.length <= maxLength) {
     return str
   } else {

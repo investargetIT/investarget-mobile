@@ -1,6 +1,8 @@
 import React from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading, setRecommendInvestors, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import Modal from '../components/Modal'
@@ -124,39 +126,33 @@ class SelectUser extends React.Component {
     }
 
     recommend() {
-        var all = []
+        // 顺序执行，一个请求返回之后，再发另一个请求
         this.props.dispatch(requestContents(''))
 
+        var sequence = Promise.resolve()
         this.props.selectedUsers.forEach(userId => {
-            this.props.selectedProjects.forEach(projectId => {
-                all.push(new Promise((resolve, reject) => {
-                    var param = {}
-                    if (this.props.userType == 3) { // 交易师
-                        param = {
-                            userId: userId,
-                            projectId: projectId,
-                            fType: 1,
-                            transactionId: this.props.userId
-                        }
-                    } else if (this.props.userType == 1) { // 投资人
-                        param = {
-                            userId: this.props.userId,
-                            projectId: projectId,
-                            fType: 4,
-                            transactionId: userId
-                        }
+            sequence = sequence.then(() => {
+                var param = {}
+                if (this.props.userType == 3) { // 交易师
+                    param = {
+                        user: userId,
+                        projs: this.props.selectedProjects,
+                        favoritetype: 3,
+                        trader: this.props.userId
                     }
-
-                    api.favoriteProject(
-                        param,
-                        () => resolve(),
-                        error => reject(error)
-                    )
-                }))
+                } else if (this.props.userType == 1) { // 投资人
+                    param = {
+                        user: this.props.userId,
+                        projs: this.props.selectedProjects,
+                        favoritetype: 5,
+                        trader: userId
+                    }
+                }
+                return newApi.projFavorite(param)     
             })
         })
 
-        Promise.all(all)
+        sequence
         .then(
             items => {
                 this.props.dispatch(hideLoading())
@@ -172,6 +168,7 @@ class SelectUser extends React.Component {
                 this.props.dispatch(clearRecommend())
             }
         )
+    
     }
 
     handleRecommendSuccess() {
@@ -181,25 +178,27 @@ class SelectUser extends React.Component {
 
 
     componentDidMount() {
-        this.props.dispatch(requestContents(''))
+        const userId = utils.getCurrentUserId()
+        
+        if (this.props.userType == 1 || this.props.userType == 3) {
     
-        api.getUsers(
-            data => {
-                this.props.dispatch(hideLoading())
-
-                const myUsers = data.items.map(item => {
-                    var object = {}
-                    object.id = item.id
-                    object.name = item.name
-                    object.org = (item.org && item.org.name) || item.company
-                    object.photoUrl = item.photoUrl
-                    object.title = item.title.titleName
-                    return object
+            let param = this.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+            this.props.dispatch(requestContents(''))
+            
+            newApi.getUserRelation(param)
+                .then(data => {
+                    const myUsers = data.data.map(item => {
+                        const user = this.props.userType == 1 ? item.traderuser : item.investoruser
+                        const { id, username, org, photourl } = user
+                        return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+                    })
+                    this.setState({ myUsers })
+                    this.props.dispatch(hideLoading())
                 })
-                this.setState({myUsers: myUsers})
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+                .catch(error => {
+                    this.props.dispatch(handleError(error))
+                })      
+        }
     }
 
     render() {

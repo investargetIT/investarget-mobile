@@ -773,21 +773,21 @@ export default {
     .catch(error => errCb(error))
   },
 
-  projectCancelFavorite(param, cb, errCb) {
-    axios.post(
-      url + 'services/InvestargetApi/project/ProjectCancelFavorite',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      } else {
-        cb()
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // projectCancelFavorite(param, cb, errCb) {
+  //   axios.post(
+  //     url + 'services/InvestargetApi/project/ProjectCancelFavorite',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     } else {
+  //       cb()
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   // getFavoriteProjectIds,
 
@@ -819,21 +819,21 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  favoriteProject(param, cb, errCb) {
-    axios.post(
-      url + 'services/InvestargetApi/project/ProjectFavorite',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      } else {
-        cb()
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // favoriteProject(param, cb, errCb) {
+  //   axios.post(
+  //     url + 'services/InvestargetApi/project/ProjectFavorite',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     } else {
+  //       cb()
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   getLinesBasic(projectId, cb, errCb) {
     axios.get(url + 'services/InvestargetApi/projectTimeLine/GetLinesBasic?input.lang=cn&input.maxResultCount=100&input.skipCount=0&input.projectId=' + projectId, {

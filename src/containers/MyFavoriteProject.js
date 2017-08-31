@@ -184,43 +184,38 @@ class MyFavoriteProject extends Component {
     var userId = api.getCurrentUserId()
     var investorIds = this.props.recommendProcess.investorIds
     var projectIds  = this.props.recommendProcess.projectIds
-    var all = []
 
     this.props.dispatch(requestContents(''))
+
+    var sequence = Promise.resolve()
     investorIds.forEach(investorId => {
-        projectIds.forEach(projectId => {
-            all.push(new Promise((resolve, reject) => {
-                var param = {
-                    userId: investorId,
-                    projectId: projectId,
-                    fType: 1,
-                    transactionId: userId,
-                }
-                api.favoriteProject(
-                    param,
-                    () => resolve(),
-                    error => reject(error)
-                )
-            }))
-        })
+      sequence = sequence.then(() => {
+        var param = {
+          user: investorId,
+          projs: projectIds,
+          favoritetype: 3,
+          trader: userId,
+        }
+        return newApi.projFavorite(param)
+      })
     })
 
-    Promise.all(all)
-    .then(
+    sequence
+      .then(
         items => {
-            this.props.dispatch(hideLoading())
-            this.props.dispatch(clearRecommend())
-            this.setState({
-                showModal: true
-            })
+          this.props.dispatch(hideLoading())
+          this.props.dispatch(clearRecommend())
+          this.setState({
+              showModal: true
+          })
         }
-    )
-    .catch(
+      )
+      .catch(
         error => {
-            this.props.dispatch(handleError(error))
-            this.props.dispatch(clearRecommend())
+          this.props.dispatch(handleError(error))
+          this.props.dispatch(clearRecommend())
         }
-    )
+      )
   }
 
   handleRecommendSuccess() {
@@ -239,12 +234,16 @@ class MyFavoriteProject extends Component {
     const param = {
         page_size: 10,
         page_index: 1,
-        favoritetype: 3,
+        favoritetype: 4,
         user: userId,
     }
     newApi.getFavoriteProj(param)
       .then(data => {
-          const projects = data.data.map(item => utils.convertFavoriteProject(item.proj))
+          const projects = data.data.map(item => {
+            var proj = utils.convertFavoriteProject(item.proj)
+            proj['favorId'] = item.id
+            return proj
+          })
           this.setState({ projects })
           this.props.dispatch(hideLoading())
       })
@@ -255,15 +254,21 @@ class MyFavoriteProject extends Component {
   }
 
   removeFavoriteProject(id) {
-    this.setState({
-      projects: this.state.projects.filter(item => item.id !== id)
-    })
-    var param = {
-      fType: 3,
-      projectId: id,
-      userId: this.props.userInfo.id,
+    this.props.dispatch(requestContents(''))
+    const project = this.state.projects.filter(item => item.id == id)[0]
+    const param = {
+      favoriteids: [project.favorId]
     }
-    api.projectCancelFavorite(param)
+    newApi.projCancelFavorite(param)
+      .then(data => {
+        this.setState({
+          projects: this.state.projects.filter(item => item.id !== id)
+        })
+        this.props.dispatch(hideLoading())
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
   }
 
   render() {

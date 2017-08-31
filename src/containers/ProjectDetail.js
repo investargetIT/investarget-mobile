@@ -205,28 +205,23 @@ class ProjectDetail extends React.Component {
         var userId = api.getCurrentUserId()
         var investorIds = this.props.recommendProcess.investorIds
         var projectIds  = this.props.recommendProcess.projectIds
-        var all = []
+
+        var sequence = Promise.resolve()
 
         this.props.dispatch(requestContents(''))
         investorIds.forEach(investorId => {
-            projectIds.forEach(projectId => {
-                all.push(new Promise((resolve, reject) => {
-                    var param = {
-                        userId: investorId,
-                        projectId: projectId,
-                        fType: 1,
-                        transactionId: userId,
-                    }
-                    api.favoriteProject(
-                        param,
-                        () => resolve(),
-                        error => reject(error)
-                    )
-                }))
-            })
+            sequence = sequence.then(() => {
+                var param = {
+                    user: investorId,
+                    projs: projectIds,
+                    favoritetype: 3,
+                    trader: userId,
+                }
+                return newApi.projFavorite(param)
+            }) 
         })
 
-        Promise.all(all)
+        sequence
         .then(
             items => {
                 this.props.dispatch(hideLoading())
