@@ -82,29 +82,29 @@ function getCurrentTime() {
  * 主动收藏 = 3,
  * 有兴趣 = 4
  */
-function getFavoriteProjectIds(param, cb, errCb) {
-  return new Promise((resolve, reject) => {
-    axios.get(
-      url + 'services/InvestargetApi/project/GetFavoriteProjects',
-      { 
-        params: Object.assign({ 'input.lang': 'cn' }, param),
-        headers: { 'Authorization': 'Bearer ' + getToken() }
-      }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      const idArr = response.data.result.items.map(item => item.projectId)
-      if (cb) cb(idArr)
-      resolve(idArr)
-    })
-    .catch(error => {
-      if (errCb) errCb(error)
-      reject(error)
-    })
-  })
-}
+// function getFavoriteProjectIds(param, cb, errCb) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(
+//       url + 'services/InvestargetApi/project/GetFavoriteProjects',
+//       { 
+//         params: Object.assign({ 'input.lang': 'cn' }, param),
+//         headers: { 'Authorization': 'Bearer ' + getToken() }
+//       }
+//     )
+//     .then(response => {
+//       if (!response.data.success) {
+//         throw new ApiError(response.data.error)
+//       }
+//       const idArr = response.data.result.items.map(item => item.projectId)
+//       if (cb) cb(idArr)
+//       resolve(idArr)
+//     })
+//     .catch(error => {
+//       if (errCb) errCb(error)
+//       reject(error)
+//     })
+//   })
+// }
 
 function simplyGet(uri, cb, errCb) {
   return new Promise((resolve, reject) => {
@@ -789,7 +789,7 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getFavoriteProjectIds,
+  // getFavoriteProjectIds,
 
   // getFavoriteProjects(param, cb, errCb) {
   //   param = Object.assign({ 'input.lang': 'cn' }, param)

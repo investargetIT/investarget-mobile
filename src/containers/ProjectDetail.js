@@ -183,6 +183,7 @@ class ProjectDetail extends React.Component {
         this.state = { 
             "result": null,
             "isMyFavoriteProject": false,
+            "favorId": null,
             "showModal": false,
             "modalTitle": "",
             "modalContent": "",
@@ -190,6 +191,8 @@ class ProjectDetail extends React.Component {
             "showGuide": false,
         }
 
+        this.favorProject = this.favorProject.bind(this)
+        this.unfavorProject = this.unfavorProject.bind(this)
         this.handleFavoriteButtonToggle = this.handleFavoriteButtonToggle.bind(this)
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
@@ -278,54 +281,83 @@ class ProjectDetail extends React.Component {
 
       // 是否收藏了项目
       if (this.props.isLogin) {
-          // 该接口还没有替换，注释以阻止报错
-        // api.getFavoriteProjectIds(
-        //     {
-        //         'input.projectId': projectId,
-        //         'input.userId': api.getCurrentUserId(),
-        //         'input.ftypes': '3'
-        //     },
-        //     projectIds => {
-        //         this.setState({
-        //             isMyFavoriteProject: (projectIds.length == 1)
-        //         })
-        //     },
-        //     error => this.props.dispatch(handleError(error))
-        // )
+        const userId = utils.getCurrentUserId()
+        const param = {
+            favoritetype: 4,
+            user: userId,
+            proj: projectId,
+        }
+        newApi.getFavoriteProj(param)
+            .then(data => {
+                const favorData = data.data
+                const isFavorite = favorData.length == 1
+                const favorId = favorData[0] && favorData[0].id
+                this.setState({
+                    isMyFavoriteProject: isFavorite,
+                    favorId,
+                })
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))  
+            })
       } else {
           this.setState({ showGuide: true })
       }
       
     }
 
-    handleFavoriteButtonToggle() {
-      var projectId = this.props.match.params.id
-      var param = {
-          userId: api.getCurrentUserId(),
-          projectId: projectId,
-          fType: 3
-      }
 
-      this.state.isMyFavoriteProject ?
-        api.projectCancelFavorite(param, ()=>{
-            this.props.dispatch(showToast('取消收藏成功'))
-            setTimeout(() => {
-                this.props.dispatch(hideToast())
-            }, 2000)
-        }, error=>{}) :
-        api.favoriteProject(param, ()=>{}, error=>{})
+    favorProject(projectId) {
+        const userId = utils.getCurrentUserId()
+        const param = {
+            favoritetype: 4,
+            user: userId,
+            projs: [projectId]
+        }
+        newApi.projFavorite(param)
+            .then(data => {
+                const favorId = data[0].id
+
+                this.setState({
+                    isMyFavoriteProject: true,
+                    favorId: favorId,
+                    showModal: true,
+                    modalTitle: '通知',
+                    modalContent: '收藏成功',
+                    modalActions: [{name: '确定', handler: this.hideModal}]
+                })
+            })
+            .catch(error => {
+                //
+            })
+    }
+
+    unfavorProject(id) {
+        const param = { favoriteids: [id] }
+        newApi.projCancelFavorite(param)
+            .then(data => {
+                this.setState({
+                    isMyFavoriteProject: false,
+                    favorId: null,
+                })
+                this.props.dispatch(showToast('取消收藏成功'))
+                setTimeout(() => {
+                    this.props.dispatch(hideToast())
+                }, 2000)
+            })
+            .catch(error =>  {
+                //
+            })
+    }
+
+    handleFavoriteButtonToggle() {
+        var projectId = this.props.match.params.id
         
-      this.setState({
-        isMyFavoriteProject: !this.state.isMyFavoriteProject
-      })
-      if (!this.state.isMyFavoriteProject) {
-          this.setState({
-              showModal: true,
-              modalTitle: '通知',
-              modalContent: '收藏成功',
-              modalActions: [{name: '确定', handler: this.hideModal}]
-          })
-      }
+        if (this.state.isMyFavoriteProject) {
+            this.unfavorProject(this.state.favorId)
+        } else {
+            this.favorProject(projectId)
+        }
     }
 
     hideModal() {
