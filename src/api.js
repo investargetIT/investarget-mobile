@@ -296,34 +296,34 @@ export default {
   //     .catch(error => errCb(error))
   // },
 
-  getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
-    const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
-    const requestArr = []
-    intersect.forEach((item, index) => {
-      if(item.length > 0) {
-        requestArr.push(getProjectsArray[index](params, item[0] - dataStructure[index][0], item.length))
-      }
-    })
-    if (requestArr.length === 0) {
-      requestArr.push(getClosedAndMarketPlaceProjects(params, 10000, 10))
-    }
-    Promise.all(requestArr)
-      .then(result => {
-        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
-          var obj = {}
-          obj['id'] = item.id
-          obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount_USD
-          obj['country'] = item.country.countryName
-          obj['imgUrl'] = item.industrys[0].imgUrl
-          obj['industrys'] = item.industrys.map(i => i.industryName)
-          obj['isMarketPlace'] = item.isMarketPlace
-          return obj
-        })
-        cb(projects)
-      })
-      .catch(error => errCb(error))
-  },
+  // getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
+  //   const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+  //   const requestArr = []
+  //   intersect.forEach((item, index) => {
+  //     if(item.length > 0) {
+  //       requestArr.push(getProjectsArray[index](params, item[0] - dataStructure[index][0], item.length))
+  //     }
+  //   })
+  //   if (requestArr.length === 0) {
+  //     requestArr.push(getClosedAndMarketPlaceProjects(params, 10000, 10))
+  //   }
+  //   Promise.all(requestArr)
+  //     .then(result => {
+  //       const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+  //         var obj = {}
+  //         obj['id'] = item.id
+  //         obj['title'] = item.titleC
+  //         obj['amount'] = item.financedAmount_USD
+  //         obj['country'] = item.country.countryName
+  //         obj['imgUrl'] = item.industrys[0].imgUrl
+  //         obj['industrys'] = item.industrys.map(i => i.industryName)
+  //         obj['isMarketPlace'] = item.isMarketPlace
+  //         return obj
+  //       })
+  //       cb(projects)
+  //     })
+  //     .catch(error => errCb(error))
+  // },
 
   // loginAndGetUserInfo(param, cb, errCb) {
   //   var authToken = ''
