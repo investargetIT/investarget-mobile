@@ -584,35 +584,35 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getAllTimeLines(param, cb, errCb) {
-    var userId = getCurrentUserId()
-    var userType = getCurrentUserType()
-    param = Object.assign({
-      'input.lang': 'cn',
-      'input.isClose': false,
-      'input.maxResultCount': 10,
-      'input.skipCount': 0,
-    }, param)
-    if (userType == 1) {
-      param['input.investorId'] = userId
-    } else if (userType == 2) {
-      param['input.supplierId'] = userId
-    } else if (userType == 3) {
-      param['input.transactionId'] = userId
-    }
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
-      params: param,
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getAllTimeLines(param, cb, errCb) {
+  //   var userId = getCurrentUserId()
+  //   var userType = getCurrentUserType()
+  //   param = Object.assign({
+  //     'input.lang': 'cn',
+  //     'input.isClose': false,
+  //     'input.maxResultCount': 10,
+  //     'input.skipCount': 0,
+  //   }, param)
+  //   if (userType == 1) {
+  //     param['input.investorId'] = userId
+  //   } else if (userType == 2) {
+  //     param['input.supplierId'] = userId
+  //   } else if (userType == 3) {
+  //     param['input.transactionId'] = userId
+  //   }
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
+  //     params: param,
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   getUserBasic(id, cb, errCb) {
     axios.get(url + 'services/InvestargetApi/user/GetUserBasic', {

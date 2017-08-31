@@ -267,6 +267,31 @@ export function convertDetailProject(proj) {
 }
 
 
+export function convertListTimeline(item) {
+    return {
+        alertCycle: item.transationStatu.alertCycle,
+        closeDate: item.closeDate,
+        investorId: item.investor.id,
+        investorName: item.investor.username,
+        investorOrg: item.org.orgname,
+        investorOrgId: item.org.id,
+        isClose: item.isClose,
+        nextAlertTime: item.transationStatu.inDate,
+        projectId: item.proj.id,
+        projectName: item.proj.projtitle,
+        remainingAlertDays: item.transationStatu.remainingAlertDay,
+        remark: item.remark.remark, // 额外请求
+        supplierId: item.supportor.id,
+        supplierName: item.supportor.username,
+        timeLineId: item.id,
+        transactionId: item.trader.id,
+        transactionName: item.trader.username,
+        transactionStatusId: item.transationStatu.transationStatus.id,
+        transactionStatusName: item.transationStatu.transationStatus.name,
+    }
+}
+
+
 export function getContinentsAndCountries() {
     return newApi.getSource('country')
         .then(data => {
