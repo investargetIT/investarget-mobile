@@ -377,25 +377,25 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getSingleProject(id, cb, errCb, token) {
-    return new Promise((resolve, reject) => {
-      axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
-        headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
-      })
-      .then(response => {
-        if (response.data.success) {
-          if (cb) cb(response.data.result)
-          resolve(response.data.result)
-        } else {
-          throw new ApiError(response.data.error)
-        }
-      })
-      .catch(error => {
-        if (errCb) errCb(error)
-        reject(error)
-      })
-    })
-  },
+  // getSingleProject(id, cb, errCb, token) {
+  //   return new Promise((resolve, reject) => {
+  //     axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
+  //       headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
+  //     })
+  //     .then(response => {
+  //       if (response.data.success) {
+  //         if (cb) cb(response.data.result)
+  //         resolve(response.data.result)
+  //       } else {
+  //         throw new ApiError(response.data.error)
+  //       }
+  //     })
+  //     .catch(error => {
+  //       if (errCb) errCb(error)
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
   // sendVerificationCode(mobile, cb, errCb) {
   //   var time = getCurrentTime();

@@ -57,6 +57,20 @@ export function convertProjStatus(item) {
     return { id, statusName: name }
 }
 
+export function convertProjIndustry(item) {
+    const { bucket, industry, key, name, url } = item
+    return { bucket, id: industry, imgUrl: url, industryName: name, key }
+}
+
+export function convertProjCharacter(item) {
+    const { character, id } = item
+    return { id, characterC: character }
+}
+
+export function converCurrency(item) {
+    const { currency, id } = item
+    return { id, currencyName: currency }
+}
 
 
 export function convertUserInfo(user_info, permissions) {
@@ -126,7 +140,7 @@ export function convertFavoriteProject(proj) {
     const item = {
         id: proj.id,
         titleC: proj.projtitle,
-        financedAmount: proj.financedAmount,
+        financedAmount: proj.financeAmount, // fix spell error
         country: proj.country && convertCountry(proj.country),
         industrys: proj.industries ? proj.industries.map(item => convertIndustry(item)) : [],
     }
@@ -142,34 +156,113 @@ export function convertFavoriteProject(proj) {
 }
 
 
-export function convertListProject(project) {
+// export function convertListProject(project) {
+//     return {
+//         basic_Status: convertProjStatus(project.projstatus),
+//         // code
+//         // companyValuation
+//         // companyValuation_USD
+//         // companyYear
+//         // contactPerson
+//         country: project.country && convertCountry(project.country),
+//         // creationTime
+//         // currencyType
+//         // eMail
+//         // financeIsPublic
+//         financedAmount: project.financedAmount,
+//         financedAmount_USD: project.financedAmount_USD,
+//         // finances
+//         // hasPublicDataRoom
+//         id: project.id,
+//         industrys: project.industries ? project.industries.map(item => convertIndustry(item)) : [],
+//         isMarketPlace: project.ismarketplace,
+//         ishidden: project.isHidden,
+//         // phoneNumber
+//         // realNameC
+//         // realNameE
+//         tags: project.tags ? project.tags.map(item => convertTag(item)) : [],
+//         titleC: project.projtitle,
+//         // titleE
+//         userId: project.supportUser.id,
+//     }
+// }
+
+export function convertProjFinance(item) {
     return {
-        basic_Status: convertProjStatus(project.projstatus),
+        ebitda: item.EBITDA,
+        fYear: item.fYear,
+        grossMerchandiseValue: item.grossMerchandiseValue,
+        grossProfit: item.grossProfit,
+        netIncome: item.netIncome,
+        netIncome_USD: item.netIncome_USD,
+        operationalCashFlow: item.operationalCashFlow,
+        revenue: item.revenue,
+        revenue_USD: item.revenue_USD,
+        shareholdersequity: item.stockholdersEquity,
+        totalAsset: item.totalAsset,
+    }
+}
+
+export function convertProjAttachment(item) {
+    return {
+        bucket: item.bucket,
+        fileName: item.filename,
+        fileType: item.filetype,
+        key: item.key,
+    }
+}
+
+export function convertProjFormat(proj) {
+    return {
+        brandSalesChannelC: proj.brandChannel,
+        businessModelC: proj.businessModel,
+        financingRecordE: proj.financingHistory,
+        managementC: proj.managementTeam,
+        operatingFiguresC: proj.operationalData,
+        partnersC: proj.Businesspartners,
+        productTechnologyC: proj.productTechnology,
+        targetMarketC: proj.targetMarket,
+        useofProceedC: proj.useOfProceed,
+    }
+}
+
+
+export function convertDetailProject(proj) {
+    return {
+        b_introducteC: proj.p_introducte,
+        // b_introducteE
+        basic_Status: convertProjStatus(proj.projstatus),
+        c_DescriptionC: proj.c_description,
+        // c_DescriptionE
+        character: convertProjCharacter(proj.character),
         // code
-        // companyValuation
-        // companyValuation_USD
-        // companyYear
-        // contactPerson
-        country: project.country && convertCountry(project.country),
-        // creationTime
-        // currencyType
-        // eMail
-        // financeIsPublic
-        financedAmount: project.financedAmount,
-        financedAmount_USD: project.financedAmount_USD,
-        // finances
+        companyValuation: proj.companyValuation,
+        companyValuation_USD: proj.companyValuation_USD,
+        companyYear: proj.companyYear,
+        contactPerson: proj.contactPerson,
+        country: convertCountry(proj.country),
+        creationTime: proj.createdtime,
+        currencyType: converCurrency(proj.currency),
+        eMail: proj.email,
+        financeIsPublic: proj.financeIsPublic,
+        financedAmount: proj.financeAmount,
+        financedAmount_USD: proj.financeAmount_USD,
+        finances: proj.finance && proj.finance.map(item => convertProjFinance(item)),
         // hasPublicDataRoom
-        id: project.id,
-        industrys: project.industries ? project.industries.map(item => convertIndustry(item)) : [],
-        isMarketPlace: project.ismarketplace,
-        ishidden: project.isHidden,
-        // phoneNumber
+        id: proj.id,
+        industrys: proj.industries && proj.industries.map(item => convertProjIndustry(item)),
+        isMarketPlace: proj.ismarketplace,
+        ishidden: proj.isHidden,
+        phoneNumber: proj.phoneNumber,
+        projectAttachment: proj.attachment && proj.attachment.map(item => convertProjAttachment(item)),
+        projectFormat: convertProjFormat(proj),
         // realNameC
         // realNameE
-        tags: project.tags ? project.tags.map(item => convertTag(item)) : [],
-        titleC: project.projtitle,
+        tags: proj.tags && proj.tags.map(item => convertTag(item)),
+        titleC: proj.projtitle,
         // titleE
-        userId: project.supportUser.id,
+        transactionTypes: proj.transactionType,
+        userId: proj.supportUser.id,
     }
 }
 

@@ -1,5 +1,7 @@
 import React from 'react'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend, showToast, hideToast, saveRedirectUrl } from '../actions'
 import { connect } from 'react-redux'
 import NavigationBar from '../components/NavigationBar'
@@ -261,33 +263,35 @@ class ProjectDetail extends React.Component {
       this.props.dispatch(requestContents(''))
 
       var projectId = this.props.match.params.id
-      const token = urlTokenArr[1]
-      api.getSingleProject(
-        projectId,
-        data => {
+
+      newApi.getProjLangDetail(projectId)
+        .then(data => {
+            const project = utils.convertDetailProject(data)
             this.props.dispatch(hideLoading())
             document.title = data.titleC
-            this.setState({ result: data })
-        },
-        error => this.props.dispatch(handleError(error)),
-        token
-      )
+            this.setState({ result: project })
+        })
+        .catch(error => {
+            this.props.dispatch(handleError(error))
+        })
+      
 
       // 是否收藏了项目
       if (this.props.isLogin) {
-        api.getFavoriteProjectIds(
-            {
-                'input.projectId': projectId,
-                'input.userId': api.getCurrentUserId(),
-                'input.ftypes': '3'
-            },
-            projectIds => {
-                this.setState({
-                    isMyFavoriteProject: (projectIds.length == 1)
-                })
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+          // 该接口还没有替换，注释以阻止报错
+        // api.getFavoriteProjectIds(
+        //     {
+        //         'input.projectId': projectId,
+        //         'input.userId': api.getCurrentUserId(),
+        //         'input.ftypes': '3'
+        //     },
+        //     projectIds => {
+        //         this.setState({
+        //             isMyFavoriteProject: (projectIds.length == 1)
+        //         })
+        //     },
+        //     error => this.props.dispatch(handleError(error))
+        // )
       } else {
           this.setState({ showGuide: true })
       }
@@ -488,8 +492,8 @@ class ProjectDetail extends React.Component {
                         { 
                             info.financeIsPublic ? 
                             <span style={dataValueStyle}>
-                                {info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
-                                {info.finances.netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A'}
+                                {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
+                                {info.finances && info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A'}
                             </span> : 
                             <span style={dataValueStyle}>未公开</span>
                         }
@@ -500,8 +504,8 @@ class ProjectDetail extends React.Component {
                         {
                             info.financeIsPublic ?
                             <span style={dataValueStyle}>
-                                {info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
-                                {info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' }
+                                {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
+                                {info.finances && info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' }
                             </span> :
                             <span style={dataValueStyle}>未公开</span>
                         }
