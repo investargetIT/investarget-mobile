@@ -167,7 +167,10 @@ class Timeline extends Component {
         const transactionStatusId = m.transationStatu.transationStatus.index;
         const investorPhotoUrl = m.investor.photourl;
         const investorId = m.investor.id;
-        return { transactionStatusId, investorPhotoUrl, investorId };
+        const timeLineId = m.id;
+        const transactionStatusName = m.transationStatu.transationStatus.name;
+        const investorName = m.investor.username;
+        return { transactionStatusId, investorPhotoUrl, investorId, timeLineId, transactionStatusName, investorName };
       });
       this.setState({ timelines });
     })

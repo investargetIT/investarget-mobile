@@ -331,6 +331,7 @@ export function editTimeline(id, params) {
  * @param {Number} params.trader - 交易师id
  * @param {Boolean} params.isClose - 时间轴是否已关闭 
  * @param {Number} params.page_index
+ * @param {Number} params.page_size
  */
 export const getTimeline = params => r('/timeline/?' + qs.stringify(params))
 
@@ -357,9 +358,15 @@ export function openTimeline(id) {
  * timeline remark
  */
 
-export function getTimelineRemark(param) {
-  return r('/timeline/remark/?' + qs.stringify(param))
-}
+ /**
+  * 获取时间轴备注列表
+  * @param {Object} params
+  * @param {Number} params.timeline - 时间轴id
+  * @param {Boolean} params.sort - 排序方式，true为正序，false为倒序，默认为倒序
+  * @param {Number} params.page_index
+  * @param {Number} params.page_size
+  */
+export const getTimelineRemark = params => r('/timeline/remark/?' + qs.stringify(params))
 
 export function getTimelineRemarkDetail(id) {
   return r('/timeline/remark/' + id + '/')
@@ -418,13 +425,13 @@ export function getUserBase(id) {
   return r('/user/' + id + '/')
 }
 
-export function getUserDetailLang(id) {
-  return r('/user/detail/' + id + '/')
-}
+/**
+ * 获取单个用户详情
+ * @param {Number} id - 用户id 
+ */
+export const getUserDetailLang = id => r('/user/detail/' + id + '/')
 
-export function getUserDetail(id) {
-  return r2('/user/detail/' + id + '/')
-}
+export const getUserDetail = id => r2('/user/detail/' + id + '/')
 
 export function login(values) {
   const param = {

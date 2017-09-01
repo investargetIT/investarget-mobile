@@ -3,6 +3,8 @@ import NavigationBar from '../components/NavigationBar'
 import Investor from '../components/Investor.js'
 import api from '../api'
 import { handleError } from '../actions/'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 const remarkContainerStyle = {
   backgroundColor: 'white',
@@ -67,22 +69,19 @@ class LatestRemark extends Component {
   componentDidMount(){
     var timelines = this.props.location.state
     for (let a = 0; a < timelines.length; a++) {
-      api.getUserRemarks(
-	timelines[a].timeLineId,
-	data => {
-	  timelines[a]['latestRemarkContent'] = data.length > 0 ? data[0].remark : '暂无'
-	  this.setState({timelines: timelines})
-	},
-	error => this.dispatch(handleError((error)))
-       )
-      api.getUserBasic(
-	timelines[a].investorId,
-	data => {
-	  timelines[a]['investorOrgName'] = data.company
-	  this.setState({timelines: timelines})
-	},
-	error => this.dispatch(handleError((error)))
-      )
+      newApi.getTimelineRemark({ timeline: timelines[a].timeLineId, sort: false, page_size: 1 })
+      .then(data => {
+        timelines[a]['latestRemarkContent'] = data.count > 0 ? data.data[0].remark : '暂无';
+        this.setState({ timelines })
+      })
+      .catch(error => this.dispatch(handleError(error)));
+
+      newApi.getUserDetailLang(timelines[a].investorId)
+      .then(data => {
+        timelines[a]['investorOrgName'] = data.org && data.org.orgname;
+        this.setState({ timelines })
+      })
+      .catch(error => this.dispatch(handleError(error)));
     }
   }
 

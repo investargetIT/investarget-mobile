@@ -849,9 +849,9 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getUserRemarks(timeLineId, cb, errCb) {
-    return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
-  },
+  // getUserRemarks(timeLineId, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
+  // },
 
   // uploadUserAvatar(formData, cb, errCb, key) {
 
