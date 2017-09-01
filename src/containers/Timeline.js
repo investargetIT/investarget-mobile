@@ -178,7 +178,9 @@ class Timeline extends Component {
 	})
 	this.setState({myInvestor: myInvestor})
       },
-      error => this.props.dispatch(handleError(error))
+      error => this.props.dispatch(handleError(error)),
+      0,
+      1000
     )
 
   }

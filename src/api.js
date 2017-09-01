@@ -705,8 +705,8 @@ export default {
     .catch(error => errCb(error))
   },
 
-  getUsers(cb, errCb, skipCount=0) {
-    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
+  getUsers(cb, errCb, skipCount=0, maxResultCount=15) {
+    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=' + maxResultCount + '&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
   },
 
   getUserMessages(cb, errCb) {
