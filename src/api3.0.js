@@ -323,9 +323,16 @@ export function editTimeline(id, params) {
   return r('/timeline/' + id + '/', 'PUT', params)
 }
 
-export function getTimeline(params) {
-  return r('/timeline/?' + qs.stringify(params))
-}
+/**
+ * 获取时间轴列表
+ * @param {Object} params
+ * @param {Number} params.proj - 项目id
+ * @param {Number} params.investor - 投资人id
+ * @param {Number} params.trader - 交易师id
+ * @param {Boolean} params.isClose - 时间轴是否已关闭 
+ * @param {Number} params.page_index
+ */
+export const getTimeline = params => r('/timeline/?' + qs.stringify(params))
 
 export function getTimelineDetail(id) {
   return r('/timeline/' + id + '/')

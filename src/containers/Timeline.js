@@ -3,6 +3,8 @@ import NavigationBar from '../components/NavigationBar'
 import { Link } from 'react-router-dom'
 import api from '../api'
 import { handleError } from '../actions/'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 const stepIconStyle = {
   width: '14px',
@@ -159,44 +161,44 @@ class Timeline extends Component {
     var title = titleArr.length > 0 ? titleArr[0] : entireTitle
     this.setState({ title: title })
 
-    api.getLinesBasic(
-      this.props.match.params.id,
-      data => {
-	this.setState({timelines: data.items})
-      },
-      error => console.error(error)
-    )
-    api.getUsers(
-      data => {
-	const myInvestor = data.items.map(item => {
-	  var object = {}
-	  object.id = item.id
-	  object.name = item.name
-	  object.org = item.company
-	  object.photoUrl = item.photoUrl
-	  return object
-	})
-	this.setState({myInvestor: myInvestor})
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+    newApi.getTimeline({ proj: this.props.match.params.id, page_size: 10000 })
+    .then(data => {
+      const timelines = data.data.map(m => {
+        const transactionStatusId = m.transationStatu.transationStatus.index;
+        const investorPhotoUrl = m.investor.photourl;
+        const investorId = m.investor.id;
+        return { transactionStatusId, investorPhotoUrl, investorId };
+      });
+      this.setState({ timelines });
+    })
+    .catch(error => this.props.dispatch(handleError(error)))
 
+    newApi.getUserRelation({ traderuser: utils.getCurrentUserId(), page_size: 10000 })
+    .then(data => {
+      const myInvestor = data.data.map(item => {
+        const { id, username, org, photourl } = item.investoruser
+        return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+      })
+      this.setState({ myInvestor })
+    })
+    .catch(error => this.props.dispatch(handleError(error))) 
+    
   }
 
   handleStepClicked(investors) {
     const myInvestorId = this.state.myInvestor.map(item => item.id)
     const investorIds = investors.map(item => item.investorId)
     var result = []
-    for (var a = 0;a < myInvestorId.length;a++) {
+    for (var a = 0; a < myInvestorId.length; a++) {
       var index = investorIds.indexOf(myInvestorId[a])
       if (index > -1) {
-	result.push(index)
+        result.push(index)
       }
     }
     if (result.length > 0) {
       var toObj = {
-	pathname: api.baseUrl + '/latest_remark',
-	state: result.map(item=>investors[item])
+        pathname: api.baseUrl + '/latest_remark',
+        state: result.map(item => investors[item])
       }
       this.props.history.push(toObj)
     }

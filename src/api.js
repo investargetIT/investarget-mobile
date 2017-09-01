@@ -705,9 +705,9 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getUsers(cb, errCb, skipCount=0) {
-    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
-  },
+  // getUsers(cb, errCb, skipCount=0) {
+  //   return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
+  // },
 
   getUserMessages(cb, errCb) {
     axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
@@ -835,19 +835,19 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getLinesBasic(projectId, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetLinesBasic?input.lang=cn&input.maxResultCount=100&input.skipCount=0&input.projectId=' + projectId, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getLinesBasic(projectId, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetLinesBasic?input.lang=cn&input.maxResultCount=100&input.skipCount=0&input.projectId=' + projectId, {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   getUserRemarks(timeLineId, cb, errCb) {
     return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
