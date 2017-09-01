@@ -266,7 +266,7 @@ class ProjectDetail extends React.Component {
         .then(data => {
             const project = utils.convertDetailProject(data)
             this.props.dispatch(hideLoading())
-            document.title = data.titleC
+            document.title = project.titleC
             this.setState({ result: project })
         })
         .catch(error => {

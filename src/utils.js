@@ -342,6 +342,25 @@ export function convertListTimeline(item) {
     }
 }
 
+export function convertDetailTimeline(item) {
+    return {
+        alertCycle: item.transationStatu.alertCycle,
+        closeDate: item.closeDate,
+        inDate: item.transationStatu.inDate,
+        isClose: item.isClose,
+        transactionStatusId: item.transationStatu.transationStatus.id,
+    }
+}
+
+
+export function convertTimelineRemark(item) {
+    return {
+        creationTime: item.createdtime,
+        id: item.id,
+        remark: item.remark,
+    }
+}
+
 
 export function getContinentsAndCountries() {
     return newApi.getSource('country')
