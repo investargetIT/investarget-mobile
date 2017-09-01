@@ -5,6 +5,7 @@ import LeftLabelRightContent from '../components/LeftLabelRightContent'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import Select from '../components/Select'
+import * as newApi from '../api3.0'
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -186,7 +187,6 @@ class AddInvestor extends React.Component {
         }
       })
       .then(data => {
-        console.log('YXXXM', data)
         this.props.dispatch(hideLoading())
         this.props.history.goBack()
       })

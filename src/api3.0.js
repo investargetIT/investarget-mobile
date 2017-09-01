@@ -623,3 +623,17 @@ export function getLogOfUserUpdate(param) {
  * mongolog
  */
 export const getChatMsg = param => r('/mongolog/chatmsg?' + qs.stringify(param))
+
+/**
+ * 直接上传
+ * @param {Object} formData - 包含了 File 对象的 FormData 对象
+ * @param {String} bucket - 上传到的空间，image 或者 file 
+ */
+export const basicUpload = (formData, bucket) => r(`/service/qiniubigupload?bucket=${bucket}`, 'POST', formData)
+/**
+ * 覆盖上传
+ * @param {String} key - 文件的key
+ * @param {Object} formData - 包含了 File 对象的 FormData 对象
+ * @param {String} bucket - 上传到的空间，image 或者 file 
+ */
+export const coverUpload = (key, formData, bucket) => r(`/service/qiniucoverupload?bucket=${bucket}&key=${key}`, 'POST', formData)
