@@ -570,19 +570,19 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getSingleOrganization(id, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getSingleOrganization(id, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   // getAllTimeLines(param, cb, errCb) {
   //   var userId = getCurrentUserId()

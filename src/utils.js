@@ -267,19 +267,52 @@ export function convertDetailProject(proj) {
 }
 
 
+export function convertOrganization(org) {
+    return {
+        address: org.address,
+        auditStatus: org.orgstatus.id,
+        companyEmail: org.companyEmail,
+        currency: org.currency.id,
+        decisionCycle: org.decisionCycle,
+        decisionMakingProcess: org.decisionMakingProcess,
+        description: org.description,
+        fundSize: org.fundSize,
+        fundSize_USD: org.fundSize_USD,
+        id: org.id,
+        industry: org.industry && convertIndustry(org.industry),
+        name: org.orgname,
+        // nameEn:
+        // orgAreas: [{areaName,id}]
+        orgType: org.orgtype.id,
+        overSeasProject: org.investoroverseasproject,
+        partnerOrInvestmentComitteeMember: org.partnerOrInvestmentCommiterMember,
+        phone: org.mobile, // ? org.areaCode
+        stockCode: org.orgcode,
+        transactionAmountF: org.transactionAmountF,
+        transactionAmountF_USD: org.transactionAmountF_USD,
+        transactionAmountT: org.transactionAmountT,
+        transactionAmountT_USD: org.transactionAmountT_USD,
+        transactionPhases: org.orgtransactionphase,
+        typicalCase: org.typicalCase,
+        weChat: org.weChat,
+        webSite: org.webSite,
+    }
+}
+
+
 export function convertListTimeline(item) {
     return {
         alertCycle: item.transationStatu.alertCycle,
         closeDate: item.closeDate,
         investorId: item.investor.id,
         investorName: item.investor.username,
-        investorOrg: item.org.orgname,
+        investorOrg: item.org.orgname, // 额外请求
         investorOrgId: item.org.id,
         isClose: item.isClose,
         nextAlertTime: item.transationStatu.inDate,
         projectId: item.proj.id,
         projectName: item.proj.projtitle,
-        remainingAlertDays: item.transationStatu.remainingAlertDay,
+        remainingAlertDays: Math.ceil(item.transationStatu.remainingAlertDay), // 转成整数
         remark: item.remark.remark, // 额外请求
         supplierId: item.supportor.id,
         supplierName: item.supportor.username,
