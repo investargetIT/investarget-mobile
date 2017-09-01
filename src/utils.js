@@ -300,6 +300,24 @@ export function convertOrganization(org) {
 }
 
 
+export function convertUserBasic(user) {
+    return {
+        company: user.org && user.org.orgname,
+        emailAddress: user.email,
+        id: user.id,
+        mobile: user.mobile,
+        name: user.username,
+        org: convertOrg(user.org),
+        photoBucket: user.photoBucket,
+        photoKey: user.photoKey,
+        photoUrl: user.photourl,
+        title: convertTitle(user.title),
+        userTags: user.tags && user.tags.map(item => convertTag(item)),
+        weChat: user.wechat,
+    }
+}
+
+
 export function convertListTimeline(item) {
     return {
         alertCycle: item.transationStatu.alertCycle,
