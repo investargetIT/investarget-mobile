@@ -239,7 +239,9 @@ class MyFavoriteProject extends Component {
     }
     newApi.getFavoriteProj(param)
       .then(data => {
-          const projects = data.data.map(item => {
+          const projects = data.data
+          .filter(item => item.proj != null)
+          .map(item => {
             var proj = utils.convertFavoriteProject(item.proj)
             proj['favorId'] = item.id
             return proj

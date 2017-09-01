@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { connect } from 'react-redux'
 
 const messageContainerStyle = {
@@ -98,17 +100,32 @@ class Notification extends Component {
   }
 
   componentDidMount() {
-    api.getUserMessages(
-      data => this.setState({message: data.items}),
-      error => console.error(error)
-    )
+    this.getMessage(!this.state.showUnReadMessage)
+  }
+
+  getMessage = (isRead) => {
+    const param = {
+      page_size: 100,
+      page_index: 1,
+      isRead,
+    }
+    newApi.getMsg(param)
+      .then(data => {
+        const message = data.data.map(item => utils.convertMessage(item))
+        this.setState({ message })
+      })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
   handleFilterTypeChanged(event) {
     if (event.target.name === 'read') {
       this.setState({showUnReadMessage: false})
+      this.getMessage(true)
     } else if (event.target.name === 'unread') {
-      this.setState({showUnReadMessage: 'true'})
+      this.setState({showUnReadMessage: true})
+      this.getMessage(false)
     }
   }
 
@@ -139,14 +156,16 @@ class Notification extends Component {
   handleMessageClicked(data) {
 
     if (!data.isread) {
-      api.readMessage(data.id)
+      newApi.readMsg(data.id)
     }
 
-    if (data.messageType === 2) {
-      window.location.href = api.baseUrl + '/project/' + data.businessId + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')
-    } else {
-      this.props.history.push(api.baseUrl + '/notifications/' + data.tid)
-    }
+    // TODO 后面完善
+    // if (data.messageType === 2) {
+    //   window.location.href = api.baseUrl + '/project/' + data.businessId + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')
+    // } else {
+      let state = { content: data.content }
+      this.props.history.push(api.baseUrl + '/notifications/' + data.tid, state)
+    // }
 
   }
 

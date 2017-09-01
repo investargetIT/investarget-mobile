@@ -362,6 +362,25 @@ export function convertTimelineRemark(item) {
 }
 
 
+export function convertMessage(item) {
+    return {
+        businessId: item.sourceid,
+        creationTime: item.created,
+        id: item.id,
+        isread: item.isRead,
+        messageType: item.sourcetype,
+        readTime: item.readtime,
+        receiver: item.receiver,
+        sender: item.sender,
+        // 设成和 id 一样
+        tid: item.id,
+        title: item.messagetitle,
+        // 没有，加上
+        content: item.content, 
+    }
+}
+
+
 export function getContinentsAndCountries() {
     return newApi.getSource('country')
         .then(data => {

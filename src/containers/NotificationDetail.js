@@ -11,15 +11,8 @@ class NotificationDetail extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { content: '' }
-  }
-
-  componentDidMount() {
-    api.getNotificationDetail(
-      this.props.match.params.id,
-      data => this.setState({ content: data }),
-      error => console.error(error)
-    )
+    const { content } = props.location.state
+    this.state = { content }
   }
 
   render() {

@@ -709,18 +709,18 @@ export default {
   //   return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
   // },
 
-  getUserMessages(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getUserMessages(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   // modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
   //   axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
@@ -885,9 +885,9 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getNotificationDetail(id, cb, errCb) {
-    return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
-  },
+  // getNotificationDetail(id, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
+  // },
 
   readMessage(id, cb, errCb) {
     return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
