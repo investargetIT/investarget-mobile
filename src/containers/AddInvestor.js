@@ -6,6 +6,7 @@ import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import Select from '../components/Select'
 import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -94,106 +95,110 @@ class AddInvestor extends React.Component {
     }
 
     const body = {
-      'name': this.state.name,
-      'titleId': this.state.title,
-      'emailAddress': this.state.email,
+      'usernameC': this.state.name,
+      'title': this.state.title,
+      'email': this.state.email,
       'mobile': this.state.mobile,
-      'company': this.state.company,
-      'password': '123456',
+      'orgname': this.state.company,
       'cardBucket': 'image',
-      'cardKey': null,
-      'gender': 0,
-      'registerSource': 3,
-      'userType': 1,
-      'userTagses': [],
-      'mobileAreaCode': 86,
-      'countryId': 42,
-      'auditStatus': 1,
     }
 
     this.props.dispatch(requestContents(''))
 
     let existUser
-    api.checkUserExist(this.state.mobile)
-      .then(user => {
-        console.log('checkMobileExist', user)
-        if (user) {
-          existUser = user
+    newApi.checkUserExist(this.state.mobile)
+    .then(result => {
+      console.log('checkMobileExist', result)
+      if (result.result) {
+        existUser = result.user
+      }
+      if (this.state.email) {
+        return newApi.checkUserExist(this.state.email)
+      } else {
+        return Promise.resolve("The Email is empty!")
+      }
+    })
+    .then(result => {
+      console.log('checkEmailExist', result)
+      if (result instanceof Object && result.result) {
+        if (existUser && existUser.id !== result.user.id) {
+          throw new Error("mobile_or_email_possessed")
         }
-        if (this.state.email) {
-          return api.checkUserExist(this.state.email)
-        } else {
-          return Promise.resolve("The Email is empty!")
-        }
-      })
-      .then(user => {
-        console.log('checkEmailExist', user)
-        if (user instanceof Object) {
-          if (existUser && existUser.id !== user.id) {
-            throw new Error("mobile_or_email_possessed")
-          }
-          existUser = user
-        }
-        if (existUser) {
-          return api.checkUserCommonTransaction(existUser.id)
-        } else {
-          return Promise.resolve("The investor is not exist in our database!")
-        }
-      })
-      .then(relationId => {
-        console.log('checkUserCommonTransaction', relationId)
-        if (existUser && relationId === null) {
-          return api.addUserCommonTransaction(existUser.id)
-        } else {
-          return Promise.resolve("The investor is not exist or the relationship has already been established!")
-        }
-      })
-      .then(relationId => {
-        console.log('addUserCommonTransaction', relationId)
-        if (existUser) {
-          return api.getSingleUserInfo(existUser.id)
-        } else {
-          return Promise.resolve("The investor is not exist in our database!")
-        }
-      })
-      .then(userInfo => {
-        console.log('getSingleUserInfo', userInfo)
-        let cardKey
-        if (existUser) {
-          existUser = userInfo
-          cardKey = existUser.cardKey
-        }
-        const formData = new FormData()
-        formData.append('file', this.state.file)
-        return api.uploadImage(formData, cardKey)
-      })
-      .then(data => {
-        console.log('uploadCard', data)
-        const cardKey = data.key
-        const cardUrl = data.url
-        if (existUser) {
-          const userTagses = existUser.userTags.map(tag => tag.id)
-          const orgId = existUser.org ? existUser.org.id : null
-          const orgAreaId = existUser.orgArea ? existUser.orgArea.id : null
-          const titleId = this.state.title || (existUser.title ? existUser.title.id : null)
-          const emailAddress = this.state.email || existUser.emailAddress
-          const company = this.state.company || existUser.company
-          const name = this.state.name || existUser.name
-          const mobile = this.state.mobile || existUser.mobile
-          return api.updateUser(existUser.id, {...existUser, userTagses, orgId, orgAreaId, titleId, emailAddress, company, name, cardKey, cardUrl, mobile})
-        } else {
-          const partnerId = this.props.userInfo.id
-          return api.addUser({...body, partnerId, cardKey, cardUrl})
-        }
-      })
-      .then(data => {
-        this.props.dispatch(hideLoading())
-        this.props.history.goBack()
-      })
-      .catch(error => {
-        this.props.dispatch(hideLoading())
-        this.props.dispatch(handleError(error))
-      })
+        existUser = result.user
+      }
+      if (existUser) {
+        return newApi.checkUserRelation(existUser.id, utils.getCurrentUserId())
+      } else {
+        return Promise.resolve("The investor is not exist in our database!")
+      }
+    })
+    .then(result => {
+      console.log('checkUserCommonTransaction', result)
+      if (existUser && !result) {
+        return newApi.addUserRelation({
+          relationtype: false,
+          investoruser: existUser.id,
+          traderuser: utils.getCurrentUserId()
+        })
+      } else {
+        return Promise.resolve("The investor is not exist or the relationship has already been established!")
+      }
+    })
+    .then(result => {
+      console.log('addUserCommonTransaction', result)
+      if (existUser) {
+        return newApi.getUserDetailLang(existUser.id)
+      } else {
+        return Promise.resolve("The investor is not exist in our database!")
+      }
+    })
+    .then(result => {
+      console.log('getSingleUserInfo', result, this.state.file)
+      let cardKey
+      if (existUser) {
+        existUser = result
+        cardKey = existUser.cardKey
+      }
+      const formData = new FormData()
+      formData.append('file', this.state.file)
+      return cardKey ? newApi.coverUpload(cardKey, formData, 'image') : newApi.basicUpload(formData, 'image')
+    })
+    .then(result => {
+      console.log('uploadCard', result)
+      const cardKey = result.key
+      const cardUrl = result.url
+      if (existUser) {
+        const title = this.state.title || (existUser.title ? existUser.title.id : null)
+        const email = this.state.email || existUser.email
+        const orgname = this.state.company || existUser.org.id
+        const usernameC = this.state.name || existUser.username
+        const mobile = this.state.mobile || existUser.mobile
+        return newApi.editUser([existUser.id], { orgname, title, email, usernameC, cardKey, cardUrl, mobile })
+      } else {
+        const partnerId = this.props.userInfo.id
+        return newApi.addUser({ ...body, partnerId, cardKey, cardUrl, userstatus: 2, groups: [1] })
+      }
+    })
+    .then(result => {
+      console.log('update or add user result', result)
+      if (!existUser) {
+        return newApi.addUserRelation({
+          relationtype: false,
+          investoruser: result.id,
+          traderuser: utils.getCurrentUserId()
+        })
+      } else {
+        return Promise.resolve('the relationship has already been established')
+      }
+    })
+    .then(data => {
+      this.props.dispatch(hideLoading())
+      this.props.history.goBack()
+    })
+    .catch(error => {
+      this.props.dispatch(hideLoading())
+      this.props.dispatch(handleError(error))
+    })
   }
 
   showTitleSelect() {

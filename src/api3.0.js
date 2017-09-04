@@ -5,7 +5,7 @@ import { ApiError } from './request'
 
 export const SOURCE = 1
 
-function r(url, method, body) {
+function r(url, method, body, isUploadFile) {
 
   const source = parseInt(localStorage.getItem('source'), 10)
 
@@ -22,6 +22,10 @@ function r(url, method, body) {
     }
   }
 
+  if (isUploadFile) {
+    delete options.headers['Content-Type']
+  }
+
   const userStr = localStorage.getItem('userInfo')
   const user = userStr ? JSON.parse(userStr) : null
 
@@ -34,7 +38,7 @@ function r(url, method, body) {
   }
 
   if (body) {
-    options["body"] = JSON.stringify(body)
+    options["body"] = isUploadFile ? body : JSON.stringify(body)
   }
 
   const lang = url.split('?').length > 1 ? `&lang=${window.LANG}` : `?lang=${window.LANG}`
@@ -570,9 +574,14 @@ export function getUserRelation(param) {
   return r('/user/relationship/?' + qs.stringify(param))
 }
 
-export function addUserRelation(param) {
-  return r('/user/relationship/', 'POST', param)
-}
+/**
+ * 在投资人和交易师之间建立关系
+ * @param {Object} body
+ * @param {Number} body.investoruser - 投资人id
+ * @param {Number} body.traderuser - 交易师id
+ * @param {Boolean} body.relationtype - 关系类型，true为强关系，false为弱关系
+ */
+export const addUserRelation = body => r('/user/relationship/', 'POST', body)
 
 export function deleteUserRelation(idArr) {
   const param = {'relationlist': idArr}
@@ -629,11 +638,11 @@ export const getChatMsg = param => r('/mongolog/chatmsg?' + qs.stringify(param))
  * @param {Object} formData - 包含了 File 对象的 FormData 对象
  * @param {String} bucket - 上传到的空间，image 或者 file 
  */
-export const basicUpload = (formData, bucket) => r(`/service/qiniubigupload?bucket=${bucket}`, 'POST', formData)
+export const basicUpload = (formData, bucket) => r(`/service/qiniubigupload?bucket=${bucket}`, 'POST', formData, true)
 /**
  * 覆盖上传
  * @param {String} key - 文件的key
  * @param {Object} formData - 包含了 File 对象的 FormData 对象
  * @param {String} bucket - 上传到的空间，image 或者 file 
  */
-export const coverUpload = (key, formData, bucket) => r(`/service/qiniucoverupload?bucket=${bucket}&key=${key}`, 'POST', formData)
+export const coverUpload = (key, formData, bucket) => r(`/service/qiniucoverupload?bucket=${bucket}&key=${key}`, 'POST', formData, true)

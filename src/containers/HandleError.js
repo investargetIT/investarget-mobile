@@ -129,6 +129,14 @@ class HandleError extends Component {
           showError = true
           errMsg = error.message
           break
+        case 2014:
+          showError = true
+          errMsg = error.message
+          break
+        case 2015:
+          showError = true
+          errMsg = error.message
+          break
         default:
           console.error(error)
       }
