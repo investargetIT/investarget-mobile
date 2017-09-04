@@ -931,18 +931,18 @@ export default {
   //   return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
   // },
 
-  uploadCamCard(data, size) {
-    return new Promise((resolve, reject) => {
-      axios.post(
-        'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
-        data,
-      ).then(response => {
-        resolve(response.data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+  // uploadCamCard(data, size) {
+  //   return new Promise((resolve, reject) => {
+  //     axios.post(
+  //       'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
+  //       data,
+  //     ).then(response => {
+  //       resolve(response.data)
+  //     }).catch(error => {
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
   // getSingleUserInfo(userId, cb, errCb) {
   //   return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
@@ -952,29 +952,29 @@ export default {
     return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
   },
 
-  uploadBusiness(file, cb, errCb) {
-    console.log('in the method')
-    return new Promise((resolve, reject) => {
-      axios.post(
-        url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
-        file,
-        { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
-      )
-        .then(response => {
-          console.log('Yxxxm', response.data)
-          if (!response.data.success) {
-            throw new ApiError(response.data.error)
-          }
-          const data = response.data.result
-          if (cb) cb(data)
-          resolve(data)
-        })
-        .catch(error => {
-          if (errCb) errCb(error)
-          reject(error)
-        })
-    })
-  },
+  // uploadBusiness(file, cb, errCb) {
+  //   console.log('in the method')
+  //   return new Promise((resolve, reject) => {
+  //     axios.post(
+  //       url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
+  //       file,
+  //       { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
+  //     )
+  //       .then(response => {
+  //         console.log('Yxxxm', response.data)
+  //         if (!response.data.success) {
+  //           throw new ApiError(response.data.error)
+  //         }
+  //         const data = response.data.result
+  //         if (cb) cb(data)
+  //         resolve(data)
+  //       })
+  //       .catch(error => {
+  //         if (errCb) errCb(error)
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
 }
 
