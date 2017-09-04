@@ -889,16 +889,16 @@ export default {
   //   return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
   // },
 
-  readMessage(id, cb, errCb) {
-    return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
-  },
+  // readMessage(id, cb, errCb) {
+  //   return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
+  // },
 
-  getPdfFileUrl(id, cb, errCb) {
-    this.getSingleProject(id)
-    .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
-    .then(url => cb(url))
-    .catch(error => errCb(error))
-  },
+  // getPdfFileUrl(id, cb, errCb) {
+  //   this.getSingleProject(id)
+  //   .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
+  //   .then(url => cb(url))
+  //   .catch(error => errCb(error))
+  // },
 
   // checkUserExist(account, cb, errCb) {
   //   return simplyGet('services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account, cb, errCb)

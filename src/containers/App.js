@@ -264,21 +264,28 @@ class App extends Component {
         if (!projectID) return
 
         const isMarketPlace = evt.target.dataset.isMarketPlace
-        if (isMarketPlace === 'false') {
-          window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + react.props.userInfo.token : '')
+        if (isMarketPlace == "false") {
+          newApi.getShareToken(projectID)
+            .then(token => {
+              window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + token : '')
+            })
+            .catch(error => {
+              react.props.dispatch(handleError(error))
+            })
         } else {
-          api.getPdfFileUrl(
-            projectID,
-            fileUrl => {
-              let url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)
-              if (react.props.userInfo && react.props.userInfo.emailAddress) {
-                url += '&watermark=' + encodeURIComponent(react.props.userInfo.emailAddress)
-              }
+          newApi.getProjLangDetail(projectID)
+            .then(data => {
+              const fileUrl = data.linkpdfurl
+              const userInfo = react.props.userInfo
+              const email = (userInfo && userInfo.emailAddress) ? userInfo.emailAddress : 'deal@investarget.com'
+              const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(email)
               window.location.href = url
-            },
-            error => react.props.dispatch(handleError(error))
-          )
+            })
+            .catch(error => {
+              react.props.dispatch(handleError(error))
+            })
         }
+
       }
     })
     

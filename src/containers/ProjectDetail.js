@@ -250,7 +250,7 @@ class ProjectDetail extends React.Component {
     componentDidMount() {
       var urlTokenArr = /token=([^&]+)(&|$)/.exec(this.props.location.search)
       if (!urlTokenArr || urlTokenArr.length < 2) {
-	this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
+        this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
         this.props.history.push(api.baseUrl + '/login')
         return
       }
@@ -262,7 +262,8 @@ class ProjectDetail extends React.Component {
 
       var projectId = this.props.match.params.id
 
-      newApi.getProjLangDetail(projectId)
+      const token = urlTokenArr[1]
+      newApi.getShareProj(token)
         .then(data => {
             const project = utils.convertDetailProject(data)
             this.props.dispatch(hideLoading())
