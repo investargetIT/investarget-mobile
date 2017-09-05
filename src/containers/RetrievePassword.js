@@ -1,6 +1,7 @@
 import React from 'react'
 import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
+import MobileInput from '../components/MobileInput'
 import Button from '../components/Button'
 import api from '../api'
 import * as newApi from '../api3.0'
@@ -41,6 +42,7 @@ class RetrievePassword extends React.Component {
         super(props)
 
         this.state = {
+            areaCode: '86',
             mobile: '',
             code: '',
             newPassword: '',
@@ -53,6 +55,10 @@ class RetrievePassword extends React.Component {
         this.handleSendVerificationCode = this.handleSendVerificationCode.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleRetrievePasswordSuccess = this.handleRetrievePasswordSuccess.bind(this)
+    }
+
+    handleMobileChange = ({ areaCode, mobile }) => {
+        this.setState({ areaCode, mobile })
     }
 
     handleInputChange(event) {
@@ -71,7 +77,7 @@ class RetrievePassword extends React.Component {
         // api.sendVerificationCode
         const param = {
             mobile: this.state.mobile,
-            areacode: '86',
+            areacode: this.state.areaCode,
         }
         newApi.sendSmsCode(param)
             .then(data => {
@@ -139,7 +145,7 @@ class RetrievePassword extends React.Component {
         if (this.state.fetchCodeWaitingTime <= 0) {
             clearInterval(this.state.timer)
         }
-        const isMobileInvalid = /^1[34578]\d{9}$/.test(this.state.mobile) ? false : true
+        const isMobileInvalid = this.state.mobile == ''
         const sendCodeButtonValue = this.state.fetchCodeWaitingTime === 0 ? '发送验证码' : this.state.fetchCodeWaitingTime + 's'
         const sendCodeDisabled = isMobileInvalid || this.state.fetchCodeWaitingTime !== 0
         const sendCodeStyle = sendCodeDisabled
@@ -152,7 +158,7 @@ class RetrievePassword extends React.Component {
         var content = (
             <div>
                 <div style={inputStyle}>
-                    <TextInput name="mobile" placeholder="请输入手机号" value={this.state.mobile} handleInputChange={this.handleInputChange} />
+                    <MobileInput areaCode={this.state.areaCode} mobile={this.state.mobile} onChange={this.handleMobileChange} />
                 </div>
                 <div style={inputStyle}>
                     <TextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
