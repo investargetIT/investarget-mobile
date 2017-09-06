@@ -12,7 +12,7 @@ class Posts extends Component {
       rows.push(
         <PostListCell
           title={element.title}
-          imgUrl={element.imgUrl}
+          imgUrl={element.url}
           detailUrl={element.detailUrl}
           key={element.title} />
       )

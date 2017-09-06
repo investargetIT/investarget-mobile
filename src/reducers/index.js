@@ -34,7 +34,7 @@ const initialState = {
   projects: [],
   projectStructure: [],
   posts: [],
-  eventUrl: '',
+  eventUrl: 'https://www.baidu.com/',
   continentsAndCountries: [],
   filter: [],
   industries: [],

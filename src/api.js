@@ -357,25 +357,25 @@ export default {
   //   .catch(error => errCb(error))
   // },
 
-  getPostsAndEvent(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
-    .then(response => {
-      if (response.data.success) {
-        var posts = response.data.result.map(item => {
-          var obj = {}
-          obj['title'] = item.title
-          obj['imgUrl'] = item.url
-          obj['detailUrl'] = item.detailUrl
-          obj['isNews'] = item.isNews
-          return obj
-        })
-        cb(posts)
-      } else {
-        throw response.data.error
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getPostsAndEvent(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       var posts = response.data.result.map(item => {
+  //         var obj = {}
+  //         obj['title'] = item.title
+  //         obj['imgUrl'] = item.url
+  //         obj['detailUrl'] = item.detailUrl
+  //         obj['isNews'] = item.isNews
+  //         return obj
+  //       })
+  //       cb(posts)
+  //     } else {
+  //       throw response.data.error
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
   // getSingleProject(id, cb, errCb, token) {
   //   return new Promise((resolve, reject) => {

@@ -73,10 +73,8 @@ class Routes extends React.Component {
   render() {
     if (!this.state.tryToLogin) return null;
     const props = this.props
-    api.getPostsAndEvent(
-      posts => props.dispatch(receivePosts(posts)),
-      error => props.dispatch(handleError(error))
-    )
+    newApi.getPostsAndEvent()
+    .then(result => props.dispatch(receivePosts(result.data)));
 
     props.dispatch(readUserInfoFromLocalStorage())
 

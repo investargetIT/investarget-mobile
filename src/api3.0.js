@@ -651,3 +651,7 @@ export const coverUpload = (key, formData, bucket) => r(`/service/qiniucoveruplo
  * @param {Object} formData - 包含了 File 对象的 FormData 对象
  */
 export const ccUpload = formData => r('/service/ccupload', 'POST', formData, true);
+/**
+ * 获取智库文章列表和活动地址
+ */
+export const getPostsAndEvent = () => r('/activity/');
