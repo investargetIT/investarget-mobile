@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import { connect } from 'react-redux'
-import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError } from '../actions'
+import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError, saveRedirectUrl } from '../actions'
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
@@ -262,8 +262,12 @@ class App extends Component {
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
         if (!projectID) return
-
         const isMarketPlace = evt.target.dataset.isMarketPlace
+        if (!this.props.isLogin) {
+          this.props.dispatch(saveRedirectUrl(`${api.baseUrl}/project/detail?projectID=${projectID}&isMarketPlace=${isMarketPlace}`));
+          this.props.history.push(api.baseUrl + '/login');
+          return;
+        }
         if (isMarketPlace == "false") {
           newApi.getShareToken(projectID)
             .then(token => {
@@ -409,9 +413,9 @@ var loadmoreStyle = {
 }
 
 function mapStateToProps(state) {
-  const { projects, needRefresh, userInfo, isFetching, projectStructure } = state
+  const { projects, needRefresh, userInfo, isFetching, projectStructure, isLogin } = state
   const filter = state.trueFilter
-  return { projects, filter, needRefresh, userInfo, isFetching, projectStructure }
+  return { projects, filter, needRefresh, userInfo, isFetching, projectStructure, isLogin }
 }
 
 function filterToParams(data) {

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
+import qs from 'qs'
 
 
 var usernameInputStyle = {
@@ -85,25 +86,43 @@ class Login extends React.Component {
     const param = {
       username: this.state.username,
       password: this.state.password,
-      // app: 3
     }
 
     this.props.dispatch(requestContents(''))
 
-    // api.loginAndGetUserInfo
+    let projectID, isMarketPlace;
     newApi.login(param)
       .then(data => {
         const { token: authToken, user_info, permissions } = data
         this.props.dispatch(hideLoading())
         const userInfo = utils.convertUserInfo(user_info, permissions)
         this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
-        var redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
-        const isProjectRoute = /project\/\d+/g.exec(redirectUrl)
-        if (isProjectRoute) {
-          redirectUrl += this.props.userInfo ? '?token=' + this.props.userInfo.token : ''
-          window.location.replace(redirectUrl)
+        let redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
+        const isProjectRoute = /project\/detail\?projectID=(.*)&isMarketPlace=(.*)/.test(redirectUrl);
+        if (!isProjectRoute) {
+          this.props.history.push(redirectUrl);
+          return;
+        }
+        
+        const params = qs.parse(redirectUrl.split('?')[1]);
+        projectID = params.projectID;
+        isMarketPlace = params.isMarketPlace;
+
+        if (isMarketPlace == "false") {
+          return newApi.getShareToken(projectID);
         } else {
-          this.props.history.push(redirectUrl)
+          return newApi.getProjLangDetail(projectID);
+        }
+      })
+      .then(result => {
+        if (isMarketPlace === 'false') {
+          window.location.replace(`${api.baseUrl}/project/${projectID}?token=${result}`);
+        } else if (isMarketPlace === 'true') {
+          const fileUrl = result.linkpdfurl
+          const userInfo = this.props.userInfo
+          const email = (userInfo && userInfo.emailAddress) ? userInfo.emailAddress : 'deal@investarget.com'
+          const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(email)
+          window.location.replace(url);
         }
       })
       .catch(error => {
