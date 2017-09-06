@@ -646,3 +646,8 @@ export const basicUpload = (formData, bucket) => r(`/service/qiniubigupload?buck
  * @param {String} bucket - 上传到的空间，image 或者 file 
  */
 export const coverUpload = (key, formData, bucket) => r(`/service/qiniucoverupload?bucket=${bucket}&key=${key}`, 'POST', formData, true)
+/**
+ * 名片解析
+ * @param {Object} formData - 包含了 File 对象的 FormData 对象
+ */
+export const ccUpload = formData => r('/service/ccupload', 'POST', formData, true);

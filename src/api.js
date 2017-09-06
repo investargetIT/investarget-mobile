@@ -948,9 +948,9 @@ export default {
   //   return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
   // },
 
-  uploadBusinessCard(formData) {
-    return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
-  },
+  // uploadBusinessCard(formData) {
+  //   return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
+  // },
 
   // uploadBusiness(file, cb, errCb) {
   //   console.log('in the method')

@@ -266,7 +266,8 @@ class MyPartener extends Component {
       var formData = new FormData()
       formData.append('file', file)
       const fileDa = file
-      api.uploadBusinessCard(formData)
+
+      newApi.ccUpload(formData)
         .then(data => {
           react.props.dispatch(hideLoading())
           const parsedData = react.parseData(JSON.parse(data))
