@@ -179,11 +179,21 @@ class TimelineManagement extends React.Component {
 
     }
 
-  handleTimelineClicked(id) {
-    if (this.props.userInfo.userType === 3) {
-      this.props.history.push(api.baseUrl + '/edit_timeline/' + id)
+    handleTimelineClicked(id) {
+        if (this.props.userInfo.userType === 3) {
+        this.props.history.push(api.baseUrl + '/edit_timeline/' + id)
+        }
     }
-  }
+
+    handleClickProject(id) {
+        newApi.getShareToken(id)
+        .then(token => {
+            window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+        })
+        .catch(error => {
+            this.props.dispatch(handleError(error))
+        })
+    }
 
     render() {
         var userId = api.getCurrentUserId()
@@ -198,11 +208,11 @@ class TimelineManagement extends React.Component {
                         {
                             this.state.timelines.map(timeline => (
                                 <div style={timelineStyle} key={timeline.timeLineId}>
-				  <Link to={api.baseUrl + '/project/' + timeline.timeLineId + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')}>
-                                        <div style={nameStyle}>
-                                            <span style={nameSpanStyle}>{timeline.projectName}</span>
-                                        </div>
-                                    </Link>
+
+                                    <div style={nameStyle} onClick={this.handleClickProject.bind(this, timeline.projectId)}>
+                                        <span style={nameSpanStyle}>{timeline.projectName}</span>
+                                    </div>
+
 
                                     <div style={detailStyle}>
                                         <Link to={timeline.investorId == userId ? 
@@ -215,7 +225,7 @@ api.baseUrl + '/user_info/' + userId :
                                             </div>
                                         </Link>
 
-					<Link to={api.baseUrl + "/organization/" + timeline.investorOrgId}>
+					                    <Link to={api.baseUrl + "/organization/" + timeline.investorOrgId}>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人所属机构：</span>
                                                 <span style={rightColStyle}>{timeline.investorOrg}</span>
@@ -242,15 +252,15 @@ api.baseUrl + '/user_info/' + userId :
                                             <span style={rightColStyle}>{timeline.isClose ? '已结束' : '未结束'}</span>
                                         </div>
 
-					  <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
-                                                <span style={leftColStyle}>剩余天数：</span>
-                                                <span style={rightColStyle}>{timeline.remainingAlertDays}</span>
-                                            </div>
+                                        <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
+                                            <span style={leftColStyle}>剩余天数：</span>
+                                            <span style={rightColStyle}>{timeline.remainingAlertDays}</span>
+                                        </div>
 
-                                            <div style={rowNoBorderStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
-                                                <span style={leftColStyle}>最新备注：</span>
-                                                <span style={rightColStyle}>{timeline.remark}</span>
-                                            </div>
+                                        <div style={rowNoBorderStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
+                                            <span style={leftColStyle}>最新备注：</span>
+                                            <span style={rightColStyle}>{timeline.remark}</span>
+                                        </div>
 
                                     </div>
                                 </div>

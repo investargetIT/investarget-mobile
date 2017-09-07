@@ -273,13 +273,23 @@ class MyFavoriteProject extends Component {
       })
   }
 
+  handleClickProject = (id) => {
+    newApi.getShareToken(id)
+      .then(token => {
+        window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
+  }
+
   render() {
     const content = this.state.projects.map(project =>
       <div className="margin-bottom-2" key={project.id}>
         <div style={cellContainerStyle}>
           <div style={this.state.isSelecting ? cellWrapStyle : {}}>
             <SwipeCell delete={this.removeFavoriteProject.bind(this, project.id)} action="取消收藏" actionBackgroundColor="#276CD2" isInitialPosition={this.state.isInitialCellPosition} onPositionChange={this.handleCellPositionChange} >
-	      <a href={api.baseUrl + "/project/" + project.id + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '') }>
+	            <div onClick={this.handleClickProject.bind(this, project.id)}>
                 <ProjectListCell
                   title={project.title}
                   country={project.country}
@@ -287,7 +297,7 @@ class MyFavoriteProject extends Component {
                   imgUrl={project.imgUrl}
                   amount={project.amount}
                   id={project.id} />
-              </a>
+              </div>
             </SwipeCell>
           </div>
           <div style={ this.state.isSelecting ? checkboxWrapStyle : checkboxWrapHideStyle } onClick={this.toggleSelect.bind(this, project.id)}>

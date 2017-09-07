@@ -107,7 +107,9 @@ class Chat extends React.Component {
 
         newApi.getFavoriteProj(param)
             .then(data => {
-                const projects = data.data.map(item => utils.convertFavoriteProject(item.proj))
+                const projects = data.data
+                    .filter(item => item.proj != null)
+                    .map(item => utils.convertFavoriteProject(item.proj))
                 this.setState({ projects })
                 this.props.dispatch(hideLoading())
             })
@@ -119,6 +121,16 @@ class Chat extends React.Component {
 
     handleActionButtonClicked() {
         this.props.history.push(api.baseUrl + '/my_favorite_project')
+    }
+
+    handleClickProject = (id) => {
+        newApi.getShareToken(id)
+            .then(token => {
+                window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     componentDidMount() {
@@ -172,7 +184,7 @@ class Chat extends React.Component {
                         this.state.projects.length ?
                             this.state.projects.map(
                                 (project) => (
-				  <a className="margin-bottom-2" key={project.id} href={api.baseUrl + '/project/' + project.id + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')}>
+				                    <div className="margin-bottom-2" key={project.id} onClick={this.handleClickProject.bind(this, project.id)}>
                                         <ProjectListCell
                                             title={project.title}
                                             country={project.country}
@@ -181,7 +193,7 @@ class Chat extends React.Component {
                                             amount={project.amount}
                                             id={project.id}
                                         />
-                                    </a>
+                                    </div>
                                 )
                             ) :
                             <EmptyBox />

@@ -271,7 +271,7 @@ class App extends Component {
         if (isMarketPlace == "false") {
           newApi.getShareToken(projectID)
             .then(token => {
-              window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + token : '')
+              window.location.href = api.baseUrl + '/project/' + projectID + '?token=' + token
             })
             .catch(error => {
               react.props.dispatch(handleError(error))

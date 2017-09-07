@@ -125,7 +125,7 @@ export function convertUserInfo(user_info, permissions) {
         // sourceofinformation
         title: user_info.title && convertTitle(user_info.title),
         token: user_info.token,
-        userTags: user_info.tags && user_info.tags.map(i => convertTag(i)),
+        userTags: user_info.tags ? user_info.tags.map(i => convertTag(i)) : [],
         // 暂时使用用户组转换，后面加上权限后，这里可以删除了
         userType: userType,
         // 好像没用到
@@ -151,7 +151,7 @@ export function convertFavoriteProject(proj) {
         'amount': item.financedAmount,
         'country': item.country && item.country.countryName,
         'imgUrl': item.industrys[0] && item.industrys[0].imgUrl,
-        'industrys': item.industrys.map(i => i.industryName),
+        'industrys': item.industrys ? item.industrys.map(i => i.industryName) : [],
     }
 }
 
@@ -247,18 +247,18 @@ export function convertDetailProject(proj) {
         financeIsPublic: proj.financeIsPublic,
         financedAmount: proj.financeAmount,
         financedAmount_USD: proj.financeAmount_USD,
-        finances: proj.finance && proj.finance.map(item => convertProjFinance(item)),
+        finances: proj.finance ? proj.finance.map(item => convertProjFinance(item)) : [],
         // hasPublicDataRoom
         id: proj.id,
-        industrys: proj.industries && proj.industries.map(item => convertProjIndustry(item)),
+        industrys: proj.industries ? proj.industries.map(item => convertProjIndustry(item)) : [],
         isMarketPlace: proj.ismarketplace,
         ishidden: proj.isHidden,
         phoneNumber: proj.phoneNumber,
-        projectAttachment: proj.attachment && proj.attachment.map(item => convertProjAttachment(item)),
+        projectAttachment: proj.attachment ? proj.attachment.map(item => convertProjAttachment(item)) : [],
         projectFormat: convertProjFormat(proj),
         // realNameC
         // realNameE
-        tags: proj.tags && proj.tags.map(item => convertTag(item)),
+        tags: proj.tags ? proj.tags.map(item => convertTag(item)) : [],
         titleC: proj.projtitle,
         // titleE
         transactionTypes: proj.transactionType,
@@ -312,7 +312,7 @@ export function convertUserBasic(user) {
         photoKey: user.photoKey,
         photoUrl: user.photourl,
         title: convertTitle(user.title),
-        userTags: user.tags && user.tags.map(item => convertTag(item)),
+        userTags: user.tags ? user.tags.map(item => convertTag(item)) : [],
         weChat: user.wechat,
     }
 }
