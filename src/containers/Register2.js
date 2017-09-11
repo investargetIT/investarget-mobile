@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { requestContents, receiveCurrentUserInfo, handleError, hideLoading } from '../actions'
 import api from '../api'
 import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
@@ -155,17 +156,18 @@ class Register2 extends React.Component {
 
     this.props.dispatch(requestContents(''))
 
-    // api.createUser
     newApi.register(param)
-      .then(data => {
-        // TODO: 注册后，显示审核通知
-        // '账号注册成功，工作人员会尽快审核，审核通过后可以正常使用。'
-        // 等一会儿，跳转到主页
-        
-        this.props.dispatch(hideLoading())
+      .then(data => {        
         localStorage.removeItem('REGISTER_BASIC_INFO')
         localStorage.removeItem('VERIFICATION_CODE_TOKEN')
-        this.setState({ showModal: true })
+        return newApi.login({ username: mobile, password: this.state.password })
+      })
+      .then(result => {
+        this.props.dispatch(hideLoading())
+        const { token: authToken, user_info, permissions } = result
+        const userInfo = utils.convertUserInfo(user_info, permissions)
+        this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, mobile, this.state.password))
+        this.props.history.push(api.baseUrl + '/');
       })
       .catch(error => {
         this.props.dispatch(handleError(error))
