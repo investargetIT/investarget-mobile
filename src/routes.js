@@ -14,6 +14,7 @@ import Login from './containers/Login'
 import Register from './containers/Register'
 import Register2 from './containers/Register2'
 import ProjectDetail from './containers/ProjectDetail'
+import ProjectDetailForRN from './containers/ProjectDetailForRN'
 import { connect } from 'react-redux'
 import { readUserInfoFromLocalStorage, handleError, receiveContinentsAndCountries, receiveIndustries, receiveTags, receiveTitles, receiveCurrentUserInfo } from './actions'
 import Filter from './containers/Filter'
@@ -114,6 +115,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/agreement"} component={Agreement} />
           <Route path={api.baseUrl + "/filter"} component={Filter} />
           <Route path={api.baseUrl + "/project/:id"} component={ProjectDetail} />
+          <Route path={api.baseUrl + "/project_for_rn/:id"} component={ProjectDetailForRN} />
           <Route path={api.baseUrl + "/timeline_management"} component={TimelineManagement} />
           <Route path={api.baseUrl + "/chat/:id"} component={Chat} />
           <Route path={api.baseUrl + "/user_info/:id"} component={UserInfo} />
