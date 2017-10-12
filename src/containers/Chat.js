@@ -84,8 +84,7 @@ class Chat extends React.Component {
         var userType = this.props.userType
         var userId = this.props.userId
         var targetUserId = this.props.match.params.id
-        var investorId = userType == 1 ? userId : targetUserId
-        var traderId = userType == 1 ? targetUserId : userId
+        var isInvestor = userType == 1
 
         var param = {
             page_size: 10,
@@ -94,15 +93,23 @@ class Chat extends React.Component {
         }
         
         if (ftype == 1) {
-            param['user'] = investorId
+            param['user'] = targetUserId
         } else if (ftype == 3) {
-            param['user'] = investorId
-            param['trader'] = traderId
+            if (isInvestor) {
+                param['trader'] = targetUserId
+            } else {
+                param['user'] = targetUserId
+            }
         } else if (ftype == 4) {
-            param['user'] = investorId
+            if (!isInvestor) {
+                param['user'] = targetUserId
+            }
         } else if (ftype == 5) {
-            param['user'] = investorId
-            param['trader'] = traderId
+            if (isInvestor) {
+                param['trader'] = targetUserId
+            } else {
+                param['user'] = targetUserId
+            }
         }
 
         newApi.getFavoriteProj(param)

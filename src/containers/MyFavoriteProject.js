@@ -230,12 +230,10 @@ class MyFavoriteProject extends Component {
   componentDidMount() {
     this.props.dispatch(requestContents(''))
 
-    const userId = utils.getCurrentUserId()
     const param = {
         page_size: 10,
         page_index: 1,
         favoritetype: 4,
-        user: userId,
     }
     newApi.getFavoriteProj(param)
       .then(data => {

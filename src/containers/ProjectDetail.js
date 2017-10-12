@@ -277,10 +277,8 @@ class ProjectDetail extends React.Component {
 
       // 是否收藏了项目
       if (this.props.isLogin) {
-        const userId = utils.getCurrentUserId()
         const param = {
             favoritetype: 4,
-            user: userId,
             proj: projectId,
         }
         newApi.getFavoriteProj(param)
