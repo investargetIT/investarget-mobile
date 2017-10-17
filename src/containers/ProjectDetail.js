@@ -489,7 +489,11 @@ class ProjectDetail extends React.Component {
                             info.financeIsPublic ? 
                             <span style={dataValueStyle}>
                                 {info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
-                                {info.finances.netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A'}
+                                {
+                                    info.country.id !== 42 ? 
+                                    info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A' : 
+                                    info.finances[0].netIncome ? '¥' + moneySplit(info.finances[0].netIncome) : 'N/A'
+                                }
                             </span> : 
                             <span style={dataValueStyle}>未公开</span>
                         }
@@ -501,7 +505,11 @@ class ProjectDetail extends React.Component {
                             info.financeIsPublic ?
                             <span style={dataValueStyle}>
                                 {info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
-                                {info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' }
+                                {
+                                    info.country.id !== 42 ? 
+                                    info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' : 
+                                    info.finances[0].revenue ? '¥' + moneySplit(info.finances[0].revenue) : 'N/A'
+                                }
                             </span> :
                             <span style={dataValueStyle}>未公开</span>
                         }
@@ -510,14 +518,22 @@ class ProjectDetail extends React.Component {
                     <div style={dataEntryStyle}>
                         <label style={dataKeyStyle}>交易规模 </label>
                         <span style={dataValueStyle}>
-                            { info.financedAmount_USD ? '$' + moneySplit(info.financedAmount_USD) : 'N/A' }
+                            { 
+                                info.country.id !== 42 ? 
+                                info.financedAmount_USD ? '$' + moneySplit(info.financedAmount_USD) : 'N/A' :
+                                info.financedAmount ? '¥' + moneySplit(info.financedAmount) : 'N/A'
+                            }
                         </span>
                     </div>
 
                     <div style={dataEntryStyle}>
                         <label style={dataKeyStyle}>公司估值</label>
                         <span style={dataValueStyle}>
-                            { info.companyValuation_USD ? '$' + moneySplit(info.companyValuation_USD) : 'N/A' }
+                            { 
+                                info.country.id !== 42 ? 
+                                info.companyValuation_USD ? '$' + moneySplit(info.companyValuation_USD) : 'N/A' :
+                                info.companyValuation ? '¥' + moneySplit(info.companyValuation) : 'N/A'
+                            }
                         </span>
                     </div>
                 </div>

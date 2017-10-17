@@ -289,6 +289,7 @@ export default {
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
           obj['isMarketPlace'] = item.isMarketPlace
+          obj['amount_cny'] = item.financedAmount
           return obj
         })
         cb(projects, newArray)

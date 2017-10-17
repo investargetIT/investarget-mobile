@@ -67,7 +67,7 @@ function ProjectListCell(props) {
       props.showEmail()
     }
   }
-
+  
   return (
     <div style={containerStyle} className="clearfix">
 
@@ -83,7 +83,11 @@ function ProjectListCell(props) {
         </p>
 
         {!props.isMarketPlace ?
-          <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>{props.amount > 0 ? "$" + formatNumber(props.amount) : "N/A"}</span></p>
+          <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>
+            交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>
+              {props.country !== '中国' ? props.amount > 0 ? "$" + formatNumber(props.amount) : "N/A" : props.amount > 0 ? "¥" + formatNumber(props.amountCNY) : "N/A"}
+              </span>
+            </p>
           :
           <div style={{ marginTop: 8 }} data-id={props.id} data-is-market-place={props.isMarketPlace}>
             <a href="tel:13816225193"><img style={{ width: 24, height: 24, marginRight: 40 }} src={api.baseUrl + '/images/phone@2x.png'} alt="" /></a>
