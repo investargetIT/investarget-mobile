@@ -394,9 +394,9 @@ export function getContinentsAndCountries() {
                 }
             })
             
-            const continentsAndCountries = rawCountries.filter(item => 'continentName' in item)
+            const continentsAndCountries = rawCountries.filter(item => item && 'continentName' in item)
             continentsAndCountries.forEach(item => {
-                item['countries'] = rawCountries.filter(subItem => subItem.continentId == item.id)
+                item['countries'] = rawCountries.filter(subItem => subItem && subItem.continentId == item.id)
             })
             
             return continentsAndCountries
