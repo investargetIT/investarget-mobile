@@ -215,6 +215,7 @@ class App extends Component {
             imgUrl={element.imgUrl}
             amount={element.amount}
             amountCNY={element.amount_cny}
+            currency={element.currency}
             id={element.id}
             showEmail={self.showEmailModal} />
         </div>

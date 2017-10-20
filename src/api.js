@@ -286,6 +286,7 @@ export default {
           obj['title'] = item.titleC
           obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
+          obj['currency'] = item.currencyType.id
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
           obj['isMarketPlace'] = item.isMarketPlace
@@ -316,6 +317,7 @@ export default {
           obj['title'] = item.titleC
           obj['amount'] = item.financedAmount_USD
           obj['country'] = item.country.countryName
+          obj['currency'] = item.currencyType.id
           obj['imgUrl'] = item.industrys[0].imgUrl
           obj['industrys'] = item.industrys.map(i => i.industryName)
           obj['isMarketPlace'] = item.isMarketPlace

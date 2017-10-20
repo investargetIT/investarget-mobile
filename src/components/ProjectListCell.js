@@ -85,7 +85,7 @@ function ProjectListCell(props) {
         {!props.isMarketPlace ?
           <p style={amountContainerStyle} data-id={props.id} data-is-market-place={props.isMarketPlace}>
             交易规模：<span data-id={props.id} data-is-market-place={props.isMarketPlace} style={{ color: props.amount > 0 ? '#FF8F40' : '#666666' }}>
-              {props.country !== '中国' ? props.amount > 0 ? "$" + formatNumber(props.amount) : "N/A" : props.amountCNY > 0 ? "¥" + formatNumber(props.amountCNY) : "N/A"}
+              {props.country !== '中国' || props.currency !== 1 ? props.amount > 0 ? "$" + formatNumber(props.amount) : "N/A" : props.amountCNY > 0 ? "¥" + formatNumber(props.amountCNY) : "N/A"}
               </span>
             </p>
           :
