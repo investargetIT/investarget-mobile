@@ -47,7 +47,7 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { isLoadingMore: false, showEmail: false }
+    this.state = { isLoadingMore: false, showEmail: false, isLoadingAll: false }
     this.showEmailModal = this.showEmailModal.bind(this)
     this.hideEmailModal = this.hideEmailModal.bind(this)
   }
@@ -160,6 +160,7 @@ class App extends Component {
             react.props.dispatch(appendProjects(projects))
           } else {
             alloyTouch.to(alloyTouch.min + 50, 0)
+            react.setState({ isLoadingAll: true });
           }
         },
         error => {
@@ -176,7 +177,7 @@ class App extends Component {
     function mockRequest(at) {
 
       pull_refresh.classList.add("refreshing");
-
+      react.setState({ isLoadingAll: false });
       api.getProjects(
         filterToParams(react.props.filter),
         (projects, dataStructure) => {
@@ -266,7 +267,10 @@ var loadmoreStyle = {
             <ul id="list" ref="listContainer">
               { !this.props.isFetching && rows.length === 0 ? <div style={{textAlign: 'center'}}>没有结果，请重新筛选</div> : rows }
             </ul>
-            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + '/images/loading.svg'} alt="" /></div>
+            { this.state.isLoadingAll ? 
+              <div style={loadmoreStyle}><span style={{ fontSize: 12, color: 'gray' }}>---没有更多了---</span></div> :
+              <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + '/images/loading.svg'} alt="" /></div>
+            }
           </div>
         </div>
 
