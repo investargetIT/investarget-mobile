@@ -17,7 +17,7 @@ function r(url, method, body, isUploadFile) {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "clienttype": "3",
+      "clienttype": "4",
       "source": source
     }
   }
@@ -58,7 +58,7 @@ function r2(url, method, body) {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "clienttype": "3",
+      "clienttype": "4",
       "source": source
     }
   }
