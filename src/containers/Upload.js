@@ -28,6 +28,7 @@ class Upload extends React.Component {
           this.setState({ isActive: false });
         }
       })
+      .catch(err => this.setState({ isActive: false }));
   }
 
   handleInputChange = e => {
@@ -41,22 +42,43 @@ class Upload extends React.Component {
       bucket = 'file';
     }
     this.props.dispatch(requestContents());
+    let body;
+    let isActive = true;
+    // 上传文件
     newApi.qiniuUpload(bucket, file)
       .then(result => {
-        this.props.dispatch(hideLoading());
         const { key: cardKey, url: cardUrl } = result.data;
-        const body = {
+        body = {
           record: this.key,
           filename,
           bucket,
           key: cardKey,
         }
-        return newApi.updateMobileUploadKey(body);
+        // 查询二维码是否有效
+        return newApi.queryMobileUploadKey(this.key);
       })
       .then(result => {
-        this.setState({ showModal: true });
+        // 这个二维码已经失效时调用删除接口
+        if (result[this.key] && !result[this.key]['is_active']) {
+          isActive = false;
+          return newApi.deleteMobileUploadKey(this.key);
+        } else {
+          // 更新这个二维码的内容
+          return newApi.updateMobileUploadKey(body);
+        }
       })
-      .catch(error => this.props.dispatch(handleError(error)));
+      .then(result => {
+        this.props.dispatch(hideLoading());
+        if (isActive) {
+          this.setState({ showModal: true });
+        } else {
+          this.setState({ isActive: false });
+        }
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error));
+        this.setState({ isActive: false });
+      });
   }
 
   handleUploadBtnPressed = () => {

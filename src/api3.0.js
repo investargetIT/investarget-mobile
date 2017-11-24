@@ -658,3 +658,4 @@ export const getPostsAndEvent = () => r('/activity/');
 
 export const queryMobileUploadKey = key => r('/service/selectUpload?record=' + key);
 export const updateMobileUploadKey = body => r('/service/updateUpload', 'POST', body);
+export const deleteMobileUploadKey = record => r('/service/deleteUpload', 'POST', { record });
