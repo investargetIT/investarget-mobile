@@ -437,7 +437,7 @@ class ProjectDetail extends React.Component {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
         }
-        bgImageStyle.backgroundImage = 'url(' + info.industrys[0].imgUrl + ')'
+        bgImageStyle.backgroundImage = 'url(' + encodeURI(info.industrys[0].imgUrl) + ')'
 
 
         var itemMap = {
@@ -474,7 +474,7 @@ class ProjectDetail extends React.Component {
         return (
 	        <div style={containerStyle}>
                 <div style={wechatImageContainer}> 
-                    <img src={info.industrys[0].imgUrl} alt="" />
+                    <img src={encodeURI(info.industrys[0].imgUrl)} alt="" />
                 </div>
 
                 <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>

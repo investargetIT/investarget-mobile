@@ -228,6 +228,7 @@ export function convertProjFormat(proj) {
 
 
 export function convertDetailProject(proj) {
+    window.echo(proj);
     return {
         b_introducteC: proj.p_introducte,
         // b_introducteE
@@ -262,7 +263,6 @@ export function convertDetailProject(proj) {
         titleC: proj.projtitle,
         // titleE
         transactionTypes: proj.transactionType,
-        userId: proj.supportUser.id,
     }
 }
 
