@@ -177,6 +177,8 @@ class App extends Component {
         obj['title'] = item.projtitle
         obj['amount'] = item.financeAmount_USD
         obj['country'] = item.country.country
+        obj['currency'] = item.currency.id
+        obj['amount_cny'] = item.financeAmount
         obj['imgUrl'] = item.industries[0].url
         obj['industrys'] = item.industries.map(i => i.name)
         obj['isMarketPlace'] = item.ismarketplace
@@ -206,6 +208,8 @@ class App extends Component {
           obj['title'] = item.projtitle
           obj['amount'] = item.financeAmount_USD
           obj['country'] = item.country.country
+          obj['currency'] = item.currency.id
+          obj['amount_cny'] = item.financeAmount 
           obj['imgUrl'] = item.industries[0].url
           obj['industrys'] = item.industries.map(i => i.name)
           obj['isMarketPlace'] = item.ismarketplace
