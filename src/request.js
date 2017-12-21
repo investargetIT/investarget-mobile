@@ -1,9 +1,8 @@
-// require('es6-promise').polyfill();
-// import fetch from 'dva/fetch';
-
-let baseUrl = "http://192.168.1.251:8080"
-// baseUrl = "/api"
-// baseUrl = "http://192.168.1.201:8000"
+let devUrl = "http://192.168.1.251:8080";
+// devUrl = 'http://192.168.1.201:8000';
+const prodUrl = 'http://39.107.14.53:8080';
+let baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
+export { baseUrl };
 
 export class ApiError extends Error {
   constructor(code, message) {
