@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import LeftLabelRightContent from '../components/LeftLabelRightContent'
 import { handleError, requestContents, hideLoading, modifyUserInfo } from '../actions'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -82,24 +84,23 @@ class ModifyBusinessCard extends Component {
 
       react.setState({ businessCard: reader.result });
 
-      var formData = new FormData()
-      formData.append('file', file)
-      formData.append('key', 'cardKey')
+      newApi.qiniuUpload('image', file)
+        .then(result => {
+          react.props.dispatch(hideLoading())
+          react.props.dispatch(handleError(new Error('Please wait patient')))
 
-      api.uploadUserAvatar(
-	formData,
-	(key, url) => {
-	  react.props.dispatch(hideLoading())
-	  react.props.dispatch(handleError(new Error('Please wait patient')))
-	  const newUserInfo = Object.assign({}, react.props.userInfo, {
-	    cardKey: key,
-	    cardUrl: url
-	  })
-	  react.props.dispatch(modifyUserInfo(newUserInfo))
-	},
-	error => react.props.dispatch(handleError(error)),
-	react.props.userInfo.cardKey || null
-      )
+          const { key: cardKey, url: cardUrl } = result.data
+          const userId = utils.getCurrentUserId()
+          newApi.editUser([userId], { cardKey, cardUrl })
+            .then(data => {
+              const newUserInfo = { ...react.props.userInfo, cardKey, cardUrl }
+              react.props.dispatch(modifyUserInfo(newUserInfo))
+            })
+        })
+        .catch(error => {
+          react.props.dispatch(handleError(error))
+        })
+
     }
 
     reader.onerror = function () {

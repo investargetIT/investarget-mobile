@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { requestContents, handleError, hideLoading } from '../actions'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 import NavigationBar from '../components/NavigationBar'
 
@@ -35,13 +37,16 @@ class OrganizationDetail extends React.Component {
 
     componentDidMount() {
         this.props.dispatch(requestContents(''))
-        api.getSingleOrganization(this.props.match.params.id,
-            result => {
+        const orgId = this.props.match.params.id
+        newApi.getOrgDetailLang(orgId)
+            .then(data => {
+                const org = utils.convertOrganization(data)
                 this.props.dispatch(hideLoading())
-                this.setState({result: result})
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+                this.setState({result: org})
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     render() {

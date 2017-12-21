@@ -176,7 +176,7 @@ const guideButtonStyle = {
 }
 
 
-class ProjectDetail extends React.Component {
+class ProjectDetailForRN extends React.Component {
     constructor(props) {
         super(props)
 
@@ -277,8 +277,10 @@ class ProjectDetail extends React.Component {
 
       // 是否收藏了项目
       if (this.props.isLogin) {
+        const userId = utils.getCurrentUserId()
         const param = {
             favoritetype: 4,
+            user: userId,
             proj: projectId,
         }
         newApi.getFavoriteProj(param)
@@ -437,7 +439,7 @@ class ProjectDetail extends React.Component {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
         }
-        bgImageStyle.backgroundImage = 'url(' + encodeURI(info.industrys[0].imgUrl) + ')'
+        bgImageStyle.backgroundImage = 'url(' + info.industrys[0].imgUrl + ')'
 
 
         var itemMap = {
@@ -474,10 +476,9 @@ class ProjectDetail extends React.Component {
         return (
 	        <div style={containerStyle}>
                 <div style={wechatImageContainer}> 
-                    <img src={encodeURI(info.industrys[0].imgUrl)} alt="" />
+                    <img src={info.industrys[0].imgUrl} alt="" />
                 </div>
 
-                <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>
 
                 <div style={bgImageStyle}>
                     <div style={firstStyle}>
@@ -521,8 +522,8 @@ class ProjectDetail extends React.Component {
                                 {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
                                 {
                                     info.country.id !== 42 || info.currencyType.id !== 1 ? 
-                                    info.finances && info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A' : 
-                                    info.finances && info.finances[0].netIncome ? '¥' + moneySplit(info.finances[0].netIncome) : 'N/A'
+                                    info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A' : 
+                                    info.finances[0].netIncome ? '¥' + moneySplit(info.finances[0].netIncome) : 'N/A'
                                 }
                             </span> : 
                             <span style={dataValueStyle}>未公开</span>
@@ -537,8 +538,8 @@ class ProjectDetail extends React.Component {
                                 {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
                                 {
                                     info.country.id !== 42 || info.currencyType.id !== 1 ? 
-                                    info.finances && info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' : 
-                                    info.finances && info.finances[0].revenue ? '¥' + moneySplit(info.finances[0].revenue) : 'N/A'
+                                    info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' : 
+                                    info.finances[0].revenue ? '¥' + moneySplit(info.finances[0].revenue) : 'N/A'
                                 }
                             </span> :
                             <span style={dataValueStyle}>未公开</span>
@@ -573,45 +574,6 @@ class ProjectDetail extends React.Component {
                     {hightlightItems}
                 </div>
 
-		        { this.props.isLogin ? 
-                    <div>
-                        <div style={actionPlaceHolderStyle}></div>
-                        <div style={actionContainerStyle}>
-                            <button name="timeline" style={actionStyle} onClick={this.handleActionButtonClicked}>时间轴</button>
-                            {
-                                this.props.userInfo.userType == 1 ? 
-                                    <button name="interest" style={actionStyle} onClick={this.handleActionButtonClicked}>感兴趣</button> :
-                                    <button name="recommend" style={actionStyle} onClick={this.handleActionButtonClicked}>推荐给投资人</button>
-                            }
-                            
-                            <div style={actionFavoriteContinerStyle}>
-                                <img
-                                    style={favoriteIconStyle}
-                                    src={api.baseUrl + (this.state.isMyFavoriteProject ? "/images/home/projCollected@2x.png" : "/images/home/projNoCollect@2x.png")}
-                                    onClick={this.handleFavoriteButtonToggle}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                :
-                    <div style={{ display: this.state.showGuide ? 'block' : 'none' }}>
-                        <div style={guidePlaceholderStyle}></div>
-                        <div style={guideWrapperStyle}>
-                            <div style={guideStyle}>
-                                <img style={guideCloseStyle} onClick={this.handleCloseGuide} src={api.baseUrl + "/images/closeView@2x.png"} alt="close"></img>
-                                <img style={guideLogoStyle} src={api.baseUrl + "/images/shareLogo@2x.png"} alt="logo"></img>
-                                <div style={guideTextStyle}>
-                                    <p style={guideTitleStyle}>多维海拓</p>
-                                    <p style={guideContentStyle}>中国跨境投资生态系统</p>
-                                </div>
-                                <Link style={guideLinkStyle} to={api.baseUrl + "/register"}>
-                                    <button style={guideButtonStyle}>立即注册</button>
-                                </Link>
-                            </div> 
-                        </div>
-                    </div>
-                }
-
                 <Modal show={this.state.showModal} title={this.state.modalTitle} content={this.state.modalContent} actions={this.state.modalActions} />
             </div>
         )
@@ -640,4 +602,4 @@ function mapStateToProps(state) {
   return { isLogin, userInfo, recommendProcess }
 }
 
-export default connect(mapStateToProps)(ProjectDetail)
+export default connect(mapStateToProps)(ProjectDetailForRN)

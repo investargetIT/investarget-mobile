@@ -77,6 +77,7 @@ const Modal = (props) => {
                         <div style={bodyStyle}>
                             {props.content}
                         </div>
+                        {props.actions ? 
                         <div style={footerStyle}>
                                 {
                                     props.actions.map((action, index) => (
@@ -84,6 +85,7 @@ const Modal = (props) => {
                                     ))
                                 }
                         </div>
+                        : null}
                     </div>
                 </div>
             </div>

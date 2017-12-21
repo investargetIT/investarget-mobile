@@ -35,6 +35,7 @@ var titleStyle = {
     fontSize: '16px',
     borderBottom: '1px solid #eee',
     color: '#999',
+    backgroundColor: '#fff',
 }
 var cancelIconStyle = {
     position: 'absolute',
@@ -86,7 +87,7 @@ class PickerView extends React.Component {
         super(props)
     }
 
-    componentDidMount() {
+    configureAlloyTouch = () => {
         var self = this
         var n = this.props.options.length;
        
@@ -122,17 +123,27 @@ class PickerView extends React.Component {
             },
         })
 
-         var index = this.props.options.findIndex((option) => {
+        var index = this.props.options.findIndex((option) => {
             return option.value == this.props.value
         })
         this.alloyTouch.to(-index * HEIGHT)
     }
 
+    componentDidMount() {
+        this.configureAlloyTouch()
+    }
+
     componentWillReceiveProps(nextProps) {
-        var index = nextProps.options.findIndex((option) => {
-            return option.value == nextProps.value
-        })
-        this.alloyTouch.to(-index * HEIGHT)
+        if (nextProps.options) {
+            this.alloyTouch.destroy()
+            this.configureAlloyTouch()
+        } else {
+            let index = nextProps.options.findIndex((option) => {
+                return option.value == nextProps.value
+            })
+            this.alloyTouch.to(-index * HEIGHT)
+        }
+
     }
 
     componentWillUnmount() {
@@ -142,7 +153,7 @@ class PickerView extends React.Component {
 
     render() {
         var options = this.props.options.map(option => {
-            return <div style={itemStyle} key={option.value}>{option.name}</div>
+            return <div style={itemStyle} key={option.id || option.value}>{option.name}</div>
         })
 
         return (

@@ -1,6 +1,8 @@
 import React from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { requestContents, hideLoading, handleError } from '../actions'
 import { connect } from 'react-redux'
 
@@ -63,13 +65,16 @@ class UserInfo extends React.Component {
     componentDidMount() {
         var userId = this.props.match.params.id
         this.props.dispatch(requestContents(''))
-        api.getUserBasic(userId, 
-            user => {
-                this.setState({'user': user})
+
+        newApi.getUserDetailLang(userId)
+            .then(data => {
+                const user = utils.convertUserBasic(data)
+                this.setState({ user })
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     render() {
@@ -90,8 +95,8 @@ class UserInfo extends React.Component {
                     <div style={detailStyle}>
                         <div style={rowStyle}>公司：{user.company}</div>
                         <div style={rowStyle}>职位：{user.title && user.title.titleName}</div>
-                        <div style={rowStyle}>手机号码：<a href="tel:18637760716">{user.mobile}</a></div>
-                        <div style={rowStyle}>电子邮箱：<a href="mailto:wjk1397@126.com">{user.emailAddress}</a></div>
+                        <div style={rowStyle}>手机号码：<a href={"tel:" + user.mobile}>{user.mobile}</a></div>
+                        <div style={rowStyle}>电子邮箱：<a href={"mailto:" + user.emailAddress}>{user.emailAddress}</a></div>
                     </div>
                 </div>
             </div>

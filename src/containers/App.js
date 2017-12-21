@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import Modal from '../components/Modal'
 import { connect } from 'react-redux'
-import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError } from '../actions'
+import { updateProjectStructure, requestContents, receiveContents, appendProjects, handleError, saveRedirectUrl } from '../actions'
 import TabBar from './TabBar'
 import Transform from '../transform'
 import AlloyTouch from 'alloytouch'
 import { Link } from 'react-router-dom'
 import api from '../api.js'
+import * as newApi from '../api3.0.js'
 
 
 const loadingStyle = {
@@ -60,18 +61,168 @@ class App extends Component {
     this.setState({ showEmail: false })
   }
 
-  componentDidMount() {
+  convertIntToArray(start, length) {
+    const array = []
+    for (var i = start; i < (start + length); i++) {
+      array.push(i)
+    }
+    return array
+  }
+  intersectArray(array1, array2) {
+    const result = []
+    array1.forEach(item => {
+      if (array2.includes(item)) {
+        result.push(item)
+      }
+    })
+    return result
+  }
+  getPublicAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+    Object.assign(
+      filterToObject(this.props.filter),
+      {
+        projstatus: 4,
+        ismarketplace: false,
+        skip_count: skipCount,
+        max_size: maxSize,
+      },
+    )
+  )
+  getPublicAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+    Object.assign(
+      filterToObject(this.props.filter),
+      {
+        projstatus: 4,
+        ismarketplace: true,
+        skip_count: skipCount,
+        max_size: maxSize,
+      },
+    )
+  )
+  getClosedAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+    Object.assign(
+      filterToObject(this.props.filter),
+      {
+        projstatus: 8,
+        ismarketplace: false,
+        skip_count: skipCount,
+        max_size: maxSize,
+      },
+    )
+  )
+  getClosedAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+    Object.assign(
+      filterToObject(this.props.filter),
+      {
+        projstatus: 8,
+        ismarketplace: true,
+        skip_count: skipCount,
+        max_size: maxSize,
+      },
+    )
+  )
+  getProjectsArray = [
+    this.getPublicAndNotMarketPlaceProjects,
+    this.getPublicAndMarketPlaceProjects,
+    this.getClosedAndNotMarketPlaceProjects,
+    this.getClosedAndMarketPlaceProjects,
+  ]
 
+  getProjects = callback => {
+
+    const count = []
+    let newArray = []
+    this.getPublicAndNotMarketPlaceProjects(0, 1)
+    .then(data => {
+      count.push(data.count);
+      return this.getPublicAndMarketPlaceProjects(0, 1);
+    })
+    .then(data => {
+      count.push(data.count);
+      return this.getClosedAndNotMarketPlaceProjects(0, 1);
+    })
+    .then(data => {
+      count.push(data.count);
+      return this.getClosedAndMarketPlaceProjects(0, 1);
+    })
+    .then(data => {
+      count.push(data.count);
+      newArray = count.reduce((acc, val) => {
+        var startIndex = 0
+        if (acc.length > 0) {
+          for (var a = acc.length - 1; a >= 0; a--) {
+            var startArr = acc[a]
+            if (startArr.length > 0) {
+              startIndex = startArr[startArr.length - 1]
+              break
+            }
+          }
+        }
+        acc.push(this.convertIntToArray(startIndex + 1, val))
+        return acc
+      }, [])
+      const intersect = newArray.map(item => this.intersectArray(item, this.convertIntToArray(1, 10)))
+      const requestArr = []
+      intersect.forEach((item, index) => {
+        if (item.length > 0) {
+          requestArr.push(this.getProjectsArray[index](item[0] - newArray[index][0], item.length))
+        }
+      })
+      return Promise.all(requestArr)
+    })
+    .then(result => {
+      const projects = result.map(item => item.data).reduce((acc, val) => acc.concat(val), []).map(item => {
+        var obj = {}
+        obj['id'] = item.id
+        obj['title'] = item.projtitle
+        obj['amount'] = item.financeAmount_USD
+        obj['country'] = item.country.country
+        obj['imgUrl'] = item.industries[0].url
+        obj['industrys'] = item.industries.map(i => i.name)
+        obj['isMarketPlace'] = item.ismarketplace
+        return obj
+      })
+      callback(projects, newArray);
+    })
+    .catch(error => this.props.dispatch(handleError(error)))
+  }
+
+  getMoreProjects = callback => {
+    const intersect = this.props.projectStructure.map(item => this.intersectArray(item, this.convertIntToArray(this.props.projects.length + 1, 10)))
+    const requestArr = []
+    intersect.forEach((item, index) => {
+      if(item.length > 0) {
+        requestArr.push(this.getProjectsArray[index](item[0] - this.props.projectStructure[index][0], item.length))
+      }
+    })
+    if (requestArr.length === 0) {
+      requestArr.push(this.getClosedAndMarketPlaceProjects(10000, 10))
+    }
+    Promise.all(requestArr)
+      .then(result => {
+        const projects = result.map(item => item.data).reduce((acc, val) => acc.concat(val), []).map(item => {
+          var obj = {}
+          obj['id'] = item.id
+          obj['title'] = item.projtitle
+          obj['amount'] = item.financeAmount_USD
+          obj['country'] = item.country.country
+          obj['imgUrl'] = item.industries[0].url
+          obj['industrys'] = item.industries.map(i => i.name)
+          obj['isMarketPlace'] = item.ismarketplace
+          return obj
+        })
+        callback(projects)
+      })
+      .catch(error => this.props.dispatch(handleError(error)))
+  }
+
+  componentDidMount() {
     if (this.props.projects.length === 0 || this.props.needRefresh) {
       this.props.dispatch(requestContents(''))
-      api.getProjects(
-        filterToParams(this.props.filter),
-        (projects, dataStructure) => {
-          this.props.dispatch(updateProjectStructure(dataStructure))
-          this.props.dispatch(receiveContents('', projects))
-        },
-        error => this.props.dispatch(handleError(error))
-      )
+      this.getProjects((projects, dataStructure) => {
+        this.props.dispatch(updateProjectStructure(dataStructure))
+        this.props.dispatch(receiveContents('', projects))
+      })
     }
 
     var scroller = document.querySelector("#scroller"),
@@ -122,23 +273,34 @@ class App extends Component {
       tap: (evt, value) => {
         const projectID = evt.target.dataset.id
         if (!projectID) return
-
         const isMarketPlace = evt.target.dataset.isMarketPlace
-        if (isMarketPlace === 'false') {
-          window.location.href = api.baseUrl + '/project/' + projectID + (react.props.userInfo ? '?token=' + react.props.userInfo.token : '')
-        } else {
-          api.getPdfFileUrl(
-            projectID,
-            fileUrl => {
-              let url = api.baseUrl + '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl)
-              if (react.props.userInfo && react.props.userInfo.emailAddress) {
-                url += '&watermark=' + encodeURIComponent(react.props.userInfo.emailAddress)
-              }
-              window.location.href = url
-            },
-            error => react.props.dispatch(handleError(error))
-          )
+        if (!this.props.isLogin) {
+          this.props.dispatch(saveRedirectUrl(`${api.baseUrl}/project/detail?projectID=${projectID}&isMarketPlace=${isMarketPlace}`));
+          this.props.history.push(api.baseUrl + '/login');
+          return;
         }
+        if (isMarketPlace == "false") {
+          newApi.getShareToken(projectID)
+            .then(token => {
+              window.location.href = api.baseUrl + '/project/' + projectID + '?token=' + token
+            })
+            .catch(error => {
+              react.props.dispatch(handleError(error))
+            })
+        } else {
+          newApi.getProjLangDetail(projectID)
+            .then(data => {
+              const fileUrl = data.linkpdfurl
+              const userInfo = react.props.userInfo
+              const email = (userInfo && userInfo.emailAddress) ? userInfo.emailAddress : 'deal@investarget.com'
+              const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(email)
+              window.location.href = url
+            })
+            .catch(error => {
+              react.props.dispatch(handleError(error))
+            })
+        }
+
       }
     })
     
@@ -149,11 +311,9 @@ class App extends Component {
 
     function loadMore() {
       react.setState({ isLoadingMore: true })
-      api.getMoreProjects(
-        react.props.projectStructure,
-        filterToParams(react.props.filter),
-        projects => {
-          loading = false
+      react.getMoreProjects(projects => {
+        // use setTimeout here to prevent load more execute more than once
+        setTimeout(() => {
           react.setState({ isLoadingMore: false })
           resetMin()
           if (projects.length > 0) {
@@ -162,33 +322,21 @@ class App extends Component {
             alloyTouch.to(alloyTouch.min + 50, 0)
             react.setState({ isLoadingAll: true });
           }
-        },
-        error => {
           loading = false
-          resetMin()
-          alloyTouch.to(alloyTouch.min + 50)
-          react.props.dispatch(handleError(error))
-        },
-        react.props.projects.length
-      )
-
+        }, 1000)
+      })
     }
 
     function mockRequest(at) {
-
       pull_refresh.classList.add("refreshing");
       react.setState({ isLoadingAll: false });
-      api.getProjects(
-        filterToParams(react.props.filter),
-        (projects, dataStructure) => {
-          arrow.classList.remove("arrow_up");
-          pull_refresh.classList.remove("refreshing");
-          at.to(at.initialValue);
-          react.props.dispatch(updateProjectStructure(dataStructure))
-          react.props.dispatch(receiveContents('', projects))
-        },
-        error => react.props.dispatch(handleError(error))
-      )
+      react.getProjects((projects, dataStructure) => {
+        arrow.classList.remove("arrow_up");
+        pull_refresh.classList.remove("refreshing");
+        at.to(at.initialValue);
+        react.props.dispatch(updateProjectStructure(dataStructure))
+        react.props.dispatch(receiveContents('', projects))
+      })
     }
 
     document.ontouchmove = function (evt) {
@@ -284,9 +432,9 @@ var loadmoreStyle = {
 }
 
 function mapStateToProps(state) {
-  const { projects, needRefresh, userInfo, isFetching, projectStructure } = state
+  const { projects, needRefresh, userInfo, isFetching, projectStructure, isLogin } = state
   const filter = state.trueFilter
-  return { projects, filter, needRefresh, userInfo, isFetching, projectStructure }
+  return { projects, filter, needRefresh, userInfo, isFetching, projectStructure, isLogin }
 }
 
 function filterToParams(data) {
@@ -313,6 +461,14 @@ function filterToParams(data) {
   }
 
   return params
+}
+
+function filterToObject(data) {
+  const country = data.filter(item => item.type === 'area').map(item => item.id)
+  const industries = data.filter(item => item.type === 'industry').map(item => item.id)
+  const tags = data.filter(item => item.type === 'tag').map(item => item.id)
+  const search = data.filter(item => item.type === 'title').map(item => item.title)[0]
+  return { country, industries, tags, search }
 }
 
 export default connect(mapStateToProps)(App);

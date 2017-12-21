@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -102,24 +104,28 @@ class MyPartener extends Component {
 
   componentDidMount() {
 
-    this.props.dispatch(requestContents(''))
-    
-    api.getUsers(
-      data => {
-        this.props.dispatch(hideLoading())
+    const userId = utils.getCurrentUserId()
 
-        const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+    if (this.props.userType == 1 || this.props.userType == 3) {
+
+      let param = this.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = 15
+      param.page_index = 1
+      this.props.dispatch(requestContents(''))
+      newApi.getUserRelation(param)
+        .then(data => {
+          const myPartener = data.data.map(item => {
+            const user = this.props.userType == 1 ? item.traderuser : item.investoruser
+            const { id, username, org, photourl } = user
+            return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+          })
+          this.setState({ myPartener })
+          this.props.dispatch(hideLoading())
         })
-        this.setState({myPartener: myPartener})
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+        .catch(error => {
+          this.props.dispatch(handleError(error))
+        })      
+    } 
 
     var scroller = document.querySelector("#scroller"),
       arrow = document.querySelector("#arrow"),
@@ -177,62 +183,55 @@ class MyPartener extends Component {
 
     function loadMore() {
       react.setState({ isLoadingMore: true })
-      api.getUsers(
-        data => {
 
-          resetMin()
-          if (data.items.length > 0) {
-
-                    const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+      let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = react.state.myPartener.length
+      param.page_index = 1
+      newApi.getUserRelation(param)
+      .then(data => {
+        resetMin()
+        if (data.data.length > 0) {
+        const myPartener = data.data.map(item => {
+          const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+          const { id, username, org, photourl } = user
+          return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
         })
         const partner = react.state.myPartener.concat(myPartener)
-        react.setState({myPartener: partner})
-
-          } else {
-            alloyTouch.to(alloyTouch.min + 50, 0)
-          }
-                    loading = false
+        react.setState({ myPartener: partner })
+        } else {
+          alloyTouch.to(alloyTouch.min + 50, 0)
+        }
+        loading = false
           react.setState({ isLoadingMore: false })
-        },
-        error => {
-          loading = false
-          resetMin()
-          alloyTouch.to(alloyTouch.min + 50)
-          react.props.dispatch(handleError(error))
-        },
-        react.state.myPartener.length
-      )
+      })
+    
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
 
     }
 
     function mockRequest(at) {
 
       pull_refresh.classList.add("refreshing");
-
-      api.getUsers(
-        data => {
-          arrow.classList.remove("arrow_up")
-          pull_refresh.classList.remove("refreshing")
-          at.to(at.initialValue)
-
-        const myPartener = data.items.map(item => {
-          var object = {}
-          object.id = item.id
-          object.name = item.name
-          object.org = item.org ? item.org.name : item.company
-          object.photoUrl = item.photoUrl
-          return object
+      let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+      param.page_size = 15
+      param.page_index = 1
+      newApi.getUserRelation(param)
+      .then(data => {
+        arrow.classList.remove("arrow_up")
+        pull_refresh.classList.remove("refreshing")
+        at.to(at.initialValue)
+        const myPartener = data.data.map(item => {
+          const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+          const { id, username, org, photourl } = user
+          return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
         })
-        react.setState({myPartener: myPartener})
-        },
-        error => react.props.dispatch(handleError(error))
-      )
+        react.setState({ myPartener })
+      })
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
     }
 
     document.ontouchmove = function (evt) {
@@ -267,7 +266,8 @@ class MyPartener extends Component {
       var formData = new FormData()
       formData.append('file', file)
       const fileDa = file
-      api.uploadBusinessCard(formData)
+
+      newApi.ccUpload(formData)
         .then(data => {
           react.props.dispatch(hideLoading())
           const parsedData = react.parseData(JSON.parse(data))
@@ -392,7 +392,7 @@ var loadmoreStyle = {
 
 function mapStateToProps(state) {
   const { userInfo, titles } = state
-  return { userInfo, titles }
+  return { userInfo, titles, userType: userInfo.userType }
 }
 
 export default connect(mapStateToProps)(MyPartener)

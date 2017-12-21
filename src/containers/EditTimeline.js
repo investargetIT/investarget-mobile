@@ -5,6 +5,8 @@ import PickerView from '../components/PickerView'
 import NavigationBar from '../components/NavigationBar'
 
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { requestContents, hideLoading, handleError } from '../actions'
 import { connect } from 'react-redux'
 
@@ -80,7 +82,7 @@ class EditTimeline extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            timeLineId: null,
+            timeLineId: parseInt(this.props.match.params.id),
             timeLine: {
                 alertCycle: 7,
                 transactionStatusId: 0,
@@ -124,23 +126,16 @@ class EditTimeline extends React.Component {
     }
 
     handleAddRemarkConfirm() {
-        api.createTimeLineRemark(
-            { timeLineId: this.state.timeLineId, remark: this.state.remarkDraft },
-            (remarks) => {
+        const param = { timeline: this.state.timeLineId, remark: this.state.remarkDraft }
+        newApi.addTimelineRemark(param)
+            .then(data => {
                 this.setState({ showAddModal: false, remarkDraft: '' })
-
                 this.props.dispatch(requestContents(''))
-                api.getTimeLineRemarks(
-                    this.state.timeLineId,
-                    remarks => {
-                        this.setState({ remarks: remarks })
-                        this.props.dispatch(hideLoading())
-                    },
-                    error => this.props.dispatch(handleError(error))
-                )
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+                this.getTimelineRemarks()
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     handleRemarkValueChange(event) {
@@ -158,36 +153,36 @@ class EditTimeline extends React.Component {
 
     handleModifyRemarkConfirm() {
         this.props.dispatch(requestContents(''))  
-        api.modifyTimeLineRemark(
-            this.state.remarkId,
-            { remark: this.state.remarkDraft },
-            () => {
-                var remarks = this.state.remarks.slice()
-                var index = remarks.findIndex(remark => remark.id == this.state.remarkId)
-                remarks[index].remark = this.state.remarkDraft
-                this.setState({ showModifyModal: false, remarkId: null, remarkDraft: '', remarks: remarks })
+
+        const remarkId = this.state.remarkId
+        const param = {
+            timeline: this.state.timeLineId,
+            remark: this.state.remarkDraft
+        }
+        newApi.editTimelineRemark(remarkId, param)
+            .then(data => {
+                this.setState({ showModifyModal: false, remarkId: null, remarkDraft: '' })
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+                this.getTimelineRemarks()
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     handleRemoveRemark(id, e) {
         e.stopPropagation()
         this.props.dispatch(requestContents(''))
-        api.deleteTimeLineRemark(
-            id,
-            () => {
-                var remarks = this.state.remarks.slice()
-                var index = remarks.findIndex(remark => remark.id == id)
-                if (index > -1) {
-                    remarks.splice(index, 1)
-                }
-                this.setState({ remarks: remarks })
+
+        newApi.deleteTimelineRemark(id)
+            .then(data => {
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+                this.getTimelineRemarks()
+            })
+            .catch(error => {
+                error => this.props.dispatch(handleError(error))
+            })
+
     }
 
     handleModifyTransactionStatus() {
@@ -220,56 +215,71 @@ class EditTimeline extends React.Component {
     }
 
     handleChangeTimeLine() {
-        var param = {
-            timeLineId: this.state.timeLineId,
-            transactionStatus: this.state.timeLine.transactionStatusId,
-            alertCycle: this.state.timeLine.alertCycle
-        }
         this.props.dispatch(requestContents(''))
-        api.changeTimeLine(
-            param,
-            () => {
-                this.props.dispatch(hideLoading())
+
+        const id = this.state.timeLineId
+        const param = {
+            timelinedata: { trader: null },
+            statusdata: {
+                alertCycle: this.state.timeLine.alertCycle,
+                transationStatus: this.state.timeLine.transactionStatusId
             },
-            error => this.props.dispatch(handleError(error))
-        )
+        }
+        newApi.editTimeline(id, param)
+            .then(data => {
+                this.props.dispatch(hideLoading())
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+    }
+
+    getTimelineRemarks = () => {
+        const timeLineId = this.state.timeLineId
+        const userId = utils.getCurrentUserId()
+        const param = { timeline: timeLineId, createuser: userId }
+        newApi.getTimelineRemark(param)
+            .then(data => {
+                const remarks = data.data.map(item => utils.convertTimelineRemark(item))
+                this.setState({ remarks })
+                this.props.dispatch(hideLoading())
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     componentDidMount() {
-        var timeLineId = parseInt(this.props.match.params.id)
-        this.setState({ timeLineId: timeLineId })
+
+        const timeLineId = this.state.timeLineId
         this.props.dispatch(requestContents(''))
-        api.getTimeLine(
-            timeLineId,
-            timeLine => {
-                this.setState({ 'timeLine': timeLine })
+
+        newApi.getTimelineDetail(timeLineId)
+            .then(data => {
+                const timeLine = utils.convertDetailTimeline(data)
+                this.setState({ timeLine })
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
-        api.getTimeLineRemarks(
-            timeLineId,
-            remarks => {
-                this.setState({ 'remarks': remarks})
-                this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+
+        this.getTimelineRemarks()
     }
 
     render() {
         var stages = [
-            {name: '获取项目概要', value: 0},
-            {name: '签署保密协议', value: 1},
-            {name: '获取投资备忘录', value: 2},
-            {name: '进入一期资料库', value: 3},
-            {name: '签署投资意向书/投资条款协议', value: 4},
-            {name: '进入二期资料库', value: 5},
-            {name: '进场尽职调查', value: 6},
-            {name: '签署约束性报价书', value: 7},
-            {name: '起草法律协议', value: 8},
-            {name: '签署法律协议', value: 9},
-            {name: '完成交割', value: 10},
+            {name: '获取项目概要', value: 1},
+            {name: '签署保密协议', value: 2},
+            {name: '获取投资备忘录', value: 3},
+            {name: '进入一期资料库', value: 4},
+            {name: '签署投资意向书/投资条款协议', value: 5},
+            {name: '进入二期资料库', value: 6},
+            {name: '进场尽职调查', value: 7},
+            {name: '签署约束性报价书', value: 8},
+            {name: '起草法律协议', value: 9},
+            {name: '签署法律协议', value: 10},
+            {name: '完成交割', value: 11},
         ]
 
         var timeLine = this.state.timeLine

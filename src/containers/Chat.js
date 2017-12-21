@@ -2,6 +2,8 @@ import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { connect } from 'react-redux'
 import { requestContents, hideLoading, handleError, setRecommendInvestors } from '../actions'
 import { Link } from  'react-router-dom'
@@ -65,10 +67,10 @@ class Chat extends React.Component {
             activeTab: tab,
         })
         var map = {
-            'interest': 4,
-            'favorite': 3,
-            'recommend': 1,
-            'system': 0
+            'interest': 5,
+            'favorite': 4,
+            'recommend': 3,
+            'system': 1
         }
         var ftype = map[tab]
 
@@ -76,31 +78,66 @@ class Chat extends React.Component {
     }
 
     getFavoriteProjects(ftype) {
-        var userId
-        if (this.props.userType === 1) {
-            userId = this.props.userId
-        } else if (this.props.userType === 3) {
-            userId = this.props.match.params.id
-        }
-        var ftypes = [ftype]
+
         this.props.dispatch(requestContents(''))
-        api.getFavoriteProjects(
-            {
-                'input.maxResultCount': 10,
-                'input.skipCount': 0,
-                'input.userId': userId,
-                'input.ftypes': ftypes.join(',')
-            },
-            (projects) => {
-                this.setState({ projects: projects })
+
+        var userType = this.props.userType
+        var userId = this.props.userId
+        var targetUserId = this.props.match.params.id
+        var isInvestor = userType == 1
+
+        var param = {
+            page_size: 10,
+            page_index: 1,
+            favoritetype: ftype
+        }
+        
+        if (ftype == 1) {
+            param['user'] = targetUserId
+        } else if (ftype == 3) {
+            if (isInvestor) {
+                param['trader'] = targetUserId
+            } else {
+                param['user'] = targetUserId
+            }
+        } else if (ftype == 4) {
+            if (!isInvestor) {
+                param['user'] = targetUserId
+            }
+        } else if (ftype == 5) {
+            if (isInvestor) {
+                param['trader'] = targetUserId
+            } else {
+                param['user'] = targetUserId
+            }
+        }
+
+        newApi.getFavoriteProj(param)
+            .then(data => {
+                const projects = data.data
+                    .filter(item => item.proj != null)
+                    .map(item => utils.convertFavoriteProject(item.proj))
+                this.setState({ projects })
                 this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+
     }
 
     handleActionButtonClicked() {
         this.props.history.push(api.baseUrl + '/my_favorite_project')
+    }
+
+    handleClickProject = (id) => {
+        newApi.getShareToken(id)
+            .then(token => {
+                window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
     }
 
     componentDidMount() {
@@ -154,7 +191,7 @@ class Chat extends React.Component {
                         this.state.projects.length ?
                             this.state.projects.map(
                                 (project) => (
-				  <a className="margin-bottom-2" key={project.id} href={api.baseUrl + '/project/' + project.id + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')}>
+				                    <div className="margin-bottom-2" key={project.id} onClick={this.handleClickProject.bind(this, project.id)}>
                                         <ProjectListCell
                                             title={project.title}
                                             country={project.country}
@@ -163,7 +200,7 @@ class Chat extends React.Component {
                                             amount={project.amount}
                                             id={project.id}
                                         />
-                                    </a>
+                                    </div>
                                 )
                             ) :
                             <EmptyBox />

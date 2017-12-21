@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { handleError, requestContents, hideLoading, setRecommendProjects, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import ProjectListCell from '../components/ProjectListCell'
@@ -182,43 +184,38 @@ class MyFavoriteProject extends Component {
     var userId = api.getCurrentUserId()
     var investorIds = this.props.recommendProcess.investorIds
     var projectIds  = this.props.recommendProcess.projectIds
-    var all = []
 
     this.props.dispatch(requestContents(''))
+
+    var sequence = Promise.resolve()
     investorIds.forEach(investorId => {
-        projectIds.forEach(projectId => {
-            all.push(new Promise((resolve, reject) => {
-                var param = {
-                    userId: investorId,
-                    projectId: projectId,
-                    fType: 1,
-                    transactionId: userId,
-                }
-                api.favoriteProject(
-                    param,
-                    () => resolve(),
-                    error => reject(error)
-                )
-            }))
-        })
+      sequence = sequence.then(() => {
+        var param = {
+          user: investorId,
+          projs: projectIds,
+          favoritetype: 3,
+          trader: userId,
+        }
+        return newApi.projFavorite(param)
+      })
     })
 
-    Promise.all(all)
-    .then(
+    sequence
+      .then(
         items => {
-            this.props.dispatch(hideLoading())
-            this.props.dispatch(clearRecommend())
-            this.setState({
-                showModal: true
-            })
+          this.props.dispatch(hideLoading())
+          this.props.dispatch(clearRecommend())
+          this.setState({
+              showModal: true
+          })
         }
-    )
-    .catch(
+      )
+      .catch(
         error => {
-            this.props.dispatch(handleError(error))
-            this.props.dispatch(clearRecommend())
+          this.props.dispatch(handleError(error))
+          this.props.dispatch(clearRecommend())
         }
-    )
+      )
   }
 
   handleRecommendSuccess() {
@@ -232,31 +229,56 @@ class MyFavoriteProject extends Component {
 
   componentDidMount() {
     this.props.dispatch(requestContents(''))
-    api.getFavoriteProjects(
-      {
-        'input.userId': api.getCurrentUserId(),
-        'input.ftypes': '3',
-        'input.maxResultCount': 10,
-        'input.skipCount': 0,
-      },
-      favoriteProjects => {
-        this.props.dispatch(hideLoading())
-        this.setState({ projects: favoriteProjects })
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+
+    const param = {
+        page_size: 10,
+        page_index: 1,
+        favoritetype: 4,
+    }
+    newApi.getFavoriteProj(param)
+      .then(data => {
+          const projects = data.data
+          .filter(item => item.proj != null)
+          .map(item => {
+            var proj = utils.convertFavoriteProject(item.proj)
+            proj['favorId'] = item.id
+            return proj
+          })
+          this.setState({ projects })
+          this.props.dispatch(hideLoading())
+      })
+      .catch(error => {
+          this.props.dispatch(handleError(error))
+      })
+
   }
 
   removeFavoriteProject(id) {
-    this.setState({
-      projects: this.state.projects.filter(item => item.id !== id)
-    })
-    var param = {
-      fType: 3,
-      projectId: id,
-      userId: this.props.userInfo.id,
+    this.props.dispatch(requestContents(''))
+    const project = this.state.projects.filter(item => item.id == id)[0]
+    const param = {
+      favoriteids: [project.favorId]
     }
-    api.projectCancelFavorite(param)
+    newApi.projCancelFavorite(param)
+      .then(data => {
+        this.setState({
+          projects: this.state.projects.filter(item => item.id !== id)
+        })
+        this.props.dispatch(hideLoading())
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
+  }
+
+  handleClickProject = (id) => {
+    newApi.getShareToken(id)
+      .then(token => {
+        window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      })
   }
 
   render() {
@@ -265,7 +287,7 @@ class MyFavoriteProject extends Component {
         <div style={cellContainerStyle}>
           <div style={this.state.isSelecting ? cellWrapStyle : {}}>
             <SwipeCell delete={this.removeFavoriteProject.bind(this, project.id)} action="取消收藏" actionBackgroundColor="#276CD2" isInitialPosition={this.state.isInitialCellPosition} onPositionChange={this.handleCellPositionChange} >
-	      <a href={api.baseUrl + "/project/" + project.id + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '') }>
+	            <div onClick={this.handleClickProject.bind(this, project.id)}>
                 <ProjectListCell
                   title={project.title}
                   country={project.country}
@@ -273,7 +295,7 @@ class MyFavoriteProject extends Component {
                   imgUrl={project.imgUrl}
                   amount={project.amount}
                   id={project.id} />
-              </a>
+              </div>
             </SwipeCell>
           </div>
           <div style={ this.state.isSelecting ? checkboxWrapStyle : checkboxWrapHideStyle } onClick={this.toggleSelect.bind(this, project.id)}>

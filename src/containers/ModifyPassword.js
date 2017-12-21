@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import NavigationBar from '../components/NavigationBar'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { connect } from 'react-redux'
 import { requestContents, handleError, hideLoading } from '../actions'
 import LeftLabelRightContent from '../components/LeftLabelRightContent'
@@ -59,16 +61,26 @@ class ModifyPassword extends Component {
 
    this.props.dispatch(requestContents(''))
 
-    api.modifyPassword(
-      this.state.old,
-      this.state.new,
-      () => {
-        this.props.dispatch(hideLoading())
-        this.props.dispatch(handleError(new Error('update success')))
-        this.props.history.goBack()
-      },
-      error => this.props.dispatch(handleError(error))
-    )
+   newApi.modifyPassword(utils.getCurrentUserId(), this.state.old, this.state.new)
+    .then(data => {
+      this.props.dispatch(hideLoading())
+      this.props.dispatch(handleError(new Error('update success')))
+      this.props.history.goBack()
+    })
+    .catch(error => {
+      this.props.dispatch(handleError(error))
+    })
+
+    // api.modifyPassword(
+    //   this.state.old,
+    //   this.state.new,
+    //   () => {
+    //     this.props.dispatch(hideLoading())
+    //     this.props.dispatch(handleError(new Error('update success')))
+    //     this.props.history.goBack()
+    //   },
+    //   error => this.props.dispatch(handleError(error))
+    // )
   }
 
   render() {

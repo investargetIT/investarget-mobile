@@ -82,29 +82,29 @@ function getCurrentTime() {
  * 主动收藏 = 3,
  * 有兴趣 = 4
  */
-function getFavoriteProjectIds(param, cb, errCb) {
-  return new Promise((resolve, reject) => {
-    axios.get(
-      url + 'services/InvestargetApi/project/GetFavoriteProjects',
-      { 
-        params: Object.assign({ 'input.lang': 'cn' }, param),
-        headers: { 'Authorization': 'Bearer ' + getToken() }
-      }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      const idArr = response.data.result.items.map(item => item.projectId)
-      if (cb) cb(idArr)
-      resolve(idArr)
-    })
-    .catch(error => {
-      if (errCb) errCb(error)
-      reject(error)
-    })
-  })
-}
+// function getFavoriteProjectIds(param, cb, errCb) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(
+//       url + 'services/InvestargetApi/project/GetFavoriteProjects',
+//       { 
+//         params: Object.assign({ 'input.lang': 'cn' }, param),
+//         headers: { 'Authorization': 'Bearer ' + getToken() }
+//       }
+//     )
+//     .then(response => {
+//       if (!response.data.success) {
+//         throw new ApiError(response.data.error)
+//       }
+//       const idArr = response.data.result.items.map(item => item.projectId)
+//       if (cb) cb(idArr)
+//       resolve(idArr)
+//     })
+//     .catch(error => {
+//       if (errCb) errCb(error)
+//       reject(error)
+//     })
+//   })
+// }
 
 function simplyGet(uri, cb, errCb) {
   return new Promise((resolve, reject) => {
@@ -238,747 +238,743 @@ export default {
   getCurrentUserType,
   getCurrentUserInfo,
   
-  getProjects(params, cb, errCb, skipCount = 0) {
-    const count = []
-    let newArray = []
-    getPublicAndNotMarketPlaceProjects(params, 0, 1)
-      .then(result => {
-        count.push(result.totalCount)
-        return getPublicAndMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        return getClosedAndNotMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        return getClosedAndMarketPlaceProjects(params, 0, 1)
-      })
-      .then(result => {
-        count.push(result.totalCount)
-        newArray = count.reduce((acc, val) => {
-          var startIndex = 0
-          if (acc.length > 0) {
-            for (var a = acc.length -1; a >=0; a--) {
-              var startArr = acc[a]
-              if (startArr.length > 0) {
-                startIndex = startArr[startArr.length -1]
-                break
-              }
-            }
-          }
-          acc.push(convertIntToArray(startIndex+1, val))
-          return acc
-        }, [])
-        const intersect = newArray.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
-        const requestArr = []
-        intersect.forEach((item, index) => {
-          if(item.length > 0) {
-            requestArr.push(getProjectsArray[index](params, item[0]-newArray[index][0], item.length))
-          }
-        })
-        return Promise.all(requestArr)
-      })
-      .then(result => {
-        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
-          var obj = {}
-          obj['id'] = item.id
-          obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount_USD
-          obj['country'] = item.country.countryName
-          obj['currency'] = item.currencyType.id
-          obj['imgUrl'] = item.industrys[0].imgUrl
-          obj['industrys'] = item.industrys.map(i => i.industryName)
-          obj['isMarketPlace'] = item.isMarketPlace
-          obj['amount_cny'] = item.financedAmount
-          return obj
-        })
-        cb(projects, newArray)
-      })
-      .catch(error => errCb(error))
-  },
+  // getProjects(params, cb, errCb, skipCount = 0) {
+  //   const count = []
+  //   let newArray = []
+  //   getPublicAndNotMarketPlaceProjects(params, 0, 1)
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getPublicAndMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getClosedAndNotMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       return getClosedAndMarketPlaceProjects(params, 0, 1)
+  //     })
+  //     .then(result => {
+  //       count.push(result.totalCount)
+  //       newArray = count.reduce((acc, val) => {
+  //         var startIndex = 0
+  //         if (acc.length > 0) {
+  //           for (var a = acc.length -1; a >=0; a--) {
+  //             var startArr = acc[a]
+  //             if (startArr.length > 0) {
+  //               startIndex = startArr[startArr.length -1]
+  //               break
+  //             }
+  //           }
+  //         }
+  //         acc.push(convertIntToArray(startIndex+1, val))
+  //         return acc
+  //       }, [])
+  //       const intersect = newArray.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+  //       const requestArr = []
+  //       intersect.forEach((item, index) => {
+  //         if(item.length > 0) {
+  //           requestArr.push(getProjectsArray[index](params, item[0]-newArray[index][0], item.length))
+  //         }
+  //       })
+  //       return Promise.all(requestArr)
+  //     })
+  //     .then(result => {
+  //       const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+  //         var obj = {}
+  //         obj['id'] = item.id
+  //         obj['title'] = item.titleC
+  //         obj['amount'] = item.financedAmount_USD
+  //         obj['country'] = item.country.countryName
+  //         obj['imgUrl'] = item.industrys[0].imgUrl
+  //         obj['industrys'] = item.industrys.map(i => i.industryName)
+  //         obj['isMarketPlace'] = item.isMarketPlace
+  //         return obj
+  //       })
+  //       cb(projects, newArray)
+  //     })
+  //     .catch(error => errCb(error))
+  // },
 
-  getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
-    const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
-    const requestArr = []
-    intersect.forEach((item, index) => {
-      if(item.length > 0) {
-        requestArr.push(getProjectsArray[index](params, item[0] - dataStructure[index][0], item.length))
-      }
-    })
-    if (requestArr.length === 0) {
-      requestArr.push(getClosedAndMarketPlaceProjects(params, 10000, 10))
-    }
-    Promise.all(requestArr)
-      .then(result => {
-        const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
-          var obj = {}
-          obj['id'] = item.id
-          obj['title'] = item.titleC
-          obj['amount'] = item.financedAmount_USD
-          obj['country'] = item.country.countryName
-          obj['currency'] = item.currencyType.id
-          obj['imgUrl'] = item.industrys[0].imgUrl
-          obj['industrys'] = item.industrys.map(i => i.industryName)
-          obj['isMarketPlace'] = item.isMarketPlace
-          obj['amount_cny'] = item.financedAmount
-          return obj
-        })
-        cb(projects)
-      })
-      .catch(error => errCb(error))
-  },
+  // getMoreProjects(dataStructure, params, cb, errCb, skipCount = 0) {
+  //   const intersect = dataStructure.map(item => intersectArray(item, convertIntToArray(skipCount + 1, 10)))
+  //   const requestArr = []
+  //   intersect.forEach((item, index) => {
+  //     if(item.length > 0) {
+  //       requestArr.push(getProjectsArray[index](params, item[0] - dataStructure[index][0], item.length))
+  //     }
+  //   })
+  //   if (requestArr.length === 0) {
+  //     requestArr.push(getClosedAndMarketPlaceProjects(params, 10000, 10))
+  //   }
+  //   Promise.all(requestArr)
+  //     .then(result => {
+  //       const projects = result.map(item => item.items).reduce((acc, val) => acc.concat(val), []).map(item => {
+  //         var obj = {}
+  //         obj['id'] = item.id
+  //         obj['title'] = item.titleC
+  //         obj['amount'] = item.financedAmount_USD
+  //         obj['country'] = item.country.countryName
+  //         obj['imgUrl'] = item.industrys[0].imgUrl
+  //         obj['industrys'] = item.industrys.map(i => i.industryName)
+  //         obj['isMarketPlace'] = item.isMarketPlace
+  //         return obj
+  //       })
+  //       cb(projects)
+  //     })
+  //     .catch(error => errCb(error))
+  // },
 
-  loginAndGetUserInfo(param, cb, errCb) {
-    var authToken = ''
-    axios.post(url + 'Account', param)
-    .then(response => {
-      if (response.data.success && response.data.result.access_token) {
-        var id = response.data.result.id
-        authToken = response.data.result.access_token
-        return axios.get(url + 'services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + id, {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        })
-      } else if (response.data.success && !response.data.result.access_token) {
-        throw new ApiError({code: 100, message: response.data.result.msg})
-      } else {
-        // Login failed
-        throw new ApiError({
-          code: 120, 
-          message: response.data.error.message, 
-          details: response.data.error.detail
-        })
-      }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(authToken, response.data.result)
-      } else {
-        // Get current user info failed
-        throw response.data.error
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // loginAndGetUserInfo(param, cb, errCb) {
+  //   var authToken = ''
+  //   axios.post(url + 'Account', param)
+  //   .then(response => {
+  //     if (response.data.success && response.data.result.access_token) {
+  //       var id = response.data.result.id
+  //       authToken = response.data.result.access_token
+  //       return axios.get(url + 'services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + id, {
+  //         headers: { 'Authorization': 'Bearer ' + authToken }
+  //       })
+  //     } else if (response.data.success && !response.data.result.access_token) {
+  //       throw new ApiError({code: 100, message: response.data.result.msg})
+  //     } else {
+  //       // Login failed
+  //       throw new ApiError({
+  //         code: 120, 
+  //         message: response.data.error.message, 
+  //         details: response.data.error.detail
+  //       })
+  //     }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(authToken, response.data.result)
+  //     } else {
+  //       // Get current user info failed
+  //       throw response.data.error
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getPostsAndEvent(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
-    .then(response => {
-      if (response.data.success) {
-        var posts = response.data.result.map(item => {
-          var obj = {}
-          obj['title'] = item.title
-          obj['imgUrl'] = item.url
-          obj['detailUrl'] = item.detailUrl
-          obj['isNews'] = item.isNews
-          return obj
-        })
-        cb(posts)
-      } else {
-        throw response.data.error
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getPostsAndEvent(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/activityPicture/GetActivitypictures')
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       var posts = response.data.result.map(item => {
+  //         var obj = {}
+  //         obj['title'] = item.title
+  //         obj['imgUrl'] = item.url
+  //         obj['detailUrl'] = item.detailUrl
+  //         obj['isNews'] = item.isNews
+  //         return obj
+  //       })
+  //       cb(posts)
+  //     } else {
+  //       throw response.data.error
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getSingleProject(id, cb, errCb, token) {
-    return new Promise((resolve, reject) => {
-      axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
-        headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
-      })
-      .then(response => {
-        if (response.data.success) {
-          if (cb) cb(response.data.result)
-          resolve(response.data.result)
-        } else {
-          throw new ApiError(response.data.error)
-        }
-      })
-      .catch(error => {
-        if (errCb) errCb(error)
-        reject(error)
-      })
-    })
-  },
+  // getSingleProject(id, cb, errCb, token) {
+  //   return new Promise((resolve, reject) => {
+  //     axios.get(url + 'services/InvestargetApi/project/GetOne?input.lang=cn&device=phone&input.id=' + id, {
+  //       headers: { 'Authorization': 'Bearer ' + (token || getToken()) }
+  //     })
+  //     .then(response => {
+  //       if (response.data.success) {
+  //         if (cb) cb(response.data.result)
+  //         resolve(response.data.result)
+  //       } else {
+  //         throw new ApiError(response.data.error)
+  //       }
+  //     })
+  //     .catch(error => {
+  //       if (errCb) errCb(error)
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
-  sendVerificationCode(mobile, cb, errCb) {
-    var time = getCurrentTime();
-    var apiToken = md5(mobile + time);
-    const param = { rec_num: mobile, apiToken: apiToken, timestamp: time }
-    axios.post(url + 'services/InvestargetApi/smsService/SendVerificationCode', param)
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result.token)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // sendVerificationCode(mobile, cb, errCb) {
+  //   var time = getCurrentTime();
+  //   var apiToken = md5(mobile + time);
+  //   const param = { rec_num: mobile, apiToken: apiToken, timestamp: time }
+  //   axios.post(url + 'services/InvestargetApi/smsService/SendVerificationCode', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result.token)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  checkVerificationCode(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/smsService/CheckVerificationCode', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError({
-          code: 110, 
-          message: response.data.error.message
-        })
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // checkVerificationCode(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/smsService/CheckVerificationCode', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError({
+  //         code: 110, 
+  //         message: response.data.error.message
+  //       })
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getContinentsAndCountries(cb, errCb) {
+  // getContinentsAndCountries(cb, errCb) {
 
-    var continents = []
+  //   var continents = []
 
-    axios.get(url + 'services/InvestargetApi/location/GetContinents?input.lang=cn')
-    .then(response => {
+  //   axios.get(url + 'services/InvestargetApi/location/GetContinents?input.lang=cn')
+  //   .then(response => {
 
-      if (response.data.success) {
-        continents = response.data.result
-        const all = continents.map(
-          item => axios.get(url + 'services/InvestargetApi/location/GetCountryies?input.lang=cn&input.continentId=' + item.id)
-        )
-        return Promise.all(all)
-      } else {
-        throw new ApiError(response.data.error)
-      }
+  //     if (response.data.success) {
+  //       continents = response.data.result
+  //       const all = continents.map(
+  //         item => axios.get(url + 'services/InvestargetApi/location/GetCountryies?input.lang=cn&input.continentId=' + item.id)
+  //       )
+  //       return Promise.all(all)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
 
-    })
-    .then(values => {
+  //   })
+  //   .then(values => {
       
-      const countries = values.map(item => {
-        if (item.data.success) {
-          return {
-            continentId: item.data.result[0].continentId,
-            result: item.data.result
-          }
-        } else {
-          throw new ApiError(item.data.error)
-        }
-      })
+  //     const countries = values.map(item => {
+  //       if (item.data.success) {
+  //         return {
+  //           continentId: item.data.result[0].continentId,
+  //           result: item.data.result
+  //         }
+  //       } else {
+  //         throw new ApiError(item.data.error)
+  //       }
+  //     })
 
-      const continentsAndCountries = continents.map(item => {
-        item['countries'] = countries.find(country => country.continentId === item.id).result
-        return item
-      })
+  //     const continentsAndCountries = continents.map(item => {
+  //       item['countries'] = countries.find(country => country.continentId === item.id).result
+  //       return item
+  //     })
 
-      cb(continentsAndCountries)
-    })
-    .catch(error => errCb(error))
-  },
+  //     cb(continentsAndCountries)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getIndustries(cb, errCb) {
+  // getIndustries(cb, errCb) {
 
-    var parentIndustries = []
+  //   var parentIndustries = []
 
-    axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=P&input.lang=cn')
-    .then(response => {
+  //   axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=P&input.lang=cn')
+  //   .then(response => {
 
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
 
-      parentIndustries = response.data.result
-      const all = parentIndustries.map(
-        item => axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=S&input.lang=cn&input.pid=' + item.id)
-      )
+  //     parentIndustries = response.data.result
+  //     const all = parentIndustries.map(
+  //       item => axios.get(url + 'services/InvestargetApi/industry/GetIndustries?input.industryType=S&input.lang=cn&input.pid=' + item.id)
+  //     )
 
-      return Promise.all(all)
+  //     return Promise.all(all)
 
-    })
-    .then(values => {
+  //   })
+  //   .then(values => {
 
-      const subIndustries = values.map(item => {
-        if (!item.data.success) {
-          throw new ApiError(item.data.error)
-        }
-        return {
-          pIndustryId: item.data.result[0].pIndustryId,
-          result: item.data.result
-        }
-      })
+  //     const subIndustries = values.map(item => {
+  //       if (!item.data.success) {
+  //         throw new ApiError(item.data.error)
+  //       }
+  //       return {
+  //         pIndustryId: item.data.result[0].pIndustryId,
+  //         result: item.data.result
+  //       }
+  //     })
 
-      const industries = parentIndustries.map(item => {
-        item['subIndustries'] = subIndustries.find(
-          subIndustry => subIndustry.pIndustryId === item.id
-        ).result
-        return item
-      })
+  //     const industries = parentIndustries.map(item => {
+  //       item['subIndustries'] = subIndustries.find(
+  //         subIndustry => subIndustry.pIndustryId === item.id
+  //       ).result
+  //       return item
+  //     })
 
-      cb(industries)
+  //     cb(industries)
 
-    })
-    .catch(error => errCb(error))
-  },
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTags(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/tag/GetTags?input.lang=cn')
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getTags(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/tag/GetTags?input.lang=cn')
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTitles(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/title/GetTitles?input.lang=cn')
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getTitles(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/title/GetTitles?input.lang=cn')
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  retrievePassword(param, cb, errCb) {
-    axios.post(url + '/services/InvestargetApi/user/RetrievePassword', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // retrievePassword(param, cb, errCb) {
+  //   axios.post(url + '/services/InvestargetApi/user/RetrievePassword', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  createUser(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/user/CreateUser', param)
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // createUser(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/user/CreateUser', param)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  checkMobileOrEmailExist(account, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account)
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // checkMobileOrEmailExist(account, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account)
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getSingleOrganization(id, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getSingleOrganization(id, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/organization/GetOne?id=' + id, {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getAllTimeLines(param, cb, errCb) {
-    var userId = getCurrentUserId()
-    var userType = getCurrentUserType()
-    param = Object.assign({
-      'input.lang': 'cn',
-      'input.isClose': false,
-      'input.maxResultCount': 10,
-      'input.skipCount': 0,
-    }, param)
-    if (userType == 1) {
-      param['input.investorId'] = userId
-    } else if (userType == 2) {
-      param['input.supplierId'] = userId
-    } else if (userType == 3) {
-      param['input.transactionId'] = userId
-    }
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
-      params: param,
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getAllTimeLines(param, cb, errCb) {
+  //   var userId = getCurrentUserId()
+  //   var userType = getCurrentUserType()
+  //   param = Object.assign({
+  //     'input.lang': 'cn',
+  //     'input.isClose': false,
+  //     'input.maxResultCount': 10,
+  //     'input.skipCount': 0,
+  //   }, param)
+  //   if (userType == 1) {
+  //     param['input.investorId'] = userId
+  //   } else if (userType == 2) {
+  //     param['input.supplierId'] = userId
+  //   } else if (userType == 3) {
+  //     param['input.transactionId'] = userId
+  //   }
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetAllLines', {
+  //     params: param,
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getUserBasic(id, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/user/GetUserBasic', {
-      params: {
-        'input.lang': 'cn',
-        'input.id': id
-      },
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getUserBasic(id, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/user/GetUserBasic', {
+  //     params: {
+  //       'input.lang': 'cn',
+  //       'input.id': id
+  //     },
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTimeLine(id, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetTimeLine', {
-      params: { 'input.timeLineId': id },
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getTimeLine(id, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetTimeLine', {
+  //     params: { 'input.timeLineId': id },
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getTimeLineRemarks(id, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + id, {
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getTimeLineRemarks(id, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + id, {
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  createTimeLineRemark(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/projectTimeLine/CreateTimeLineRemark',
-      param,
-      { headers: {'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // createTimeLineRemark(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/projectTimeLine/CreateTimeLineRemark',
+  //     param,
+  //     { headers: {'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  modifyTimeLineRemark(id, param, cb, errCb) {
-    axios.put(url + 'services/InvestargetApi/projectTimeLine/ModifTimeLineRemark?id=' + id,
-      param,
-      { headers: {'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // modifyTimeLineRemark(id, param, cb, errCb) {
+  //   axios.put(url + 'services/InvestargetApi/projectTimeLine/ModifTimeLineRemark?id=' + id,
+  //     param,
+  //     { headers: {'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  deleteTimeLineRemark(id, cb, errCb) {
-    axios.delete(url + 'services/InvestargetApi/projectTimeLine/deleteTimeLineRemark?id=' + id, {
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // deleteTimeLineRemark(id, cb, errCb) {
+  //   axios.delete(url + 'services/InvestargetApi/projectTimeLine/deleteTimeLineRemark?id=' + id, {
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getUsers(cb, errCb, skipCount=0, maxResultCount=15) {
-    return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=' + maxResultCount + '&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
-  },
+  // getUsers(cb, errCb, skipCount=0) {
+  //   return simplyGet('services/InvestargetApi/user/GetUserCommon?input.lang=cn&input.maxResultCount=15&input.userId=' + getCurrentUserId() + '&input.skipCount=' + skipCount, cb, errCb)
+  // },
 
-  getUserMessages(cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb(response.data.result)
-    })
-    .catch(error => errCb(error))
-  },
+  // getUserMessages(cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/userMessage/GetUserMessages?input.userId=' + getCurrentUserId(), {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb(response.data.result)
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
-    axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
-      headers: {'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      }
-      cb()
-    })
-    .catch(error => errCb(error))
-  },
+  // modifyUser(param, cb, errCb, userId = getCurrentUserId()) {
+  //   axios.put(url + 'services/InvestargetApi/user/ModifyUser?id=' + userId, param, {
+  //     headers: {'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //     cb()
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  modifyPassword(old, newP, cb, errCb) {
+  // modifyPassword(old, newP, cb, errCb) {
   
-    const param = {
-      userId: getCurrentUserId(),
-      oldPassword: old,
-      newPassword: newP
-    }
+  //   const param = {
+  //     userId: getCurrentUserId(),
+  //     oldPassword: old,
+  //     newPassword: newP
+  //   }
 
-    axios.post(
-      url + 'services/InvestargetApi/user/ModifyPassword',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError({code: 200})
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  //   axios.post(
+  //     url + 'services/InvestargetApi/user/ModifyPassword',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError({code: 200})
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  changeTimeLine(param, cb, errCb) {
-    axios.post(url + 'services/InvestargetApi/projectTimeLine/ChangeTimeLine',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (response.data.success) {
-        cb()
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // changeTimeLine(param, cb, errCb) {
+  //   axios.post(url + 'services/InvestargetApi/projectTimeLine/ChangeTimeLine',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb()
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  projectCancelFavorite(param, cb, errCb) {
-    axios.post(
-      url + 'services/InvestargetApi/project/ProjectCancelFavorite',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      } else {
-        cb()
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // projectCancelFavorite(param, cb, errCb) {
+  //   axios.post(
+  //     url + 'services/InvestargetApi/project/ProjectCancelFavorite',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     } else {
+  //       cb()
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getFavoriteProjectIds,
+  // getFavoriteProjectIds,
 
-  getFavoriteProjects(param, cb, errCb) {
-    param = Object.assign({ 'input.lang': 'cn' }, param)
-    getFavoriteProjectIds(param)
-    .then(ids => {
-      const all = ids.map(id => {
-        return new Promise((resolve, reject) => {
-          this.getSingleProject(
-            id,
-            item => {
-              var obj = {}
-              obj['id'] = item.id
-              obj['title'] = item.titleC
-              obj['amount'] = item.financedAmount
-              obj['country'] = item.country.countryName
-              obj['imgUrl'] = item.industrys[0].imgUrl
-              obj['industrys'] = item.industrys.map(i => i.industryName)
-              resolve(obj)
-            },
-            error => reject(error)
-          )
-        })
-      })
-      return Promise.all(all)
-    })
-    .then(projects => cb(projects))
-    .catch(error => errCb(error))
-  },
+  // getFavoriteProjects(param, cb, errCb) {
+  //   param = Object.assign({ 'input.lang': 'cn' }, param)
+  //   getFavoriteProjectIds(param)
+  //   .then(ids => {
+  //     const all = ids.map(id => {
+  //       return new Promise((resolve, reject) => {
+  //         this.getSingleProject(
+  //           id,
+  //           item => {
+  //             var obj = {}
+  //             obj['id'] = item.id
+  //             obj['title'] = item.titleC
+  //             obj['amount'] = item.financedAmount
+  //             obj['country'] = item.country.countryName
+  //             obj['imgUrl'] = item.industrys[0].imgUrl
+  //             obj['industrys'] = item.industrys.map(i => i.industryName)
+  //             resolve(obj)
+  //           },
+  //           error => reject(error)
+  //         )
+  //       })
+  //     })
+  //     return Promise.all(all)
+  //   })
+  //   .then(projects => cb(projects))
+  //   .catch(error => errCb(error))
+  // },
 
-  favoriteProject(param, cb, errCb) {
-    axios.post(
-      url + 'services/InvestargetApi/project/ProjectFavorite',
-      param,
-      { headers: { 'Authorization': 'Bearer ' + getToken() } }
-    )
-    .then(response => {
-      if (!response.data.success) {
-        throw new ApiError(response.data.error)
-      } else {
-        cb()
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // favoriteProject(param, cb, errCb) {
+  //   axios.post(
+  //     url + 'services/InvestargetApi/project/ProjectFavorite',
+  //     param,
+  //     { headers: { 'Authorization': 'Bearer ' + getToken() } }
+  //   )
+  //   .then(response => {
+  //     if (!response.data.success) {
+  //       throw new ApiError(response.data.error)
+  //     } else {
+  //       cb()
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getLinesBasic(projectId, cb, errCb) {
-    axios.get(url + 'services/InvestargetApi/projectTimeLine/GetLinesBasic?input.lang=cn&input.maxResultCount=100&input.skipCount=0&input.projectId=' + projectId, {
-      headers: { 'Authorization': 'Bearer ' + getToken() }
-    })
-    .then(response => {
-      if (response.data.success) {
-        cb(response.data.result)
-      } else {
-        throw new ApiError(response.data.error)
-      }
-    })
-    .catch(error => errCb(error))
-  },
+  // getLinesBasic(projectId, cb, errCb) {
+  //   axios.get(url + 'services/InvestargetApi/projectTimeLine/GetLinesBasic?input.lang=cn&input.maxResultCount=100&input.skipCount=0&input.projectId=' + projectId, {
+  //     headers: { 'Authorization': 'Bearer ' + getToken() }
+  //   })
+  //   .then(response => {
+  //     if (response.data.success) {
+  //       cb(response.data.result)
+  //     } else {
+  //       throw new ApiError(response.data.error)
+  //     }
+  //   })
+  //   .catch(error => errCb(error))
+  // },
 
-  getUserRemarks(timeLineId, cb, errCb) {
-    return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
-  },
+  // getUserRemarks(timeLineId, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/projectTimeLine/GetUserRemarks?timeLineId=' + timeLineId, cb, errCb)
+  // },
 
-  uploadUserAvatar(formData, cb, errCb, key) {
+  // uploadUserAvatar(formData, cb, errCb, key) {
 
-    var uri
-    if (key) {
-      uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
-    } else {
-      uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
-    }
+  //   var uri
+  //   if (key) {
+  //     uri = 'services/InvestargetApi/qiniuUploadService/Coverupload?bucket=image&key=' + key
+  //   } else {
+  //     uri = 'services/InvestargetApi/qiniuUploadService/Upload?bucket=image'
+  //   }
 
-    var resKey, resUrl
-    upload(uri, formData)
-      .then(data => {
-	resKey = data.key
-	resUrl = data.url
-	var userInfo = getCurrentUserInfo()
-	const param = Object.assign({}, userInfo, {
-	        orgId: userInfo.org ? userInfo.org.id : null,
-	        orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
-	  titleId: userInfo.title ? userInfo.title.id : null,
-	  photoBucket: 'image',
-	  cardBucket: 'image'
-	      })
+  //   var resKey, resUrl
+  //   upload(uri, formData)
+  //     .then(data => {
+	// resKey = data.key
+	// resUrl = data.url
+	// var userInfo = getCurrentUserInfo()
+	// const param = Object.assign({}, userInfo, {
+	//         orgId: userInfo.org ? userInfo.org.id : null,
+	//         orgAreaId: userInfo.orgArea ? userInfo.orgArea.id : null,
+	//   titleId: userInfo.title ? userInfo.title.id : null,
+	//   photoBucket: 'image',
+	//   cardBucket: 'image'
+	//       })
 
-	param[formData.get('key')] = data.key
-      return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
-    })
-      .then(data => {
-	cb(resKey, resUrl)
-      })
-    .catch(error => errCb(error))
-  },
+	// param[formData.get('key')] = data.key
+  //     return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + getCurrentUserId(), param)
+  //   })
+  //     .then(data => {
+	// cb(resKey, resUrl)
+  //     })
+  //   .catch(error => errCb(error))
+  // },
 
-  getNotificationDetail(id, cb, errCb) {
-    return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
-  },
+  // getNotificationDetail(id, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/userMessage/GetContent?id=' + id, cb, errCb)
+  // },
 
-  readMessage(id, cb, errCb) {
-    return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
-  },
+  // readMessage(id, cb, errCb) {
+  //   return simplyPost('services/InvestargetApi/userMessage/ReadMessage', { messageIds: [id] }, cb, errCb)
+  // },
 
-  getPdfFileUrl(id, cb, errCb) {
-    this.getSingleProject(id)
-    .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
-    .then(url => cb(url))
-    .catch(error => errCb(error))
-  },
+  // getPdfFileUrl(id, cb, errCb) {
+  //   this.getSingleProject(id)
+  //   .then(detail => simplyGet('services/InvestargetApi/qiniuUploadService/CreateQiNiuUrl?bucket=file&key=' + detail.projectAttachments[0].key))
+  //   .then(url => cb(url))
+  //   .catch(error => errCb(error))
+  // },
 
-  checkUserExist(account, cb, errCb) {
-    return simplyGet('services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account, cb, errCb)
-  },
+  // checkUserExist(account, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/user/CheckMobileOrEmailExist?account=' + account, cb, errCb)
+  // },
 
-  uploadImage(formData, key) {
-    const base = 'services/InvestargetApi/qiniuUploadService/'
-    const extend = key ? 'Coverupload?bucket=image&key=' + key : 'Upload?bucket=image'
-    return upload(base + extend, formData)
-  },
+  // uploadImage(formData, key) {
+  //   const base = 'services/InvestargetApi/qiniuUploadService/'
+  //   const extend = key ? 'Coverupload?bucket=image&key=' + key : 'Upload?bucket=image'
+  //   return upload(base + extend, formData)
+  // },
 
-  updateUser(userId, param, cb, errCb) {
-    return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + userId, param, cb, errCb)
-  },
+  // updateUser(userId, param, cb, errCb) {
+  //   return simplyPut('services/InvestargetApi/user/ModifyUser?id=' + userId, param, cb, errCb)
+  // },
 
-  addUser(param, cb, errCb) {
-    return simplyPost('services/InvestargetApi/user/CreateUser', param, cb, errCb)
-  },
+  // addUser(param, cb, errCb) {
+  //   return simplyPost('services/InvestargetApi/user/CreateUser', param, cb, errCb)
+  // },
 
-  addUserCommonTransaction(userId, cb, errCb) {
-    return simplyPost(
-      'services/InvestargetApi/user/AddUserCommonTransaction',
-      { 'userId': userId, 'transactionId': getCurrentUserId() },
-      cb,
-      errCb
-    )
-  },
+  // addUserCommonTransaction(userId, cb, errCb) {
+  //   return simplyPost(
+  //     'services/InvestargetApi/user/AddUserCommonTransaction',
+  //     { 'userId': userId, 'transactionId': getCurrentUserId() },
+  //     cb,
+  //     errCb
+  //   )
+  // },
 
-  checkUserCommonTransaction(investorId, cb, errCb) {
-    return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
-  },
+  // checkUserCommonTransaction(investorId, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/user/CheckUserCommonTransaction?transactionid=' + getCurrentUserId() + '&Investorid=' + investorId, cb, errCb)
+  // },
 
-  uploadCamCard(data, size) {
-    return new Promise((resolve, reject) => {
-      axios.post(
-        'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
-        data,
-      ).then(response => {
-        resolve(response.data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+  // uploadCamCard(data, size) {
+  //   return new Promise((resolve, reject) => {
+  //     axios.post(
+  //       'http://bcr2.intsig.net/BCRService/BCR_VCF2?PIN=abcd&user=summer.xia@investarget.com&pass=P8YSCG7AQLM66S7M&lang=2&json=1&size=' + size,
+  //       data,
+  //     ).then(response => {
+  //       resolve(response.data)
+  //     }).catch(error => {
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
-  getSingleUserInfo(userId, cb, errCb) {
-    return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
-  },
+  // getSingleUserInfo(userId, cb, errCb) {
+  //   return simplyGet('services/InvestargetApi/user/GetOne?input.lang=cn&input.id=' + userId, cb, errCb)
+  // },
 
-  uploadBusinessCard(formData) {
-    return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
-  },
+  // uploadBusinessCard(formData) {
+  //   return upload('services/InvestargetApi/qiniuUploadService/CCUpload', formData)
+  // },
 
-  uploadBusiness(file, cb, errCb) {
-    console.log('in the method')
-    return new Promise((resolve, reject) => {
-      axios.post(
-        url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
-        file,
-        { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
-      )
-        .then(response => {
-          console.log('Yxxxm', response.data)
-          if (!response.data.success) {
-            throw new ApiError(response.data.error)
-          }
-          const data = response.data.result
-          if (cb) cb(data)
-          resolve(data)
-        })
-        .catch(error => {
-          if (errCb) errCb(error)
-          reject(error)
-        })
-    })
-  },
+  // uploadBusiness(file, cb, errCb) {
+  //   console.log('in the method')
+  //   return new Promise((resolve, reject) => {
+  //     axios.post(
+  //       url + 'services/InvestargetApi/qiniuUploadService/CCUpload',
+  //       file,
+  //       { headers: { 'Authorization': 'Bearer ' + getToken(), 'content-type': 'application/octet-stream' } }
+  //     )
+  //       .then(response => {
+  //         console.log('Yxxxm', response.data)
+  //         if (!response.data.success) {
+  //           throw new ApiError(response.data.error)
+  //         }
+  //         const data = response.data.result
+  //         if (cb) cb(data)
+  //         resolve(data)
+  //       })
+  //       .catch(error => {
+  //         if (errCb) errCb(error)
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
 }
 

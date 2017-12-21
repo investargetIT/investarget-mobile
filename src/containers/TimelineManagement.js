@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 import { requestContents, hideLoading, handleError } from '../actions'
 
 import NavigationBar from '../components/NavigationBar'
@@ -105,26 +107,93 @@ class TimelineManagement extends React.Component {
         this.props.history.push(api.baseUrl + '/user')
     }
 
-    componentDidMount() {
-        this.props.dispatch(requestContents(''))
-        api.getAllTimeLines(
-            { 'input.maxResultCount': 100 },
-            result => {
-                this.setState({
-                    totalCount: result.totalCount,
-                    timelines: this.state.timelines.concat(result.items),
-                })
-                this.props.dispatch(hideLoading())
-            },
-            error => this.props.dispatch(handleError(error))
-        )
+    getInvestorOrganization = (investorIds) => {
+
+        const q = investorIds.map(id => {
+            return newApi.getUserDetailLang(id).then(result => {
+            const user = result
+            return user.org
+            })
+        })
+    
+        return Promise.all(q)
     }
 
-  handleTimelineClicked(id) {
-    if (this.props.userInfo.userType === 3) {
-      this.props.history.push(api.baseUrl + '/edit_timeline/' + id)
+    getLatestRemark = (timelineIds) => {
+        const userId = utils.getCurrentUserId()
+
+        const q = timelineIds.map(id => {
+            const params = { timeline: id, createuser: userId }
+            return newApi.getTimelineRemark(params).then(result => {
+                const { count, data } = result
+                return count > 0 ? data[0] : ''
+            })
+        })
+
+        return Promise.all(q)
     }
-  }
+
+    componentDidMount() {
+        this.props.dispatch(requestContents(''))
+
+        const userId = utils.getCurrentUserId()
+        const param = {
+            isClose: false,
+            page_index: 1,
+            page_size: 100,
+        }
+        if (this.props.userType == 1) {
+            param['investor'] = userId
+        } else if (this.props.userType == 3) {
+            param['trader'] = userId
+        }
+        newApi.getTimeline(param)
+            .then(data => {
+                var { count: totalCount, data: timelines } = data
+                
+                const investorIds = timelines.map(item => item.investor.id)
+                const ids = timelines.map(item => item.id)
+
+                Promise.all([this.getInvestorOrganization(investorIds), this.getLatestRemark(ids)])
+                    .then(data => {
+                        const orgs = data[0]
+                        const remarks = data[1]
+                        
+                        timelines.forEach((item, index) => {
+                            item['org'] = orgs[index]
+                            item['remark'] = remarks[index]
+                        })
+
+                        timelines = timelines.map(item => utils.convertListTimeline(item))
+                        this.setState({ totalCount, timelines })
+                        this.props.dispatch(hideLoading())
+
+                    })
+                    .catch(error => {
+                        this.props.dispatch(handleError(error))
+                    })
+            })
+            .catch(error => {
+                this.props.dispatch(handleError(error))
+            })
+
+    }
+
+    handleTimelineClicked(id) {
+        if (this.props.userInfo.userType === 3) {
+        this.props.history.push(api.baseUrl + '/edit_timeline/' + id)
+        }
+    }
+
+    handleClickProject(id) {
+        newApi.getShareToken(id)
+        .then(token => {
+            window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+        })
+        .catch(error => {
+            this.props.dispatch(handleError(error))
+        })
+    }
 
     render() {
         var userId = api.getCurrentUserId()
@@ -139,11 +208,11 @@ class TimelineManagement extends React.Component {
                         {
                             this.state.timelines.map(timeline => (
                                 <div style={timelineStyle} key={timeline.timeLineId}>
-				  <Link to={api.baseUrl + '/project/' + timeline.timeLineId + (this.props.userInfo ? '?token=' + this.props.userInfo.token : '')}>
-                                        <div style={nameStyle}>
-                                            <span style={nameSpanStyle}>{timeline.projectName}</span>
-                                        </div>
-                                    </Link>
+
+                                    <div style={nameStyle} onClick={this.handleClickProject.bind(this, timeline.projectId)}>
+                                        <span style={nameSpanStyle}>{timeline.projectName}</span>
+                                    </div>
+
 
                                     <div style={detailStyle}>
                                         <Link to={timeline.investorId == userId ? 
@@ -156,7 +225,7 @@ api.baseUrl + '/user_info/' + userId :
                                             </div>
                                         </Link>
 
-					<Link to={api.baseUrl + "/organization/" + timeline.investorOrgId}>
+					                    <Link to={api.baseUrl + "/organization/" + timeline.investorOrgId}>
                                             <div style={rowStyle}>
                                                 <span style={leftColStyle}>投资人所属机构：</span>
                                                 <span style={rightColStyle}>{timeline.investorOrg}</span>
@@ -183,15 +252,15 @@ api.baseUrl + '/user_info/' + userId :
                                             <span style={rightColStyle}>{timeline.isClose ? '已结束' : '未结束'}</span>
                                         </div>
 
-					  <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
-                                                <span style={leftColStyle}>剩余天数：</span>
-                                                <span style={rightColStyle}>{timeline.remainingAlertDays}</span>
-                                            </div>
+                                        <div style={rowStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
+                                            <span style={leftColStyle}>剩余天数：</span>
+                                            <span style={rightColStyle}>{timeline.remainingAlertDays}</span>
+                                        </div>
 
-                                            <div style={rowNoBorderStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
-                                                <span style={leftColStyle}>最新备注：</span>
-                                                <span style={rightColStyle}>{timeline.remark}</span>
-                                            </div>
+                                        <div style={rowNoBorderStyle} onClick={this.handleTimelineClicked.bind(this, timeline.timeLineId)}>
+                                            <span style={leftColStyle}>最新备注：</span>
+                                            <span style={rightColStyle}>{timeline.remark}</span>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -206,7 +275,7 @@ api.baseUrl + '/user_info/' + userId :
 
 function mapStateToProps(state) {
   const { userInfo} = state
-  return { userInfo}
+  return { userInfo, userType: userInfo.userType }
 }
 
 export default connect(mapStateToProps)(TimelineManagement)

@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
 import { logout, handleError, requestContents, hideLoading, modifyUserInfo, saveRedirectUrl } from '../actions'
 import api from '../api'
+import * as newApi from '../api3.0'
+import * as utils from '../utils'
 
 const groupStyle = {
   position: 'relative'
@@ -145,25 +147,25 @@ class User extends Component {
 
       react.setState({ avatar: reader.result });
 
-      var formData = new FormData()
-      formData.append('file', file)
-      formData.append('key', 'photoKey')
+      newApi.qiniuUpload('image', file)
+      .then(result => {
+        react.props.dispatch(hideLoading())
+        react.props.dispatch(handleError(new Error('Please wait patient')))
 
-      api.uploadUserAvatar(
-	formData,
-	(key, url) => {
-	  react.props.dispatch(hideLoading())
-	  react.props.dispatch(handleError(new Error('Please wait patient')))
-	  const newUserInfo = Object.assign({}, react.props.userInfo, {
-	    photoKey: key,
-	    photoUrl: url
-	  })
-	  react.props.dispatch(modifyUserInfo(newUserInfo))
-	},
-	error => react.props.dispatch(handleError(error)),
-	react.props.userInfo.photoKey || null
-      )
+        const { key: photoKey, url: photoUrl } = result.data
+        const userId = utils.getCurrentUserId()
+        newApi.editUser([userId], { photoKey, photoUrl })
+          .then(data => {
+            const newUserInfo = { ...react.props.userInfo, photoKey, photoUrl }
+            react.props.dispatch(modifyUserInfo(newUserInfo))
+          })
+      })
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
+
     }
+      
 
     reader.onerror = function () {
       alert('There was an error reading the file!');

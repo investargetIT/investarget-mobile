@@ -11,9 +11,10 @@ class HandleError extends Component {
     if (this.props.isError) {
       setTimeout(() => {
         this.props.dispatch(dismissErrMsg())
-        if (this.props.error.message === 'Request failed with status code 401') {
-	  this.props.dispatch(logout())
-	  this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
+        if (this.props.error.message === 'Request failed with status code 401' ||
+            this.props.error.code == 3000) {
+          this.props.dispatch(logout())
+          this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
           this.props.history.replace(api.baseUrl + '/login')
         }
       }, 1000)
@@ -117,6 +118,29 @@ class HandleError extends Component {
         case 200:
           showError = true
           errMsg = '旧密码错误'
+          break
+        case 2001:
+        case 2002:
+        case 20021:
+        case 2003:
+        case 2004:
+        case 20042:
+        case 2005:
+        case 20051:
+          showError = true
+          errMsg = error.message
+          break
+        case 2014:
+          showError = true
+          errMsg = error.message
+          break
+        case 2015:
+          showError = true
+          errMsg = error.message
+          break
+        case 3000:
+          showError = true
+          errMsg = '请登录后访问'
         default:
           console.error(error)
       }
