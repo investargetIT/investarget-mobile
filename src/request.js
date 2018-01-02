@@ -1,6 +1,6 @@
 let devUrl = "http://192.168.1.251:8080";
 // devUrl = 'http://192.168.1.201:8000';
-const prodUrl = 'http://39.107.14.53:8080';
+const prodUrl = 'https://api.investarget.com';
 let baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
 export { baseUrl };
 
