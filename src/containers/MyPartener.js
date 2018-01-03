@@ -52,11 +52,6 @@ function Partener(props) {
   )
 }
 
-const floatContainerStyle = {
-  backgroundColor: 'white',
-  overflow: 'auto'
-}
-
 const itemStyle = {
   float: 'left',
   width: 100/375*100+'%',
@@ -319,7 +314,7 @@ class MyPartener extends Component {
   }
 
   render() {
-
+    
     const content = this.state.myPartener.map(
       item => (
         <Link key={item.id} to={{pathname: api.baseUrl + '/chat/' + item.id, state:{name: item.name}}}>
@@ -330,7 +325,7 @@ class MyPartener extends Component {
       )
     )
 
-    const rightContent = this.props.userInfo.userType === 3 ? (
+    const rightContent = this.props.userInfo.permissions.indexOf('usersys.as_trader') > -1 ? (
       <div style={avatarContainerStyle}>
         <img style={iconStyle} src={api.baseUrl + "/images/plus.png"} alt="" />
         <div style={inputContainerStyle}>
@@ -370,10 +365,6 @@ var loadmoreStyle = {
           </div>
 
         </div>
-
-        {/*<div style={floatContainerStyle}>
-          {content}
-        </div>*/}
 
         <div id="wrapper1">
           <div id="scroller">
