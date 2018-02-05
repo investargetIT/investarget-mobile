@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import Select from '../components/Select'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
+import { Link } from 'react-router-dom';
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -263,7 +264,9 @@ class AddInvestor extends React.Component {
       top: 0,
       display: this.state.showTitle || this.state.showChooseTagsModal || this.state.showChooseGroupModal ? 'block': 'none',
     }
-    
+   
+    const orgText = typeof this.state.company === 'object' && this.state.company !== null ? this.state.company.orgname : this.state.company;
+
     return (
       <div>
         <NavigationBar title="新增投资人" action="提交" onActionButtonClicked={this.handleSubmit} />
@@ -283,7 +286,10 @@ class AddInvestor extends React.Component {
             <LeftLabelRightContent label="标签" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showChooseTagsModal: true })} >{ tagText }</div>} />
             <LeftLabelRightContent label="手机" content={<input name="mobile" style={inputStyle} value={this.state.mobile} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
-            <LeftLabelRightContent label="机构" content={<input name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} />
+            <LeftLabelRightContent label="机构" 
+              // content={<input disabled name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} 
+              content={<Link to="/select_org"><div style={{ fontSize: 16, width: '96%' }}>{ orgText }</div></Link>}
+            />
           </div>
 
         </div>

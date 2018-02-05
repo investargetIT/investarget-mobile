@@ -43,6 +43,7 @@ import NotificationDetail from './containers/NotificationDetail'
 import SelectUser from './containers/SelectUser'
 import AddInvestor from './containers/AddInvestor'
 import Upload from './containers/Upload';
+import SelectOrg from './containers/SelectOrg';
 
 class Routes extends React.Component {
   state = {
@@ -137,6 +138,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/select_user"} component={SelectUser} />
           <Route path={api.baseUrl + "/add_investor"} component={AddInvestor} />
           <Route path={api.baseUrl + "/upload"} component={Upload} />
+          <Route path={api.baseUrl + "/select_org"} component={SelectOrg} />
         </div>
       </Router>
     )
