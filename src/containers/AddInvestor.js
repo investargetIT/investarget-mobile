@@ -58,13 +58,23 @@ class AddInvestor extends React.Component {
       image: props.location.state ? props.location.state.image : null,
       company: props.location.state ? props.location.state.company : "",
       showTitle: false,
-      file: props.location.state ? props.location.state.file : null
+      file: props.location.state ? props.location.state.file : null,
+      tags: [],
+      showChooseTagsModal: false, 
+      groupOptions: [],
+      group: null,
+      showChooseGroupModal: false,
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.showTitleSelect = this.showTitleSelect.bind(this)
     this.handleSelectTitle = this.handleSelectTitle.bind(this)
+  }
+
+  componentDidMount() {
+    newApi.queryUserGroup({ type: 'investor' })
+      .then(data => this.setState({ groupOptions: data.data }));
   }
 
   handleInputChange(event) {
@@ -216,6 +226,18 @@ class AddInvestor extends React.Component {
     })
   }
 
+  handleSelectTags = tags => {
+    this.setState({
+      tags,
+      showChooseTagsModal: false
+    })
+  }
+
+  handleSelectGroup = group => this.setState({ 
+    group: group.length ? group[0] : null, 
+    showChooseGroupModal: false 
+  });
+
   render() {
 
     const titleOptions = this.props.titles.map(item => {
@@ -226,6 +248,12 @@ class AddInvestor extends React.Component {
       ? titleOptions.filter(option => this.state.title == option.id)[0].name
       : '点击选择职位'
 
+    const groupText = this.state.group != null && this.state.groupOptions.length > 0
+      ? this.state.groupOptions.filter(option => this.state.group === option.id)[0].name
+      : '点击选择角色';
+    const tagOptions = this.props.tags.map(item => ({ id: item.id, name: item.tagName }));
+    const tagText = this.state.tags.length > 0 ? this.state.tags.map(m => tagOptions.filter(f => f.id === m)[0].name).join(',') : '点击选择标签';
+
     const transparentStyle = {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       height: window.innerHeight - 48 + 'px',
@@ -233,9 +261,9 @@ class AddInvestor extends React.Component {
       position: 'absolute',
       left: 0,
       top: 0,
-      display: this.state.showTitle ? 'block': 'none',
+      display: this.state.showTitle || this.state.showChooseTagsModal || this.state.showChooseGroupModal ? 'block': 'none',
     }
-
+    
     return (
       <div>
         <NavigationBar title="新增投资人" action="提交" onActionButtonClicked={this.handleSubmit} />
@@ -250,10 +278,12 @@ class AddInvestor extends React.Component {
 
           <div>
             <LeftLabelRightContent label="姓名" content={<input name="name" style={inputStyle} value={this.state.name} onChange={this.handleInputChange} />} />
-            <LeftLabelRightContent label="职位" content={<div style={{ fontSize: 16, width: '96%' }} onClick={this.showTitleSelect} >{ titleText }</div>} />
+            <LeftLabelRightContent label="角色" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showChooseGroupModal: true })} >{ groupText }</div>} />
+            <LeftLabelRightContent label="职位" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showTitle: true })}>{ titleText }</div>} />
+            <LeftLabelRightContent label="标签" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showChooseTagsModal: true })} >{ tagText }</div>} />
             <LeftLabelRightContent label="手机" content={<input name="mobile" style={inputStyle} value={this.state.mobile} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
-            <LeftLabelRightContent label="公司" content={<input name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} />
+            <LeftLabelRightContent label="机构" content={<input name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} />
           </div>
 
         </div>
@@ -266,14 +296,26 @@ class AddInvestor extends React.Component {
           </div>
         </div>
 
+        <div style={{ display: this.state.showChooseGroupModal? 'block' : 'none' }}>
+          <div style={tagContainerStyle}>
+            <Select title="请选择角色" multiple={false} options={this.state.groupOptions} onConfirm={this.handleSelectGroup} />
+          </div>
+        </div>
+
+        <div style={{ display: this.state.showChooseTagsModal ? 'block' : 'none' }}>
+          <div style={tagContainerStyle}>
+            <Select title="请选择标签" multiple options={tagOptions} onConfirm={this.handleSelectTags} />
+          </div>
+        </div>
+
       </div>
     )
   }
 }
 
 function mapStateToProps(state) {
-  const { userInfo, titles } = state
-  return { userInfo, titles }
+  const { userInfo, titles, tags } = state;
+  return { userInfo, titles, tags };
 }
 
 export default connect(mapStateToProps)(AddInvestor)
