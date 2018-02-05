@@ -366,7 +366,7 @@ export function convertTimelineRemark(item) {
 export function convertMessage(item) {
     return {
         businessId: item.sourceid,
-        creationTime: item.created,
+        creationTime: item.createdtime,
         id: item.id,
         isread: item.isRead,
         messageType: item.sourcetype,

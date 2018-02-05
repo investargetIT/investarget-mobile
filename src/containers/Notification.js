@@ -173,9 +173,8 @@ class Notification extends Component {
 
     const content = this.state.message.filter(item =>
       item.isread === !this.state.showUnReadMessage
-    ).map(item =>
-      <div key={item.id} onClick={this.handleMessageClicked.bind(this, item)}>
-	<Message title={this.getMessageTitle(item.messageType)} date={item.creationTime.substr(0, 10)} content={item.title} />
+    ).map(item => <div key={item.id} onClick={this.handleMessageClicked.bind(this, item)}>
+	      <Message title={this.getMessageTitle(item.messageType)} date={item.creationTime && item.creationTime.substr(0, 10)} content={item.title} />
       </div>
     )
 
