@@ -25,6 +25,7 @@ import {
   HIDE_TOAST,
   SAVE_REDIRECT_URL,
   UPDATE_PROJECT_STRUCTURE,
+  SELECT_OR_ADD_ORG,
 } from '../actions'
 
 const initialState = {
@@ -48,7 +49,8 @@ const initialState = {
   },
   showToast: false,
   toastMessage: '',
-  redirectUrl: null
+  redirectUrl: null,
+  selectOrAddOrg: null,
 }
 
 export default function (state = initialState, action) {
@@ -209,6 +211,10 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         projectStructure: action.structure
       })
+    case SELECT_OR_ADD_ORG:
+      return Object.assign({}, state, {
+        selectOrAddOrg: action.org
+      });
     default:
       return state
   }

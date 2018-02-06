@@ -57,7 +57,7 @@ class AddInvestor extends React.Component {
       mobile: props.location.state ? props.location.state.mobile : "",
       email: props.location.state ? props.location.state.email : "",
       image: props.location.state ? props.location.state.image : null,
-      company: props.location.state ? props.location.state.company : "",
+      company: props.selectOrAddOrg || (props.location.state ? props.location.state.company : ""),
       showTitle: false,
       file: props.location.state ? props.location.state.file : null,
       tags: [],
@@ -264,7 +264,7 @@ class AddInvestor extends React.Component {
       top: 0,
       display: this.state.showTitle || this.state.showChooseTagsModal || this.state.showChooseGroupModal ? 'block': 'none',
     }
-   
+
     const orgText = typeof this.state.company === 'object' && this.state.company !== null ? this.state.company.orgname : this.state.company;
 
     return (
@@ -320,8 +320,8 @@ class AddInvestor extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { userInfo, titles, tags } = state;
-  return { userInfo, titles, tags };
+  const { userInfo, titles, tags, selectOrAddOrg } = state;
+  return { userInfo, titles, tags, selectOrAddOrg };
 }
 
 export default connect(mapStateToProps)(AddInvestor)

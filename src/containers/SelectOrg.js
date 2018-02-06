@@ -1,20 +1,65 @@
 import React from 'react';
 import NavigationBar from '../components/NavigationBar';
+import * as api from '../api3.0';
+import { selectOrAddOrg } from '../actions';
+import { connect } from 'react-redux';
+
+function OrgItem({ orgname, description, onPress }) {
+  return (
+    <div onClick={onPress} style={{ backgroundColor: 'white', padding: 10, borderBottom: '1px solid #f4f4f4' }}>
+      <div>{orgname}</div>
+      <div style={{ marginTop: 6, height: 32, overflow: 'hidden', color: '#999', fontSize: 12, lineHeight: '16px' }}>{description}</div>
+    </div>
+  );
+}
 
 class SelectOrg extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      search: ''
+      search: '',
+      orgs: [],
     };
   }
 
-  handleSearchTextChange = e => {
-    this.setState({ search: e.target.value }, this.searchProject);
+  componentDidMount() {
+    this.searchOrg();
   }
 
+  searchOrg = () => {
+    const params = {
+      search: this.state.search
+    };
+    api.getOrg(params)
+    .then(result => {
+      const orgs = result.data.map(item => {
+        var obj = {}
+        obj['id'] = item.id;
+        obj['orgname'] = item.orgname;
+        obj['description'] = item.description;
+        return obj
+      });
+      this.setState({ orgs });
+    })
+    .catch(err => console.error(err));
+  };
+
+  handleSearchTextChange = e => {
+    this.setState({ search: e.target.value }, this.searchOrg);
+  }
+
+  orgOnPress = org => {
+    this.props.dispatch(selectOrAddOrg(org));
+    this.props.history.goBack();
+  };
+
   render () {
+
+    const rows = this.state.orgs.map(m => <OrgItem key={m.id} {...m} 
+      onPress={this.orgOnPress.bind(this, m)} />
+    );
+
     return (
       <div>
         <NavigationBar title="选择或新增机构" />
@@ -39,9 +84,13 @@ class SelectOrg extends React.Component {
 
         </div>
 
+        <div style={{ marginTop: 49 }}>
+          {rows}
+        </div>
+
       </div>
     ) 
   }
 }
 
-export default SelectOrg;
+export default connect()(SelectOrg);
