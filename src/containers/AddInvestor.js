@@ -1,13 +1,13 @@
 import React from 'react'
 import NavigationBar from '../components/NavigationBar'
-import api from '../api'
 import LeftLabelRightContent from '../components/LeftLabelRightContent'
 import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import Select from '../components/Select'
-import * as newApi from '../api3.0'
+import * as api from '../api3.0'
 import * as utils from '../utils'
 import { Link } from 'react-router-dom';
+import SelectOrg from './SelectOrg';
 
 const containerStyle = {
   backgroundColor: '#EEF3F4',
@@ -57,7 +57,7 @@ class AddInvestor extends React.Component {
       mobile: props.location.state ? props.location.state.mobile : "",
       email: props.location.state ? props.location.state.email : "",
       image: props.location.state ? props.location.state.image : null,
-      company: props.selectOrAddOrg || (props.location.state ? props.location.state.company : ""),
+      company: props.location.state ? props.location.state.company : "",
       showTitle: false,
       file: props.location.state ? props.location.state.file : null,
       tags: [],
@@ -65,6 +65,7 @@ class AddInvestor extends React.Component {
       groupOptions: [],
       group: null,
       showChooseGroupModal: false,
+      showChooseOrgModal: false, 
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -74,7 +75,7 @@ class AddInvestor extends React.Component {
   }
 
   componentDidMount() {
-    newApi.queryUserGroup({ type: 'investor' })
+    api.queryUserGroup({ type: 'investor' })
       .then(data => this.setState({ groupOptions: data.data }));
   }
 
@@ -88,43 +89,70 @@ class AddInvestor extends React.Component {
     })
   }
 
+  checkFields = () => {
+    const { name, title, mobile, email, company, tags, group } = this.state
+    var errMsg = null
+    if (!name) {
+      errMsg = '请输入姓名'
+    } else if (!group) {
+      errMsg = '请选择角色'
+    } else if (!title) {
+      errMsg = '请选择职位'
+    } else if (tags.length === 0) {
+      errMsg = '请选择标签'
+    } else if (!mobile) {
+      errMsg = '请输入手机号'
+    } else if (!email) {
+      errMsg = '请输入邮箱'
+    } else if (!/[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/.test(email)) {
+      errMsg = '请输入格式正确的邮箱'
+    } else if (!company) {
+      errMsg = '请输入公司'
+    }
+    return errMsg
+  }
+
   handleSubmit() {
 
-    if (!this.state.name || !this.state.title || !this.state.mobile || !this.state.email || !this.state.company) {
-      this.props.dispatch(handleError(new Error('content can not be empty')))
-      return
+    const errMsg = this.checkFields()
+    if (errMsg) {
+      this.props.dispatch(handleError(new Error(errMsg)));
+      return;
     }
     
-    // if (!/^1[34578]\d{9}$/.test(this.state.mobile)) {
-    //   this.props.dispatch(handleError(new Error('mobile_not_valid')))
-    //   return
-    // }
-
-    if(!/[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/.test(this.state.email)) {
-      this.props.dispatch(handleError(new Error('Please input valid Email')))
-      return
+    if (typeof this.state.company === 'string') {
+      if(confirm(`机构${this.state.company}目前不在库中，是否确定新增该机构？`)) {
+        this.addInvestor();
+      }
+    } else {
+      this.addInvestor();
     }
 
+    }
+
+  addInvestor = () => {
     const body = {
       'usernameC': this.state.name,
       'title': this.state.title,
       'email': this.state.email,
       'mobile': this.state.mobile,
-      'orgname': this.state.company,
+      'org': typeof this.state.company === 'object' ? this.state.company.id : null,
       'cardBucket': 'image',
+      'groups': [this.state.group], 
+      'tags': this.state.tags, 
     }
 
     this.props.dispatch(requestContents(''))
 
-    let existUser
-    newApi.checkUserExist(this.state.mobile)
+    let existUser, uploadCardResult;
+    api.checkUserExist(this.state.mobile)
     .then(result => {
       console.log('checkMobileExist', result)
       if (result.result) {
         existUser = result.user
       }
       if (this.state.email) {
-        return newApi.checkUserExist(this.state.email)
+        return api.checkUserExist(this.state.email)
       } else {
         return Promise.resolve("The Email is empty!")
       }
@@ -138,7 +166,7 @@ class AddInvestor extends React.Component {
         existUser = result.user
       }
       if (existUser) {
-        return newApi.checkUserRelation(existUser.id, utils.getCurrentUserId())
+        return api.checkUserRelation(existUser.id, this.props.userId)
       } else {
         return Promise.resolve("The investor is not exist in our database!")
       }
@@ -146,10 +174,10 @@ class AddInvestor extends React.Component {
     .then(result => {
       console.log('checkUserCommonTransaction', result)
       if (existUser && !result) {
-        return newApi.addUserRelation({
+        return api.addUserRelation({
           relationtype: false,
           investoruser: existUser.id,
-          traderuser: utils.getCurrentUserId()
+          traderuser: this.props.userId
         })
       } else {
         return Promise.resolve("The investor is not exist or the relationship has already been established!")
@@ -158,7 +186,7 @@ class AddInvestor extends React.Component {
     .then(result => {
       console.log('addUserCommonTransaction', result)
       if (existUser) {
-        return newApi.getUserDetailLang(existUser.id)
+        return api.getUserDetailLang(existUser.id)
       } else {
         return Promise.resolve("The investor is not exist in our database!")
       }
@@ -170,46 +198,61 @@ class AddInvestor extends React.Component {
         existUser = result
         cardKey = existUser.cardKey
       }
+      if (this.state.file) {
       const formData = new FormData()
       formData.append('file', this.state.file)
-      return cardKey ? newApi.coverUpload(cardKey, formData, 'image') : newApi.basicUpload(formData, 'image')
+        return cardKey ? api.coverUpload(cardKey, formData, 'image') : api.basicUpload(formData, 'image')
+      }
+    })
+    // 添加机构
+    .then(result => {
+      console.log('uploadCard', result);
+      uploadCardResult = result;
+      if (typeof this.state.company === 'string') {
+        return api.addOrg({ orgnameC: this.state.company });
+      }
     })
     .then(result => {
-      console.log('uploadCard', result)
-      const cardKey = result.key
-      const cardUrl = result.url
+      console.log('addOrg', result)
+      let cardKey = uploadCardResult && uploadCardResult.key
+      let cardUrl = uploadCardResult && uploadCardResult.url
+      const org = result ? result.id : this.state.company.id;
       if (existUser) {
         const title = this.state.title || (existUser.title ? existUser.title.id : null)
         const email = this.state.email || existUser.email
-        const orgname = this.state.company || existUser.org.id
         const usernameC = this.state.name || existUser.username
         const mobile = this.state.mobile || existUser.mobile
-        return newApi.editUser([existUser.id], { orgname, title, email, usernameC, cardKey, cardUrl, mobile })
+        const tags = this.state.tags.length > 0 ? this.state.tags : existUser.tags;
+        cardKey = cardKey || existUser.cardKey
+        cardUrl = cardUrl || existUser.cardUrl
+        return api.editUser([existUser.id], { org, title, email, usernameC, cardKey, cardUrl, mobile, tags })
       } else {
-        const partnerId = this.props.userInfo.id
-        return newApi.addUser({ ...body, partnerId, cardKey, cardUrl, userstatus: 2, groups: [1] })
+        const partnerId = this.props.userId
+        return api.addUser({ ...body, partnerId, cardKey, cardUrl, userstatus: 2, org })
       }
     })
     .then(result => {
       console.log('update or add user result', result)
       if (!existUser) {
-        return newApi.addUserRelation({
+        return api.addUserRelation({
           relationtype: false,
           investoruser: result.id,
-          traderuser: utils.getCurrentUserId()
+          traderuser: this.props.userId,
         })
       } else {
         return Promise.resolve('the relationship has already been established')
       }
     })
     .then(data => {
-      this.props.dispatch(hideLoading())
-      this.props.history.goBack()
+        this.props.dispatch(hideLoading());
+        this.props.dispatch(handleError(new Error('新增投资人成功')));
+        this.props.history.goBack();
     })
     .catch(error => {
-      this.props.dispatch(hideLoading())
-      this.props.dispatch(handleError(error))
-    })
+        this.props.dispatch(hideLoading());
+        this.props.dispatch(handleError(new Error(error.message)));
+    });
+
   }
 
   showTitleSelect() {
@@ -268,15 +311,18 @@ class AddInvestor extends React.Component {
     const orgText = typeof this.state.company === 'object' && this.state.company !== null ? this.state.company.orgname : this.state.company;
 
     return (
-      <div>
+      <div style={{ display: 'relative' }}>
+
+
+
         <NavigationBar title="新增投资人" action="提交" onActionButtonClicked={this.handleSubmit} />
 
-        { /* <div style={placeholderStyle} /> */ }
+
 
         <div style={containerStyle}>
 
           <div style={cardImageContainerStyle}>
-            <img style={cardStyle} alt="" src={ this.state.image || api.baseUrl + "/images/userCenter/emptyCardImage@2x.png" } />
+            <img style={cardStyle} alt="" src={ this.state.image || "/images/userCenter/emptyCardImage@2x.png" } />
           </div>
 
           <div>
@@ -288,7 +334,7 @@ class AddInvestor extends React.Component {
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="机构" 
               // content={<input disabled name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} 
-              content={<Link to="/select_org"><div style={{ fontSize: 16, width: '96%' }}>{ orgText }</div></Link>}
+              content={<div onClick={() => this.setState({ showChooseOrgModal: true })} style={{ fontSize: 16, width: '96%', height: 42, overflow: 'hidden' }}>{ orgText }</div>}
             />
           </div>
 
@@ -314,14 +360,23 @@ class AddInvestor extends React.Component {
           </div>
         </div>
 
+        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, backgroundColor: 'white', display: this.state.showChooseOrgModal ? 'block' : 'none' }}>
+          <SelectOrg 
+            backIconClicked={() => this.setState({ showChooseOrgModal: false })} 
+            onSelectOrg={org => this.setState({ company: org, showChooseOrgModal: false })} 
+            onAddOrg={org => this.setState({ company: org, showChooseOrgModal: false })} 
+          />
+        </div>
+
       </div>
     )
   }
 }
 
 function mapStateToProps(state) {
-  const { userInfo, titles, tags, selectOrAddOrg } = state;
-  return { userInfo, titles, tags, selectOrAddOrg };
+  const { userInfo, titles, tags } = state;
+  const userId = userInfo.id;
+  return { userInfo, titles, tags, userId };
 }
 
 export default connect(mapStateToProps)(AddInvestor)

@@ -24,7 +24,6 @@ export const SHOW_TOAST = 'SHOW_TOAST'
 export const HIDE_TOAST = 'HIDE_TOAST'
 export const SAVE_REDIRECT_URL = 'SAVE_REDIRECT_URL'
 export const UPDATE_PROJECT_STRUCTURE = 'UPDATE_PROJECT_STRUCTURE'
-export const SELECT_OR_ADD_ORG = 'SELECT_OR_ADD_ORG';
 
 export function updateProjectStructure(structure) {
   return {
@@ -198,11 +197,4 @@ export function saveRedirectUrl(url) {
     type: SAVE_REDIRECT_URL,
     url
   }
-}
-
-export function selectOrAddOrg(org) {
-  return {
-    type: SELECT_OR_ADD_ORG,
-    org
-  };
 }

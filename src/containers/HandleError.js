@@ -97,6 +97,8 @@ class HandleError extends Component {
           errMsg = "名片解析失败"
           break
         default:
+          showError = true
+          errMsg = error.message
           console.error(error)
       }
     }

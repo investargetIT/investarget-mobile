@@ -2,7 +2,6 @@ import React from 'react';
 import NavigationBar from '../components/NavigationBar';
 import * as api from '../api3.0';
 import { selectOrAddOrg } from '../actions';
-import { connect } from 'react-redux';
 
 function OrgItem({ orgname, description, onPress }) {
   return (
@@ -49,20 +48,15 @@ class SelectOrg extends React.Component {
     this.setState({ search: e.target.value }, this.searchOrg);
   }
 
-  orgOnPress = org => {
-    this.props.dispatch(selectOrAddOrg(org));
-    this.props.history.goBack();
-  };
-
   render () {
 
     const rows = this.state.orgs.map(m => <OrgItem key={m.id} {...m} 
-      onPress={this.orgOnPress.bind(this, m)} />
+      onPress={this.props.onSelectOrg.bind(this, m)} />
     );
 
     return (
       <div>
-        <NavigationBar title="选择或新增机构" />
+        <NavigationBar title="选择或新增机构" backIconClicked={this.props.backIconClicked} />
 
         <div style={{ position: 'absolute', left: 0, right: 0 }} >
           
@@ -77,7 +71,7 @@ class SelectOrg extends React.Component {
               value={this.state.search}
               onChange={this.handleSearchTextChange}
             />
-            <div onClick={this.handleAddOrgBtnPressed} style={{ fontSize: 16, color: '#10458F', textAlign: 'right' }}>添加机构</div>
+            <div onClick={this.props.onAddOrg.bind(this, this.state.search)} style={{ fontSize: 16, color: '#10458F', textAlign: 'right' }}>添加机构</div>
           </div>
 
           <div style={{ height: 1, backgroundColor: "#CED0CE" }} />
@@ -93,4 +87,4 @@ class SelectOrg extends React.Component {
   }
 }
 
-export default connect()(SelectOrg);
+export default SelectOrg;
