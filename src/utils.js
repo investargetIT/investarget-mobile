@@ -475,3 +475,7 @@ export function getCurrentUserId() {
     }
     return id
 }
+
+export function checkMobile(mobile) {
+  return /^\d{6,20}$/.test(mobile);
+} 

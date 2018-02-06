@@ -5,7 +5,7 @@ import { handleError, requestContents, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import Select from '../components/Select'
 import * as api from '../api3.0'
-import * as utils from '../utils'
+import {checkMobile} from '../utils';
 import { Link } from 'react-router-dom';
 import SelectOrg from './SelectOrg';
 
@@ -100,8 +100,8 @@ class AddInvestor extends React.Component {
       errMsg = '请选择职位'
     } else if (tags.length === 0) {
       errMsg = '请选择标签'
-    } else if (!mobile) {
-      errMsg = '请输入手机号'
+    } else if (!checkMobile(mobile)) {
+      errMsg = '请输入正确的手机号';
     } else if (!email) {
       errMsg = '请输入邮箱'
     } else if (!/[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+\.[A-Za-z0-9_\-\.]+/.test(email)) {
