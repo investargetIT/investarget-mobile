@@ -44,6 +44,7 @@ import SelectUser from './containers/SelectUser'
 import AddInvestor from './containers/AddInvestor'
 import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
+import { logout } from './actions';
 
 class Routes extends React.Component {
   state = {
@@ -67,7 +68,10 @@ class Routes extends React.Component {
           this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
           this.setState({ tryToLogin: true })
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+          this.props.dispatch(logout());
+          this.setState({ tryToLogin: true });
+        })
     } else {
       this.setState({ tryToLogin: true })
     }
