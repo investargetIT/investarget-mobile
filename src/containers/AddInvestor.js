@@ -66,6 +66,7 @@ class AddInvestor extends React.Component {
       group: null,
       showChooseGroupModal: false,
       showChooseOrgModal: false, 
+      mobileAreaCode: '86',
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -90,7 +91,7 @@ class AddInvestor extends React.Component {
   }
 
   checkFields = () => {
-    const { name, title, mobile, email, company, tags, group } = this.state
+    const { name, title, mobile, email, company, tags, group, mobileAreaCode } = this.state
     var errMsg = null
     if (!name) {
       errMsg = '请输入姓名'
@@ -108,6 +109,8 @@ class AddInvestor extends React.Component {
       errMsg = '请输入格式正确的邮箱'
     } else if (!company) {
       errMsg = '请输入公司'
+    } else if (!mobileAreaCode) {
+      errMsg = '请填写区号';
     }
     return errMsg
   }
@@ -140,6 +143,7 @@ class AddInvestor extends React.Component {
       'cardBucket': 'image',
       'groups': [this.state.group], 
       'tags': this.state.tags, 
+      'mobileAreaCode': this.state.mobileAreaCode,
     }
 
     this.props.dispatch(requestContents(''))
@@ -222,10 +226,11 @@ class AddInvestor extends React.Component {
         const email = this.state.email || existUser.email
         const usernameC = this.state.name || existUser.username
         const mobile = this.state.mobile || existUser.mobile
+        const mobileAreaCode = this.state.mobileAreaCode || existUser.mobileAreaCode;
         const tags = this.state.tags.length > 0 ? this.state.tags : existUser.tags;
         cardKey = cardKey || existUser.cardKey
         cardUrl = cardUrl || existUser.cardUrl
-        return api.editUser([existUser.id], { org, title, email, usernameC, cardKey, cardUrl, mobile, tags })
+        return api.editUser([existUser.id], { org, title, email, usernameC, cardKey, cardUrl, mobile, tags, mobileAreaCode })
       } else {
         const partnerId = this.props.userId
         return api.addUser({ ...body, partnerId, cardKey, cardUrl, userstatus: 2, org })
@@ -330,7 +335,13 @@ class AddInvestor extends React.Component {
             <LeftLabelRightContent label="角色" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showChooseGroupModal: true })} >{ groupText }</div>} />
             <LeftLabelRightContent label="职位" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showTitle: true })}>{ titleText }</div>} />
             <LeftLabelRightContent label="标签" content={<div style={{ fontSize: 16, width: '96%' }} onClick={() => this.setState({ showChooseTagsModal: true })} >{ tagText }</div>} />
-            <LeftLabelRightContent label="手机" content={<input name="mobile" style={inputStyle} value={this.state.mobile} onChange={this.handleInputChange} />} />
+            <LeftLabelRightContent label="手机" content={
+              <div style={{ display: 'flex' }}>
+               +
+               <input size="1" name="mobileAreaCode" style={{ flexBasis: 40, border: 'none', fontSize: 16 }} placeholder="区号" value={this.state.mobileAreaCode} onChange={this.handleInputChange} />
+               <input size="1" name="mobile" style={{ flex: 1, border: 'none', fontSize: 16 }} value={this.state.mobile} onChange={this.handleInputChange} />
+              </div>
+            } />
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="机构" 
               // content={<input disabled name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} 
