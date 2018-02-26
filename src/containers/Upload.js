@@ -47,12 +47,13 @@ class Upload extends React.Component {
     // 上传文件
     newApi.qiniuUpload(bucket, file)
       .then(result => {
-        const { key: cardKey, url: cardUrl } = result.data;
+        const { key: cardKey, url: cardUrl, realfilekey } = result.data;
         body = {
           record: this.key,
           filename,
           bucket,
           key: cardKey,
+          realfilekey
         }
         // 查询二维码是否有效
         return newApi.queryMobileUploadKey(this.key);
