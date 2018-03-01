@@ -221,9 +221,7 @@ export function deleteProjFinance(id) {
  * proj attachment
  */
 
-export function getProjAttachment(proj) {
-  return r('/proj/attachment/?proj=' + proj)
-}
+export const getProjAttachment = params => r('/proj/attachment/?' + qs.stringify(params));
 
 export function addProjAttachment(data) {
   return r('/proj/attachment/', 'POST', data)

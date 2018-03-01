@@ -574,6 +574,11 @@ class ProjectDetailForRN extends React.Component {
                     {hightlightItems}
                 </div>
 
+                <div style={dataSetStyle}>
+                  <h4 style={dataTitleStyle}>附件下载</h4>
+                  <DownloadFiles projectId={this.props.match.params.id} />
+                </div>
+
                 <Modal show={this.state.showModal} title={this.state.modalTitle} content={this.state.modalContent} actions={this.state.modalActions} />
             </div>
         )
@@ -603,3 +608,126 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(ProjectDetailForRN)
+
+class DownloadFiles extends React.Component {
+
+    constructor(props) {
+      super(props)
+      this.state = {
+        attachments: [],
+      }
+    }
+  
+    componentDidMount() {
+      const id = this.props.projectId
+      newApi.getProjAttachment({ proj: id, page_size: 10000 }).then(result => {
+        const { data: attachments } = result;
+        this.setState({ attachments })
+  
+        const q = attachments.map(item => {
+          let { bucket, key } = item;
+          key = key + '?attname=' + encodeURIComponent(key);
+          return newApi.downloadUrl(bucket, key).then(result => {
+            return result
+          })
+        })
+        Promise.all(q).then(urls => {
+          const list = attachments.map((item, index) => {
+            return { ...item, url: urls[index] }
+          })
+          this.setState({ attachments: list })
+        })
+      })
+    }
+  
+    render() {
+      const containerStyle = {
+        padding: 10,
+      }
+      const sectionStyle = {
+        padding: '0px 20px',
+        paddingTop:'10px',
+        marginBottom:10,
+        // display: 'flex',
+        backgroundColor:'rgb(233, 241, 243)'
+      }
+  
+  
+      const titleStyle = {
+        flexShrink: 0,
+        width: 150,
+        paddingRight: 15,
+      }
+      const listStyle = {
+        flexGrow: 1,
+      }
+      const headerStyle={
+        fontSize: 14,
+        fontWeight: 400,
+        paddingLeft: 120,
+        color: '#656565',
+        marginBottom:20,
+      }
+      const imgContainer={
+        width:30,
+        height:25,
+        position:'relative',
+      }
+      const cloudStyle={
+        width:'100%',
+        height:'100%',
+      }
+      const arrowStyle={
+        position:'absolute',
+        zIndex:1,
+        right:'35%',
+        top:'20%',
+        width:'30%',
+        height:'40%',
+      }
+      const liStyle={
+        display:'flex',
+        justifyContent:'space-between',
+        minHeight:20,
+      }
+
+      const dirs = Array.from(new Set(this.state.attachments.map(item=>item.filetype)))
+  
+      return (
+        <div>
+
+          { dirs.length > 0 ? null : <div style={headerStyle}>暂无附件</div> }
+
+          {dirs.map((dir, index) => {
+            const files = this.state.attachments.filter(item => item.filetype == dir)
+            const isLast = index == dirs.length - 1
+  
+  
+            return (
+              <div key={index}>
+                <div style={highlightTitleStyle}>{dir}</div>
+                <ul style={listStyle}>
+                  {files.map(file => {
+                    return (
+                        <a
+                        disabled={!file.url}
+                        download={file.filename}
+                        href={file.url}
+                      >
+                      <li key={file.key} style={liStyle}>
+                        <div title={file.filename} style={{ ...highlightContentStyle, color: '#333' }}>
+                          {file.filename}
+                        </div>
+                        
+                      </li>
+                      </a>
+                    )
+                  })}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+  }
