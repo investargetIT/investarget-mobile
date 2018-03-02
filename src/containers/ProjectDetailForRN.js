@@ -189,6 +189,7 @@ class ProjectDetailForRN extends React.Component {
             "modalContent": "",
             "modalActions": [],
             "showGuide": false,
+            "userToken": null,
         }
 
         this.favorProject = this.favorProject.bind(this)
@@ -273,33 +274,13 @@ class ProjectDetailForRN extends React.Component {
         .catch(error => {
             this.props.dispatch(handleError(error))
         })
-      
 
-      // 是否收藏了项目
-      if (this.props.isLogin) {
-        const userId = utils.getCurrentUserId()
-        const param = {
-            favoritetype: 4,
-            user: userId,
-            proj: projectId,
-        }
-        newApi.getFavoriteProj(param)
-            .then(data => {
-                const favorData = data.data
-                const isFavorite = favorData.length == 1
-                const favorId = favorData[0] && favorData[0].id
-                this.setState({
-                    isMyFavoriteProject: isFavorite,
-                    favorId,
-                })
-            })
-            .catch(error => {
-                this.props.dispatch(handleError(error))  
-            })
-      } else {
-          this.setState({ showGuide: true })
+      const userTokenArr = /userToken=([^&]+)(&|$)/.exec(this.props.location.search);
+      if (userTokenArr && userTokenArr.length > 1) {
+          const userToken = userTokenArr[1];
+          this.setState({ userToken });
       }
-      
+
     }
 
 
@@ -574,10 +555,12 @@ class ProjectDetailForRN extends React.Component {
                     {hightlightItems}
                 </div>
 
-                <div style={dataSetStyle}>
-                  <h4 style={dataTitleStyle}>附件下载</h4>
-                  <DownloadFiles projectId={this.props.match.params.id} />
-                </div>
+                { this.state.userToken ?
+                  <div style={dataSetStyle}>
+                    <h4 style={dataTitleStyle}>附件下载</h4>
+                    <DownloadFiles projectId={this.props.match.params.id} token={this.state.userToken} />
+                  </div>
+                : null }
 
                 <Modal show={this.state.showModal} title={this.state.modalTitle} content={this.state.modalContent} actions={this.state.modalActions} />
             </div>
@@ -620,14 +603,14 @@ class DownloadFiles extends React.Component {
   
     componentDidMount() {
       const id = this.props.projectId
-      newApi.getProjAttachment({ proj: id, page_size: 10000 }).then(result => {
+      newApi.getProjAttWithToken({ proj: id, page_size: 10000 }, this.props.token).then(result => {
         const { data: attachments } = result;
         this.setState({ attachments })
   
         const q = attachments.map(item => {
           let { bucket, key } = item;
           key = key + '?attname=' + encodeURIComponent(key);
-          return newApi.downloadUrl(bucket, key).then(result => {
+          return newApi.getdProjAttUrlWithToken(bucket, key, this.props.token).then(result => {
             return result
           })
         })

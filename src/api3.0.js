@@ -81,6 +81,35 @@ function r2(url, method, body) {
   return request(url, options)
 }
 
+function reqWithToken(url, token, method, body) {
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const options = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "clienttype": "4",
+      "source": source,
+      "token": token
+    }
+  }
+
+  if (method) {
+    options["method"] = method
+  }
+
+  if (body) {
+    options["body"] = JSON.stringify(body)
+  }
+
+  return request(url, options)
+}
+
 /**
  * org
  */
@@ -657,3 +686,9 @@ export const getPostsAndEvent = () => r('/activity/');
 export const queryMobileUploadKey = key => r('/service/selectUpload?record=' + key);
 export const updateMobileUploadKey = body => r('/service/updateUpload', 'POST', body);
 export const deleteMobileUploadKey = record => r('/service/deleteUpload', 'POST', { record });
+
+export const getProjAttWithToken = (params, token) => reqWithToken('/proj/attachment/?' + qs.stringify(params), token);
+export const getdProjAttUrlWithToken = (bucket, key, token) => {
+  const body = { bucket, key };
+  return reqWithToken('/service/downloadUrl', token, 'POST', body);
+}
