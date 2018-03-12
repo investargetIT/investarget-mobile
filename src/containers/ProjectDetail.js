@@ -450,6 +450,7 @@ class ProjectDetail extends React.Component {
             'useofProceedC': '资金用途',
             'financingRecordC': '融资历史',
             'operatingFiguresC': '经营数据',
+            'b_introducteC': '项目简介',
         }
         var hightlightItems = Object.keys(info.projectFormat)
             .filter(item => {

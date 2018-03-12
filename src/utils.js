@@ -215,6 +215,7 @@ export function convertProjAttachment(item) {
 
 export function convertProjFormat(proj) {
     return {
+        b_introducteC: proj.p_introducte,
         brandSalesChannelC: proj.brandChannel,
         businessModelC: proj.businessModel,
         financingRecordE: proj.financingHistory,

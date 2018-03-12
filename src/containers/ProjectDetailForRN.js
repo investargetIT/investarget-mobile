@@ -424,6 +424,7 @@ class ProjectDetailForRN extends React.Component {
 
 
         var itemMap = {
+            'b_introducteC': '项目简介',
             'targetMarketC': '目标市场',
             'productTechnologyC': '核心产品',
             'businessModelC': '商业模式',
