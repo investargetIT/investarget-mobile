@@ -501,11 +501,11 @@ class ProjectDetailForRN extends React.Component {
                         { 
                             info.financeIsPublic ? 
                             <span style={dataValueStyle}>
-                                {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
+                                {info.finances && info.finances.length > 0 && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
                                 {
                                     info.country.id !== 42 || info.currencyType.id !== 1 ? 
-                                    info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A' : 
-                                    info.finances[0].netIncome ? '¥' + moneySplit(info.finances[0].netIncome) : 'N/A'
+                                    info.finances && info.finances.length > 0 && info.finances[0].netIncome_USD ? '$' + moneySplit(info.finances[0].netIncome_USD) : 'N/A' : 
+                                    info.finances && info.finances.length > 0 && info.finances[0].netIncome ? '¥' + moneySplit(info.finances[0].netIncome) : 'N/A'
                                 }
                             </span> : 
                             <span style={dataValueStyle}>未公开</span>
@@ -517,11 +517,11 @@ class ProjectDetailForRN extends React.Component {
                         {
                             info.financeIsPublic ?
                             <span style={dataValueStyle}>
-                                {info.finances && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
+                                {info.finances && info.finances.length > 0 && info.finances[0].fYear ? <span style={fyStyle}>FY{ info.finances[0].fYear }</span> : ''}
                                 {
                                     info.country.id !== 42 || info.currencyType.id !== 1 ? 
-                                    info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' : 
-                                    info.finances[0].revenue ? '¥' + moneySplit(info.finances[0].revenue) : 'N/A'
+                                    info.finances && info.finances.length > 0 && info.finances[0].revenue_USD ? '$' + moneySplit(info.finances[0].revenue_USD) : 'N/A' : 
+                                    info.finances && info.finances.length > 0 && info.finances[0].revenue ? '¥' + moneySplit(info.finances[0].revenue) : 'N/A'
                                 }
                             </span> :
                             <span style={dataValueStyle}>未公开</span>
