@@ -161,7 +161,7 @@ class Timeline extends Component {
     var title = titleArr.length > 0 ? titleArr[0] : entireTitle
     this.setState({ title: title })
 
-    newApi.getTimeline({ proj: this.props.match.params.id, page_size: 10000 })
+    newApi.getTimelineBasic({ proj: this.props.match.params.id, page_size: 10000 })
     .then(data => {
       const timelines = data.data.map(m => {
         const transactionStatusId = m.transationStatu.transationStatus.index;

@@ -365,6 +365,7 @@ export function editTimeline(id, params) {
  * @param {Number} params.page_size
  */
 export const getTimeline = params => r('/timeline/?' + qs.stringify(params))
+export const getTimelineBasic = param => r('/timeline/basic/?' + qs.stringify(param));
 
 export function getTimelineDetail(id) {
   return r('/timeline/' + id + '/')
