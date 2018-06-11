@@ -1,6 +1,7 @@
 import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
+import PlainTable from '../components/PlainTable'
 import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
@@ -18,6 +19,7 @@ var scrollStyle = {
     width: '100%',
     height: '50px',
     overflowX: 'scroll',
+    overflowY: 'hidden',
     backgroundColor: '#fff',
     marginBottom: '2px',
 }
@@ -25,10 +27,11 @@ var tabsStyle = {
     width: '400px',
     height: '50px',
     backgroundColor: '#fff',
+    display: 'inline-block',
 }
 var tabStyle = {
     margin: '0 10px',
-    display: 'block',
+    display: 'inline-block',
     float: 'left',
     width: '80px',
     height: '50px',
@@ -55,8 +58,10 @@ class Chat extends React.Component {
         super(props)
 
         this.state = {
-            activeTab: 'interest', // 'favorite', 'recommend', 'system'
-            projects: []
+            activeTab: 'userinfo', //'interest', 'favorite', 'recommend', 'system'
+            projects: [],
+            pageType: 0,
+            userInfo: []
         }
 
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
@@ -67,6 +72,7 @@ class Chat extends React.Component {
             activeTab: tab,
         })
         var map = {
+            'userinfo': 0,
             'interest': 5,
             'favorite': 4,
             'recommend': 3,
@@ -74,17 +80,41 @@ class Chat extends React.Component {
         }
         var ftype = map[tab]
 
-        this.getFavoriteProjects(ftype)
+        this.props.dispatch(requestContents(''))
+        if ([1,3,4,5].includes(ftype)) this.getFavoriteProjects(ftype)
+        else this.showPage(ftype)
+    }
+
+    showPage(pageType) {
+        switch (pageType) {
+            case 0:
+                let userId = this.props.match.params.id
+                let nameMap = {}
+                newApi.getUserDetail(userId).then(result => {
+                    nameMap.电话 = result.mobile ? `+${result.mobileAreaCode} ${result.mobile}` : "暂无"
+                    nameMap.邮箱 = result.email || "暂无"
+                    nameMap.职位 = result.title && result.title.nameC || "暂无"
+                    nameMap.标签 = result.tags.map(v=>v.nameC).join(",") || "暂无"
+                    nameMap.微信 = result.wechat || "暂无"
+                    nameMap.机构 = result.org && result.org.orgfullname || "暂无"
+                    newApi.getUserRelation({investoruser: userId}).then(investresult => {
+                        nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
+                        this.setState({userinfo: Object.entries(nameMap)})
+                        this.props.dispatch(hideLoading())
+                    })
+                })
+                break;
+            default: this.props.dispatch(hideLoading()); break;
+        }
+        this.setState({pageType})
     }
 
     getFavoriteProjects(ftype) {
 
-        this.props.dispatch(requestContents(''))
-
         var userType = this.props.userType
         var userId = this.props.userId
         var targetUserId = this.props.match.params.id
-        var isInvestor = userType == 1
+        var isInvestor = userType === 1
 
         var param = {
             page_size: 10,
@@ -117,7 +147,7 @@ class Chat extends React.Component {
                 const projects = data.data
                     .filter(item => item.proj != null)
                     .map(item => utils.convertFavoriteProject(item.proj))
-                this.setState({ projects })
+                this.setState({ projects, pageType: 1 })
                 this.props.dispatch(hideLoading())
             })
             .catch(error => {
@@ -152,11 +182,11 @@ class Chat extends React.Component {
         var tabNameMap = {}
         if (this.props.userType === 1) {
             tabNameMap = {
-                'interest': '感兴趣', 'favorite': '我的收藏', 'recommend': '交易师推荐', 'system': '系统推荐',
+                'userinfo': '个人信息', 'interest': '感兴趣', 'favorite': '我的收藏', 'recommend': '交易师推荐', 'system': '系统推荐',
             }
         } else if (this.props.userType === 3) {
             tabNameMap = {
-                'interest': 'Ta感兴趣', 'favorite': 'Ta的收藏', 'recommend': '推荐Ta的', 'system': '系统推荐',
+                'userinfo': '个人信息', 'interest': 'Ta感兴趣', 'favorite': 'Ta的收藏', 'recommend': '推荐Ta的', 'system': '系统推荐',
             }
         }
 
@@ -176,9 +206,9 @@ class Chat extends React.Component {
                 }
 
                 <div style={scrollStyle}>
-                    <div style={tabsStyle}>
+                    <div style={{...tabsStyle, width: Object.keys(tabNameMap).length * 100}}>
                         {
-                            ['interest', 'favorite', 'recommend', 'system'].map(tab => (
+                            ['userinfo', 'interest', 'favorite', 'recommend', 'system'].map(tab => (
                                 <span key={tab}
                                       style={this.state.activeTab == tab ? activeTabStyle : tabStyle}
                                       onClick={this.selectTab.bind(this, tab)}>{tabNameMap[tab]}</span>
@@ -188,22 +218,24 @@ class Chat extends React.Component {
                 </div>
                 <div style={projectListStyle}>
                     {
-                        this.state.projects.length ?
-                            this.state.projects.map(
-                                (project) => (
-				                    <div className="margin-bottom-2" key={project.id} onClick={this.handleClickProject.bind(this, project.id)}>
-                                        <ProjectListCell
-                                            title={project.title}
-                                            country={project.country}
-                                            industrys={project.industrys.join('')}
-                                            imgUrl={project.imgUrl}
-                                            amount={project.amount}
-                                            id={project.id}
-                                        />
-                                    </div>
-                                )
-                            ) :
-                            <EmptyBox />
+                        this.state.pageType === 0 ?
+                            <PlainTable data={this.state.userinfo}/>
+                            : this.state.projects.length ?
+                                this.state.projects.map(
+                                    (project) => (
+                                        <div className="margin-bottom-2" key={project.id} onClick={this.handleClickProject.bind(this, project.id)}>
+                                            <ProjectListCell
+                                                title={project.title}
+                                                country={project.country}
+                                                industrys={project.industrys.join('')}
+                                                imgUrl={project.imgUrl}
+                                                amount={project.amount}
+                                                id={project.id}
+                                            />
+                                        </div>
+                                    )
+                                ) :
+                                <EmptyBox />
                     }
                 </div>
             </div>
