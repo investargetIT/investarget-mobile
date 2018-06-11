@@ -85,7 +85,7 @@ class Chat extends React.Component {
         newApi.getUserRelation(param).then(result => {
             const data = result.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
             this.relation = data.filter(f => f.traderuser.id === this.props.userInfo.id)[0];
-            this.setState({ famlv: this.relation.score, transactionStatus: this.relation.score });
+            this.setState({ famlv: this.relation.familiar, transactionStatus: this.relation.familiar});
         
         })
         newApi.getSource('famlv').then(data => {
@@ -220,7 +220,7 @@ class Chat extends React.Component {
             traderuser: traderuser.id, 
             investoruser: investoruser.id, 
             relationtype, 
-            score: value 
+            familiar: value 
         }]);
         this.setState({ famlv: value, showPickerView: false, transactionStatus: value })
         this.showPage(0)
