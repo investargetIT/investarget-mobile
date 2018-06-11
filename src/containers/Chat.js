@@ -1,7 +1,8 @@
 import React from 'react'
 import ProjectListCell from '../components/ProjectListCell'
 import NavigationBar from '../components/NavigationBar'
-import PlainTable from '../components/PlainTable'
+import PickerView from '../components/PickerView'
+import PlainTable, {PlainTableButton} from '../components/PlainTable'
 import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
@@ -51,6 +52,13 @@ var iconStyle = {
     verticalAlign: 'middle',
 }
 
+var pickerViewWrapStyle = {
+    position: 'fixed',
+    left: '0',
+    bottom: '0',
+    width: '100%',
+}
+
 var projectListStyle = {}
 
 class Chat extends React.Component {
@@ -61,10 +69,29 @@ class Chat extends React.Component {
             activeTab: 'userinfo', //'interest', 'favorite', 'recommend', 'system'
             projects: [],
             pageType: 0,
-            userInfo: []
+            userInfo: [],
+            showPickerView: false,
+            transactionStatus: null,
+            famlv: 0,
+            famOptions: [],
         }
 
+        this.relation = null;
         this.handleActionButtonClicked = this.handleActionButtonClicked.bind(this)
+    }
+
+    getTraders = investor => {
+        const param = { investoruser: investor}
+        newApi.getUserRelation(param).then(result => {
+            const data = result.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
+            this.relation = data.filter(f => f.traderuser.id === this.props.userInfo.id)[0];
+            this.setState({ famlv: this.relation.score, transactionStatus: this.relation.score });
+        
+        })
+        newApi.getSource('famlv').then(data => {
+            const famOptions = data.map(item => ({ name: item.name, value: item.id }));
+            this.setState({ famOptions });
+        });
     }
 
     selectTab(tab) {
@@ -91,14 +118,15 @@ class Chat extends React.Component {
                 let userId = this.props.match.params.id
                 let nameMap = {}
                 newApi.getUserDetail(userId).then(result => {
-                    nameMap.电话 = result.mobile ? `+${result.mobileAreaCode} ${result.mobile}` : "暂无"
+                    nameMap.电话 = result.mobile ? `+${result.mobileAreaCode}-${result.mobile}` : "暂无"
                     nameMap.邮箱 = result.email || "暂无"
                     nameMap.职位 = result.title && result.title.nameC || "暂无"
-                    nameMap.标签 = result.tags.map(v=>v.nameC).join(",") || "暂无"
+                    nameMap.标签 = result.tags ? result.tags.map(v=>v.nameC).join(",") : "暂无"
                     nameMap.微信 = result.wechat || "暂无"
                     nameMap.机构 = result.org && result.org.orgfullname || "暂无"
                     newApi.getUserRelation({investoruser: userId}).then(investresult => {
                         nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
+                        nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{(this.state.famOptions || [{value: null}]).filter(i=>this.state.famlv === i.value)[0].name || "暂无"}</PlainTableButton>
                         this.setState({userinfo: Object.entries(nameMap)})
                         this.props.dispatch(hideLoading())
                     })
@@ -170,7 +198,35 @@ class Chat extends React.Component {
             })
     }
 
+    handleModifyTransactionStatus() {
+        this.setState({ showPickerView: true, transactionStatus: this.state.famlv })
+    }
+
+    handleTransactionStatusChange(value) {
+        this.setState({ transactionStatus: value })
+    }
+
+    handleModifyTransactionStatusCancel() {
+        this.setState({ showPickerView: false, transactionStatus: this.state.famlv })
+    }
+
+    handleModifyTransactionStatusConfirm() {
+
+        let value = this.state.transactionStatus
+        const { investoruser, traderuser, relationtype, id } = this.relation;
+        newApi.editUserRelation([{ 
+            id, 
+            traderuser: traderuser.id, 
+            investoruser: investoruser.id, 
+            relationtype, 
+            score: value 
+        }]);
+        this.setState({ famlv: value, showPickerView: false, transactionStatus: value })
+        this.showPage(0)
+    }
+
     componentDidMount() {
+        if (this.props.userId) this.getTraders(this.props.match.params.id)
         if (this.props.userType === 3) {
             var investorId = this.props.match.params.id
             this.props.dispatch(setRecommendInvestors([investorId]))
@@ -238,6 +294,18 @@ class Chat extends React.Component {
                                 <EmptyBox />
                     }
                 </div>
+                { this.state.famOptions && this.state.famlv ? 
+                    <div style={pickerViewWrapStyle}>
+                        <PickerView show={this.state.showPickerView}
+                                    title="熟悉程度"
+                                    options={this.state.famOptions}
+                                    value={this.state.transactionStatus}
+                                    onValueChange={this.handleTransactionStatusChange.bind(this)}
+                                    onCancel={this.handleModifyTransactionStatusCancel.bind(this)}
+                                    onConfirm={this.handleModifyTransactionStatusConfirm.bind(this)}>
+                        </PickerView>
+                    </div>
+                : null }
             </div>
         )
     }

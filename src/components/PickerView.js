@@ -4,15 +4,17 @@ import AlloyTouch from 'alloytouch/alloy_touch.css'
 import api from '../api'
 
 
-var HEIGHT = 30
-var TITLE_HEIGHT = 32
+var HEIGHT = 40
+var TITLE_HEIGHT = 50
 
 var containerStyle = {
     height: `${HEIGHT * 5 + TITLE_HEIGHT}px`,
     boxShadow: '0 -1px 2px rgba(0,0,0,.1)',
+    overflow: 'hidden',
+    transition: '.1s linear'
 }
 var hiddenStyle = Object.assign({}, containerStyle, {
-    display: 'none',
+    height: '0px',
 })
 
 var scrollStyle = {

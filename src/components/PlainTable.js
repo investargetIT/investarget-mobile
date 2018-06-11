@@ -2,13 +2,10 @@ import React, {Component} from 'react'
 
 const tableStyle = {
     "table": {
-        width: "100%", 
+        width: "100%",
         background: "white", 
         borderSpacing: 0, 
         padding: "0 25px"
-    },
-    "tbody": {
-        width: "100%"
     },
     "tr": {
         width: "100%",
@@ -56,5 +53,24 @@ export default class PlainTable extends Component {
         )
     }
 
+
+}
+
+export class PlainTableButton extends Component {
+
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return React.createElement("button", {
+            style: {fontSize: 18, width: "100%", textAlign: "left"},
+            ...this.props
+        }, <div>{this.props.children}<img src="/images/nextButton@3x.png" style={{
+            float: "right",
+            height: "14px",
+            margin: "3px 5px 0 0",
+        }}/></div>)
+    }
 
 }
