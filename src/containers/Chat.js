@@ -73,7 +73,7 @@ class Chat extends React.Component {
             showPickerView: false,
             transactionStatus: null,
             famlv: 0,
-            famOptions: [],
+            famOptions: null,
         }
 
         this.relation = null;
@@ -125,8 +125,9 @@ class Chat extends React.Component {
                     nameMap.微信 = result.wechat || "暂无"
                     nameMap.机构 = result.org && result.org.orgfullname || "暂无"
                     newApi.getUserRelation({investoruser: userId}).then(investresult => {
+                        let score = (this.state.famOptions || [{}]).filter(i=>this.state.famlv === i.value)[0]
                         nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
-                        nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{(this.state.famOptions || [{value: null}]).filter(i=>this.state.famlv === i.value)[0].name || "暂无"}</PlainTableButton>
+                        nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
                         this.setState({userinfo: Object.entries(nameMap)})
                         this.props.dispatch(hideLoading())
                     })
@@ -294,7 +295,7 @@ class Chat extends React.Component {
                                 <EmptyBox />
                     }
                 </div>
-                { this.state.famOptions && this.state.famlv ? 
+                { this.state.famOptions ? 
                     <div style={pickerViewWrapStyle}>
                         <PickerView show={this.state.showPickerView}
                                     title="熟悉程度"
