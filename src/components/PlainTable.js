@@ -63,7 +63,7 @@ export class PlainTableButton extends Component {
     }
 
     render() {
-        return React.createElement("button", {
+        return React.createElement("div", {
             style: {fontSize: 18, width: "100%", textAlign: "left"},
             ...this.props
         }, <div>{this.props.children}<img src="/images/nextButton@3x.png" style={{
