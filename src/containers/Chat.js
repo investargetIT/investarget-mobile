@@ -128,7 +128,7 @@ class Chat extends React.Component {
                         let score = (this.state.famOptions || [{}]).filter(i=>this.state.famlv === i.value)[0]
                         nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
                         nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
-                        this.setState({userinfo: Object.entries(nameMap)})
+                        this.setState({userInfo: Object.entries(nameMap)})
                         this.props.dispatch(hideLoading())
                     })
                 })
@@ -223,7 +223,9 @@ class Chat extends React.Component {
             familiar: value 
         }]);
         this.setState({ famlv: value, showPickerView: false, transactionStatus: value })
-        this.showPage(0)
+        let score = (this.state.famOptions || [{}]).filter(i => value === i.value)[0]
+        let userInfo = this.state.userInfo.map(v => v[0] === "熟悉程度" ? ["熟悉程度", <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>] : v)
+        this.setState({ userInfo })
     }
 
     componentDidMount() {
@@ -276,7 +278,7 @@ class Chat extends React.Component {
                 <div style={projectListStyle}>
                     {
                         this.state.pageType === 0 ?
-                            <PlainTable data={this.state.userinfo}/>
+                            <PlainTable data={this.state.userInfo}/>
                             : this.state.projects.length ?
                                 this.state.projects.map(
                                     (project) => (
