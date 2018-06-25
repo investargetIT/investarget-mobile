@@ -114,6 +114,7 @@ class WxLogin extends React.Component {
       username: '',
       password: '',
       doLogin: true,
+      doReset: false,
       showPassword: false,
       userInfo: this.userInfo || {},
       code: '',
@@ -126,6 +127,7 @@ class WxLogin extends React.Component {
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleReset = this.handleReset.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.checkEmailFormat = this.checkEmailFormat.bind(this)
     this.togglePassword = this.togglePassword.bind(this)
@@ -188,10 +190,14 @@ class WxLogin extends React.Component {
     newApi.checkUserExist(this.state.username)
       .then(data => {
         const user = data.user
-        if (user && user.is_active) {
-          this.setState({doLogin: true})
+        if (user) {
+          if (user.is_active) {
+            this.setState({doLogin: true, doReset: false})
+          } else {
+            this.setState({doLogin: false, doReset: true})
+          }
         } else {
-          this.setState({doLogin: false})
+          this.setState({doLogin: false, doReset: false})
         }
       })
       .catch(error => {
@@ -249,6 +255,32 @@ class WxLogin extends React.Component {
         }
         this.props.dispatch(handleError(error))
       })
+
+  }
+
+  handleReset() {
+
+    const token = localStorage.getItem(VERIFICATION_CODE_TOKEN)
+    if (!token) {
+      this.props.dispatch(handleError(new Error('Please fetch SMS code first')))
+      return
+    }
+
+    const param = {
+      mobile: this.state.username,
+      mobilecodetoken: token,
+      mobilecode: this.state.code,
+      password: this.state.password
+    }
+
+    newApi.retrievePassword(param)
+        .then(data => {
+          localStorage.removeItem(VERIFICATION_CODE_TOKEN)
+          this.handleLogin()
+        })
+        .catch(error => {
+            this.props.dispatch(handleError(error))
+        })
 
   }
 
@@ -356,18 +388,28 @@ class WxLogin extends React.Component {
 
         <div>
 
+          { this.state.doReset ? null :
           <div style={emailInputStyle}>
             <TextInput name="email" placeholder="请输入邮箱" value={this.state.email} handleInputChange={this.handleInputChange} />
           </div>
+          }
 
-          <div style={buttonStyle}>
-            <div style={{marginTop: 50}}></div>
-            <Button name="transaction" type="primary" disabled={!disabled} onClick={this.handleSubmit.bind(this, 'trader')} value="我是交易师" />
+          { this.state.doReset ? 
+          <div style={loginButtonStyle}>
+            <Button type="primary" disabled={this.state.username === '' || this.state.password === ''} onClick={this.handleReset} value="激活" />
           </div>
+          :
+          <div>
+            <div style={buttonStyle}>
+              <div style={{marginTop: 50}}></div>
+              <Button name="transaction" type="primary" disabled={!disabled} onClick={this.handleSubmit.bind(this, 'trader')} value="我是交易师" />
+            </div>
 
-          <div style={buttonStyle}>
-            <Button name="investor" type="primary" disabled={!disabled} onClick={this.handleSubmit.bind(this, 'investor')} value="我是投资人" />
+            <div style={buttonStyle}>
+              <Button name="investor" type="primary" disabled={!disabled} onClick={this.handleSubmit.bind(this, 'investor')} value="我是投资人" />
+            </div>
           </div>
+          }
 
         </div>
         
