@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import api from '../api.js'
 import * as newApi from '../api3.0.js'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
 
 const loadingStyle = {
   width: '20px'
@@ -279,8 +280,12 @@ class App extends Component {
         if (!projectID) return
         const isMarketPlace = evt.target.dataset.isMarketPlace
         if (!this.props.isLogin) {
-          this.props.dispatch(saveRedirectUrl(`${api.baseUrl}/project/detail?projectID=${projectID}&isMarketPlace=${isMarketPlace}`));
-          this.props.history.push(api.baseUrl + '/login');
+          if (inWxApp && window.wx) {
+            window.wx.miniProgram.switchTab({url: '/pages/user/user'})
+          } else {
+            this.props.dispatch(saveRedirectUrl(`${api.baseUrl}/project/detail?projectID=${projectID}&isMarketPlace=${isMarketPlace}`));
+            this.props.history.push(api.baseUrl + '/login');
+          }
           return;
         }
         if (isMarketPlace == "false") {
@@ -414,7 +419,7 @@ var loadmoreStyle = {
           </Link>
         </div>
 
-        <div id="wrapper">
+        <div id="wrapper" style={inWxApp ? {bottom: 0} : null}>
           <div id="scroller">
             <ul id="list" ref="listContainer">
               { !this.props.isFetching && rows.length === 0 ? <div style={{textAlign: 'center'}}>没有结果，请重新筛选</div> : rows }

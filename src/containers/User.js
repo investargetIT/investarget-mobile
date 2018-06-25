@@ -8,6 +8,8 @@ import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 const groupStyle = {
   position: 'relative'
 }
@@ -118,6 +120,8 @@ class User extends Component {
 
     this.handleAvatarChange = this.handleAvatarChange.bind(this)
     this.readFile = this.readFile.bind(this)
+
+    this.userInfo = JSON.parse(localStorage.getItem("WXUSERINFO") || "{}")
   }
 
   handleClick() {
@@ -195,11 +199,11 @@ class User extends Component {
 
         <div style={headerContainerStyle}>
           <div style={avatarContainerStyle}>
-            <img alt="" style={avatarStyle} src={this.state.avatar || this.props.userInfo.photoUrl} />
+            <img alt="" style={avatarStyle} src={ this.userInfo.avatarUrl || this.state.avatar || this.props.userInfo.photoUrl } />
             <div style={inputContainerStyle}><input style={inputStyle} id="file" type="file" accept="image/*" onChange={this.handleAvatarChange} /></div>
           </div>
           <p style={orgNameStyle}>{this.props.userInfo.company}</p>
-          <p><span style={nameAndTitleStyle}>{this.props.userInfo.name}</span><span style={nameAndTitleStyle}>{this.props.userInfo.title.titleName}</span></p>
+          <p><span style={nameAndTitleStyle}>{this.props.userInfo.name}</span><span style={nameAndTitleStyle}>{this.props.userInfo.title && this.props.userInfo.title.titleName || "暂无职位"}</span></p>
         </div>
 
         <div style={settingContainerStyle}>
@@ -246,9 +250,11 @@ class User extends Component {
 
 
 
-
-            <Group>
-              <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-9@2x.png"} label="退出登录" onClick={this.handleClick} hideBorder={true} /></Group>
+            {inWxApp ? null :
+              <Group>
+                <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-9@2x.png"} label="退出登录" onClick={this.handleClick} hideBorder={true} />
+              </Group>
+            }
 
           </ul>
         </div>

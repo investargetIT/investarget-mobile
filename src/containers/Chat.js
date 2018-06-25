@@ -85,11 +85,7 @@ class Chat extends React.Component {
         newApi.getUserRelation(param).then(result => {
             const data = result.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
             this.relation = data.filter(f => f.traderuser.id === this.props.userInfo.id)[0];
-            if (this.relation) {
-                this.setState({ famlv: this.relation.familiar, transactionStatus: this.relation.familiar});
-            } else {
-                this.setState({ famlv: null });
-            }
+            this.setState({ famlv: this.relation.familiar, transactionStatus: this.relation.familiar});
         
         })
         newApi.getSource('famlv').then(data => {
@@ -130,10 +126,8 @@ class Chat extends React.Component {
                     nameMap.机构 = result.org && result.org.orgfullname || "暂无"
                     newApi.getUserRelation({investoruser: userId}).then(investresult => {
                         let score = (this.state.famOptions || [{}]).filter(i=>this.state.famlv === i.value)[0]
-                        nameMap.交易师 = (investresult.data.length > 0 ? investresult.data : [{ traderuser: { username: '暂无' }}]).map(v=>v.traderuser.username).join(",")
-                        if (this.state.famlv !== null) {
-                          nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
-                        }
+                        nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
+                        nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
                         this.setState({userInfo: Object.entries(nameMap)})
                         this.props.dispatch(hideLoading())
                     })

@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import api from '../api'
 import TransparentNavigationBar from '../components/TransparentNavigationBar'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 var containerStyle = {
   width: '100%',
   minHeight: '100%',
@@ -45,12 +47,20 @@ var formContainer = {
 
 function FormContainer(props) {
 
+  function back() {
+    if (inWxApp && window.wx && props.root) {
+      return () => {window.wx.miniProgram.switchTab({url: "/pages/index/index"})};
+    } else {
+      return props.backIconClicked;
+    }
+  }
+
   return (
-    <div style={containerStyle} >
+    <div style={{...containerStyle, ...props.style}} >
     
-      <TransparentNavigationBar title={props.title} backIconClicked={props.backIconClicked} />
+      <TransparentNavigationBar title={props.title} backIconClicked={back()} />
       
-      <div style={formContainer}>
+      <div style={{...formContainer, ...props.formStyle}}>
         {props.innerHtml}
       </div>
 

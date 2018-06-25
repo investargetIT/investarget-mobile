@@ -10,6 +10,7 @@ import * as newApi from '../api3.0'
 import * as utils from '../utils'
 import qs from 'qs'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
 
 var usernameInputStyle = {
   margin: '30px 10px',
@@ -67,7 +68,11 @@ class Login extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.push(api.baseUrl + "/")
+      if (inWxApp) {
+        this.props.history.push(api.baseUrl + "/user")
+      } else {
+        this.props.history.push(api.baseUrl + "/")
+      }
     }
   }
 
@@ -140,6 +145,10 @@ class Login extends React.Component {
 
   handleBackIconClicked() {
     this.props.history.push(api.baseUrl + '/')
+  }
+
+  componentWillMount() {
+    if (inWxApp) this.props.history.push("/wxlogin" + this.props.location.search)
   }
 
   render() {

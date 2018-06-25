@@ -11,6 +11,7 @@ import LoadingAndToast from './containers/LoadingAndToast'
 import HandleError from './containers/HandleError'
 import Toast from './containers/Toast'
 import Login from './containers/Login'
+import WxLogin from './containers/WxLogin'
 import Register from './containers/Register'
 import Register2 from './containers/Register2'
 import ProjectDetail from './containers/ProjectDetail'
@@ -116,6 +117,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/events"} component={Events} />
           <Route path={api.baseUrl + "/user"} component={User} />
           <Route path={api.baseUrl + "/login"} component={Login} />
+          <Route path={api.baseUrl + "/wxlogin"} component={WxLogin} />
           <Route path={api.baseUrl + "/register"} component={Register} />
           <Route path={api.baseUrl + "/register2"} component={Register2} />
           <Route path={api.baseUrl + "/agreement"} component={Agreement} />

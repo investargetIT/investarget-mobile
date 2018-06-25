@@ -469,6 +469,7 @@ export function login(values) {
   const param = {
     account: values.username,
     password: values.password,
+    wxid: values.wxid || null,
     datasource: 1
   }
   return r('/user/login/', 'POST', param)
