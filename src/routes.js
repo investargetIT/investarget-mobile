@@ -45,7 +45,7 @@ import SelectUser from './containers/SelectUser'
 import AddInvestor from './containers/AddInvestor'
 import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
-import { logout } from './actions';
+import { requestContents, logout } from './actions';
 
 class Routes extends React.Component {
   state = {
@@ -53,15 +53,25 @@ class Routes extends React.Component {
   }
 
   componentDidMount() {
+
+    let wxid = null;
+    let wxList = window.location.search.substr(1).split('&').filter(k => k.startsWith("wxid="))[0]
+    if (wxList) {
+      wxid = wxList.substr(5).trim().split(",")[0]
+    }
+
     const userInfo = localStorage.getItem('userInfo')
-    if (userInfo) {
-      const user = JSON.parse(userInfo)
+    if (userInfo || wxid) {
+      const user = JSON.parse(userInfo || "{}")
       const param = {
-        username: user.username,
-        password: user.password,
+        username: user.username || "",
+        password: user.password || ""
         // app: 3
       }
-
+      if (!user.username || !user.password && wxid) {
+        param.wxid = wxid;
+      }
+      
       newApi.login(param)
         .then(data => {
           const { token: authToken, user_info, permissions } = data

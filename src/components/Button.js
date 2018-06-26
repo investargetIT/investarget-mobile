@@ -48,7 +48,7 @@ function Button(props) {
   } else if (props.type == 'secondary') {
     buttonStyle = Object.assign({}, normalStyle, secondaryStyle)
   } else {
-    buttonStyle = Object.assign({}, normalStyle)
+    buttonStyle = Object.assign({}, normalStyle, props.style || {})
   }
 
   if (props.isTransparent) {

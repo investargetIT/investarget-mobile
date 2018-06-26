@@ -103,6 +103,7 @@ class WxLogin extends React.Component {
     let infoList = props.location.search.substr(1).split('&').filter(k => k.startsWith("userInfo="))[0]
     if (wxList) {
       this.wxid = wxList.substr(5).trim().split(",")
+      this.wxid.shift()
       this.wxidIndex = 0
     }
     if (infoList) {
@@ -225,7 +226,7 @@ class WxLogin extends React.Component {
     }, period);
   }
 
-  handleLogin(event) {
+  handleLogin() {
 
     if (this.wxidIndex >= this.wxid.length) this.wxidIndex = this.wxid.length - 1
     const param = {
@@ -246,16 +247,22 @@ class WxLogin extends React.Component {
         let redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
         const isProjectRoute = /project\/detail\?projectID=(.*)&isMarketPlace=(.*)/.test(redirectUrl);
         
+        this.reload(true, data);
         this.props.history.push("/user");
       })
       .catch(error => {
 
-        if (error.code === 2050 && window.wx && this.wxidIndex < 2) {
-          window.wx.miniProgram.reLaunch({url: '/pages/user/user'})
+        if (error.code === 2050 && window.wx) {
+          //
         }
         this.props.dispatch(handleError(error))
+        this.reload(false, error);
       })
 
+  }
+
+  reload() {
+    window.wx.miniProgram.reLaunch({url: "/pages/user/user"})
   }
 
   handleReset() {
@@ -272,6 +279,8 @@ class WxLogin extends React.Component {
       mobilecode: this.state.code,
       password: this.state.password
     }
+
+    this.props.dispatch(requestContents(''))
 
     newApi.retrievePassword(param)
         .then(data => {
@@ -303,7 +312,7 @@ class WxLogin extends React.Component {
       smstoken: token,
       code: this.state.code,
       email: this.state.email,
-      userType: userType,
+      type: userType,
       password: this.state.password
       
     }
@@ -338,9 +347,9 @@ class WxLogin extends React.Component {
   }
 
   componentWillMount() {
-    if (inWxApp && window.wx && this.wxid && this.userInfo) {
-      this.handleLogin()
-    }
+    // if (inWxApp && window.wx && this.wxid && this.userInfo) {
+    //   this.handleLogin()
+    // }
   }
 
   render() {
@@ -415,7 +424,12 @@ class WxLogin extends React.Component {
         
         }
         
-
+        { inWxApp && !this.wxid ?
+          <div style={buttonStyle}>
+            <Button style={{background: "#1aad19", border: "1px solid #1aad19", color: "white"}} onClick={this.reload.bind(this)} value="重新授权登录" />
+          </div> : null
+        }
+        
        
 
       </div>
