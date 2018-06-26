@@ -346,12 +346,6 @@ class WxLogin extends React.Component {
     this.props.history.push(api.baseUrl + '/')
   }
 
-  componentWillMount() {
-    // if (inWxApp && window.wx && this.wxid && this.userInfo) {
-    //   this.handleLogin()
-    // }
-  }
-
   render() {
 
     var showPassword = 

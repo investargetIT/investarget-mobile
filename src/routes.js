@@ -48,44 +48,72 @@ import SelectOrg from './containers/SelectOrg';
 import { requestContents, logout } from './actions';
 
 class Routes extends React.Component {
+
+  // 用于检查微信小程序 code 是否被使用过
+  wxused = false
   state = {
     tryToLogin: false
   }
 
   componentDidMount() {
 
+    // 从 search 中剥离微信小程序 code 并保存
     let wxid = null;
     let wxList = window.location.search.substr(1).split('&').filter(k => k.startsWith("wxid="))[0]
-    if (wxList) {
+    if (wxList && !this.wxused) {
       wxid = wxList.substr(5).trim().split(",")[0]
+      this.wxused = true
     }
 
+    // 从缓存中拿出已有的 Token 信息
     const userInfo = localStorage.getItem('userInfo')
-    if (userInfo || wxid) {
-      const user = JSON.parse(userInfo || "{}")
-      const param = {
-        username: user.username || "",
-        password: user.password || ""
-        // app: 3
+    if (userInfo) {
+      let user = JSON.parse(userInfo)
+      if (user.token) {
+        this.props.dispatch(receiveCurrentUserInfo(user.token, user, user.username, user.password))
+        this.setState({ tryToLogin: true })
       }
-      if (!user.username || !user.password && wxid) {
-        param.wxid = wxid;
-      }
-      
-      newApi.login(param)
-        .then(data => {
-          const { token: authToken, user_info, permissions } = data
-          const userInfo = utils.convertUserInfo(user_info, permissions)
-          this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
-          this.setState({ tryToLogin: true })
-        })
-        .catch(error => {
-          this.props.dispatch(logout());
-          this.setState({ tryToLogin: true });
-        })
-    } else {
-      this.setState({ tryToLogin: true })
     }
+
+    // 检查缓存的 Token 是否失效
+
+    newApi.sessionCheck().catch(error => {
+
+      // 如果 Token 失效并且可以自动登录，则登录并获取新 Token，否则进入登录流程
+      if (userInfo || wxid) {
+
+        let user = JSON.parse(userInfo || "{}")
+        let param = {
+          username: user.username || "",
+          password: user.password || ""
+          // app: 3
+        }
+        if (!user.username && !user.password && wxid) {
+          param.wxid = wxid;
+        } else {
+          this.setState({ tryToLogin: true })
+          return
+        }
+        
+        newApi.login(param)
+          .then(data => {
+            const { token: authToken, user_info, permissions } = data
+            const userInfo = utils.convertUserInfo(user_info, permissions)
+            this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
+            this.setState({ tryToLogin: true })
+          })
+          .catch(error => {
+            this.props.dispatch(logout());
+            this.setState({ tryToLogin: true });
+          })
+
+      } else {
+
+        this.props.dispatch(logout());
+        this.setState({ tryToLogin: true })
+
+      }
+    })
   }
 
   render() {

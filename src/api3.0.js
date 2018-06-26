@@ -5,6 +5,8 @@ import { ApiError, baseUrl } from './request'
 
 export const SOURCE = 1
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 function r(url, method, body, isUploadFile) {
 
   const source = parseInt(localStorage.getItem('source'), 10)
@@ -473,6 +475,10 @@ export function login(values) {
     datasource: 1
   }
   return r('/user/login/', 'POST', param)
+}
+
+export function sessionCheck() {
+  return r('/mongolog/cat?p_cat_name=sessionCheck')
 }
 
 // { mobile, mobilecode, password, mobilecodetoken }
