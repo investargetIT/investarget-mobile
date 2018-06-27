@@ -81,7 +81,6 @@ class Routes extends React.Component {
       let user = JSON.parse(userInfo)
       if (user.token) {
         this.props.dispatch(receiveCurrentUserInfo(user.token, user, user.username, user.password))
-        this.setState({ tryToLogin: true })
       }
     }
 
@@ -91,9 +90,10 @@ class Routes extends React.Component {
 
       // 登陆未失效，检测登陆信息是否为小程序
       let wxAppReg = localStorage.getItem("WXAPPREG");
-      if (!wxAppReg) {
+      if (!wxAppReg && inWxApp) {
         throw new Error("Unrecognized Cached Info");
       }
+      this.setState({ tryToLogin: true })
 
     })
     .catch(error => {
@@ -110,11 +110,14 @@ class Routes extends React.Component {
 
       //如果在小程序中，则使用 code 登陆
       if (inWxApp) {
-        param = { wxid }
+        param = {
+          username: "", 
+          password: "",
+          wxid }
       }
 
       // 如果 Token 失效并且可以自动登录，则登录并获取新 Token，否则进入登录流程
-      if (param.username && param.password || param.wxid) {
+      if ((param.username && param.password) || param.wxid) {
         newApi.login(param)
         .then(data => {
           const { token: authToken, user_info, permissions } = data
