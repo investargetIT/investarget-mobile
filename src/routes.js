@@ -71,7 +71,7 @@ class Routes extends React.Component {
     let wxUserInfo = null;
     let infoList = window.location.search.substr(1).split('&').filter(k => k.startsWith("userInfo="))[0]
     if (infoList) {
-      wxUserInfo = JSON.parse(unescape(infoList.substr(9)))
+      wxUserInfo = JSON.parse(decodeURI(infoList.substr(9)))
       localStorage.setItem("WXUSERINFO", JSON.stringify(wxUserInfo));
     }
 
