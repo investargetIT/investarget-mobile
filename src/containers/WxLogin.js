@@ -243,6 +243,8 @@ class WxLogin extends React.Component {
         let redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
         const isProjectRoute = /project\/detail\?projectID=(.*)&isMarketPlace=(.*)/.test(redirectUrl);
         
+        localStorage.setItem("WXAPPREG", "1")
+
         this.reload(true, data);
         this.props.history.push("/user");
       })

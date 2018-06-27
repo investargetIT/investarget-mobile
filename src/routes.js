@@ -47,6 +47,8 @@ import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
 import { requestContents, logout } from './actions';
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 class Routes extends React.Component {
 
   // 用于检查微信小程序 code 是否被使用过
@@ -83,44 +85,51 @@ class Routes extends React.Component {
       }
     }
 
-    // 检查缓存的 Token 是否失效
+    // 检查缓存的 Token 是否失效，并核实是否为小程序端的 Token
+    newApi.sessionCheck()
+    .then(() => {
 
-    newApi.sessionCheck().catch(error => {
+      // 登陆未失效，检测登陆信息是否为小程序
+      let wxAppReg = localStorage.getItem("WXAPPREG");
+      if (!wxAppReg) {
+        throw new Error("Unrecognized Cached Info");
+      }
+
+    })
+    .catch(error => {
+
+      // 登陆已经失效则重新登陆，清空登陆缓存
+      this.props.dispatch(logout());
+
+      //如果不在小程序中，则使用 缓存 登陆
+      let user = JSON.parse(userInfo || "{}")
+      let param = {
+        username: user.username || "",
+        password: user.password || ""
+      }
+
+      //如果在小程序中，则使用 code 登陆
+      if (inWxApp) {
+        param = { wxid }
+      }
 
       // 如果 Token 失效并且可以自动登录，则登录并获取新 Token，否则进入登录流程
-      if (userInfo || wxid) {
-
-        let user = JSON.parse(userInfo || "{}")
-        let param = {
-          username: user.username || "",
-          password: user.password || ""
-          // app: 3
-        }
-        if (!user.username && !user.password && wxid) {
-          param.wxid = wxid;
-        } else {
-          this.setState({ tryToLogin: true })
-          return
-        }
-        
+      if (param.username && param.password || param.wxid) {
         newApi.login(param)
-          .then(data => {
-            const { token: authToken, user_info, permissions } = data
-            const userInfo = utils.convertUserInfo(user_info, permissions)
-            this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
-            this.setState({ tryToLogin: true })
-          })
-          .catch(error => {
-            this.props.dispatch(logout());
-            this.setState({ tryToLogin: true });
-          })
-
+        .then(data => {
+          const { token: authToken, user_info, permissions } = data
+          const userInfo = utils.convertUserInfo(user_info, permissions)
+          this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, user.username, user.password))
+          this.setState({ tryToLogin: true })
+          if (inWxApp && param.wxid) localStorage.setItem("WXAPPREG", "1")
+        })
+        .catch(error => {
+          this.setState({ tryToLogin: true });
+        })
       } else {
-
-        this.props.dispatch(logout());
         this.setState({ tryToLogin: true })
-
       }
+      
     })
   }
 
