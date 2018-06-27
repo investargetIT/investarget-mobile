@@ -124,13 +124,18 @@ class Chat extends React.Component {
                     nameMap.标签 = result.tags ? result.tags.map(v=>v.nameC).join(",") : "暂无"
                     nameMap.微信 = result.wechat || "暂无"
                     nameMap.机构 = result.org && result.org.orgfullname || "暂无"
-                    newApi.getUserRelation({investoruser: userId}).then(investresult => {
-                        let score = (this.state.famOptions || [{}]).filter(i=>this.state.famlv === i.value)[0]
-                        nameMap.交易师 = (investresult.data || []).map(v=>v.traderuser.username).join(",")
-                        nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
-                        this.setState({userInfo: Object.entries(nameMap)})
-                        this.props.dispatch(hideLoading())
-                    })
+                    if (this.props.userInfo.permissions.includes('usersys.as_trader')) {
+                        newApi.getUserRelation({ investoruser: userId }).then(investresult => {
+                            let score = (this.state.famOptions || [{}]).filter(i => this.state.famlv === i.value)[0]
+                            nameMap.交易师 = (investresult.data || []).map(v => v.traderuser.username).join(",")
+                            nameMap.熟悉程度 = <PlainTableButton onClick={this.handleModifyTransactionStatus.bind(this)}>{score && score.name || "暂无"}</PlainTableButton>
+                            this.setState({ userInfo: Object.entries(nameMap) })
+                            this.props.dispatch(hideLoading())
+                        })
+                    } else {
+                        this.setState({ userInfo: Object.entries(nameMap) })
+                        this.props.dispatch(hideLoading()) 
+                    }
                 })
                 break;
             default: this.props.dispatch(hideLoading()); break;
@@ -229,7 +234,9 @@ class Chat extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.userId) this.getTraders(this.props.match.params.id)
+        if (this.props.userInfo.permissions.includes('usersys.as_trader')) {
+            if (this.props.userId) this.getTraders(this.props.match.params.id)
+        }
         if (this.props.userType === 3) {
             var investorId = this.props.match.params.id
             this.props.dispatch(setRecommendInvestors([investorId]))
