@@ -65,6 +65,14 @@ class Routes extends React.Component {
       this.wxused = true
     }
 
+    // 从 search 中剥离微信小程序传入的用户信息并保存
+    let wxUserInfo = null;
+    let infoList = window.location.search.substr(1).split('&').filter(k => k.startsWith("userInfo="))[0]
+    if (infoList) {
+      wxUserInfo = JSON.parse(unescape(infoList.substr(9)))
+      localStorage.setItem("WXUSERINFO", JSON.stringify(wxUserInfo));
+    }
+
     // 从缓存中拿出已有的 Token 信息
     const userInfo = localStorage.getItem('userInfo')
     if (userInfo) {

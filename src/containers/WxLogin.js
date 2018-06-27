@@ -98,18 +98,14 @@ class WxLogin extends React.Component {
     super(props)
 
     this.wxid = null;
-    this.userInfo = null;
     let wxList = props.location.search.substr(1).split('&').filter(k => k.startsWith("wxid="))[0]
-    let infoList = props.location.search.substr(1).split('&').filter(k => k.startsWith("userInfo="))[0]
     if (wxList) {
       this.wxid = wxList.substr(5).trim().split(",")
       this.wxid.shift()
       this.wxidIndex = 0
     }
-    if (infoList) {
-      this.userInfo = JSON.parse(unescape(infoList.substr(9)))
-      localStorage.setItem("WXUSERINFO", JSON.stringify(this.userInfo));
-    }
+    this.userInfo = localStorage.getItem("WXUSERINFO");
+    this.userInfo = this.userInfo ? JSON.parse(this.userInfo) : null;
 
     this.state = {
       username: '',
