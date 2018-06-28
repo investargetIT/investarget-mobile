@@ -6,6 +6,8 @@ import { handleError } from '../actions/'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 const stepIconStyle = {
   width: '14px',
   height: '14px',
@@ -210,7 +212,7 @@ class Timeline extends Component {
   render() {
     return (
       <div>
-	<NavigationBar title="项目进程" />
+	<NavigationBar title="项目进程" hideBack={inWxApp}/>
 	<img style={backgroundImageStyle} src={api.baseUrl + "/images/timeline/timeLineBG@2x.png"} alt="" />
 
 	<div style={titleContainerStyle2}>

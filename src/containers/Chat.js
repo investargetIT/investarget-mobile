@@ -11,6 +11,7 @@ import { requestContents, hideLoading, handleError, setRecommendInvestors } from
 import { Link } from  'react-router-dom'
 import EmptyBox from '../components/EmptyBox'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',
@@ -197,7 +198,11 @@ class Chat extends React.Component {
     handleClickProject = (id) => {
         newApi.getShareToken(id)
             .then(token => {
-                window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+                if (inWxApp && window.wx) {
+                    window.wx.miniProgram.navigateTo({ url: `/pages/dtil/dtil?pid=${id}&token=${token}` });
+                } else {
+                    window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+                }
             })
             .catch(error => {
                 this.props.dispatch(handleError(error))

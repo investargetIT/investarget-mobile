@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom'
 import SwipeCell from '../components/SwipeCell'
 import Modal from '../components/Modal'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 const contentContainerStyle = {
   backgroundColor: '#EEF3F4',
   minHeight: window.innerHeight - 48 + 'px',
@@ -274,7 +276,11 @@ class MyFavoriteProject extends Component {
   handleClickProject = (id) => {
     newApi.getShareToken(id)
       .then(token => {
-        window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+        if (inWxApp && window.wx) {
+          window.wx.miniProgram.navigateTo({ url: `/pages/dtil/dtil?pid=${id}&token=${token}` });
+        } else {
+          window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+        }
       })
       .catch(error => {
         this.props.dispatch(handleError(error))

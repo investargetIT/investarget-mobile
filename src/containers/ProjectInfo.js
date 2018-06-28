@@ -5,6 +5,8 @@ import api from '../api.js';
 import * as newApi from '../api3.0.js';
 import qs from 'qs';
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 /**
  * 由于存在两种类型的项目（MarketPlace 项目和非 MarketPlace 项目）
  * 他们的地址和参数都不同，跳转逻辑往往需要单独处理
@@ -38,7 +40,13 @@ class ProjectInfo extends React.Component {
       .catch(error => this.props.dispatch(handleError(error)));
     } else {
       newApi.getShareToken(projectID)
-      .then(token => window.location.replace(api.baseUrl + '/project/' + projectID + (this.props.userInfo ? '?token=' + token : '')))
+      .then(token => {
+        if (inWxApp && window.wx) {
+          window.wx.miniProgram.navigateTo({ url: `/pages/dtil/dtil?pid=${projectID}&token=${token}` });
+        } else {
+          window.location.replace(api.baseUrl + '/project/' + projectID + (this.props.userInfo ? '?token=' + token : ''))
+        }
+      })
       .catch(error => this.props.dispatch(handleError(error)));
     }
   }

@@ -291,7 +291,11 @@ class App extends Component {
         if (isMarketPlace == "false") {
           newApi.getShareToken(projectID)
             .then(token => {
-              window.location.href = api.baseUrl + '/project/' + projectID + '?token=' + token
+              if (inWxApp && window.wx) {
+                window.wx.miniProgram.navigateTo({ url: `/pages/dtil/dtil?pid=${projectID}&token=${token}` });
+              } else {
+                window.location.href = api.baseUrl + '/project/' + projectID + '?token=' + token
+              }
             })
             .catch(error => {
               react.props.dispatch(handleError(error))

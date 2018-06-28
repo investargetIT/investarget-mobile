@@ -8,6 +8,7 @@ import { requestContents, hideLoading, handleError } from '../actions'
 
 import NavigationBar from '../components/NavigationBar'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
 
 var containerStyle = {
     height: '100%',
@@ -188,7 +189,11 @@ class TimelineManagement extends React.Component {
     handleClickProject(id) {
         newApi.getShareToken(id)
         .then(token => {
-            window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+            if (inWxApp && window.wx) {
+                window.wx.miniProgram.navigateTo({ url: `/pages/dtil/dtil?pid=${id}&token=${token}` });
+            } else {
+                window.location.href = api.baseUrl + '/project/' + id + '?token=' + token
+            }
         })
         .catch(error => {
             this.props.dispatch(handleError(error))
@@ -199,7 +204,7 @@ class TimelineManagement extends React.Component {
         var userId = api.getCurrentUserId()
         return (
             <div style={containerStyle}>
-                <NavigationBar title="项目进程" backIconClicked={this.handleGoBack} />
+                <NavigationBar title="项目进程" backIconClicked={this.handleGoBack}/>
                 <div style={scrollStyle}>
                     <div style={pageStyle}>
                         <div style={countStyle}>

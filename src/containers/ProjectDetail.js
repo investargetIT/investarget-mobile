@@ -8,6 +8,8 @@ import NavigationBar from '../components/NavigationBar'
 import Modal from '../components/Modal'
 import { Link } from 'react-router-dom'
 
+const inWxApp = window.__wxjs_environment === 'miniprogram';
+
 var containerStyle = {
     minHeight: '100%',
     backgroundColor: '#f4f4f4',
@@ -244,7 +246,7 @@ class ProjectDetail extends React.Component {
 
     handleRecommendSuccess() {
         this.setState({ showModal: false })
-        this.props.history.goBack()
+        if (!inWxApp) this.props.history.goBack()
     }
 
     componentDidMount() {
@@ -266,6 +268,7 @@ class ProjectDetail extends React.Component {
       newApi.getShareProj(token)
         .then(data => {
             const project = utils.convertDetailProject(data)
+            if (inWxApp && window.wx) window.wx.miniProgram.postMessage({data: project}); 
             this.props.dispatch(hideLoading())
             document.title = project.titleC
             this.setState({ result: project })
@@ -478,7 +481,7 @@ class ProjectDetail extends React.Component {
                     <img src={encodeURI(info.industrys[0].imgUrl)} alt="" />
                 </div>
 
-                <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked}/>
+                <NavigationBar title="项目详情" backIconClicked={this.handleBackIconClicked} hideBack={inWxApp}/>
 
                 <div style={bgImageStyle}>
                     <div style={firstStyle}>

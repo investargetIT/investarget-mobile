@@ -62,7 +62,7 @@ const NavigationBar = (props) => {
 
       <div style={containerStyle}>
 
-        <img style={backIconStyle} src={api.baseUrl + "/images/login/backButton@3x.png"} alt="Back" onClick={props.backIconClicked || props.history.goBack} />
+        { props.hideBack ? null : <img style={backIconStyle} src={api.baseUrl + "/images/login/backButton@3x.png"} alt="Back" onClick={props.backIconClicked || props.history.goBack} />}
 
         <div style={titleStyle}>{props.title}</div>
 
