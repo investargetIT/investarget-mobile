@@ -6,7 +6,7 @@ import { handleError } from '../actions/'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 const stepIconStyle = {
   width: '14px',

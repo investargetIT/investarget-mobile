@@ -2,9 +2,10 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import api from '../api'
+import * as newApi from '../api3.0'
 import TransparentNavigationBar from '../components/TransparentNavigationBar'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 var containerStyle = {
   width: '100%',

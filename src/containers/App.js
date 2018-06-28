@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import api from '../api.js'
 import * as newApi from '../api3.0.js'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 const loadingStyle = {
   width: '20px'

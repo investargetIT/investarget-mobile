@@ -10,7 +10,7 @@ import * as newApi from '../api3.0'
 import * as utils from '../utils'
 import qs from 'qs'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 const VERIFICATION_CODE_TOKEN = 'VERIFICATION_CODE_TOKEN'
 
 var wxAvatar = {

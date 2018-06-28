@@ -5,7 +5,7 @@ import api from '../api.js';
 import * as newApi from '../api3.0.js';
 import qs from 'qs';
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 /**
  * 由于存在两种类型的项目（MarketPlace 项目和非 MarketPlace 项目）

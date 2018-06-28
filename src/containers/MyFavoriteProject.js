@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import SwipeCell from '../components/SwipeCell'
 import Modal from '../components/Modal'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 const contentContainerStyle = {
   backgroundColor: '#EEF3F4',

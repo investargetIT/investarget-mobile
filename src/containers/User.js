@@ -8,7 +8,7 @@ import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 const groupStyle = {
   position: 'relative'

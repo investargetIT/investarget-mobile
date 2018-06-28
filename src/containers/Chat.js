@@ -11,7 +11,7 @@ import { requestContents, hideLoading, handleError, setRecommendInvestors } from
 import { Link } from  'react-router-dom'
 import EmptyBox from '../components/EmptyBox'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 var containerStyle = {
     backgroundColor: '#f4f4f4',

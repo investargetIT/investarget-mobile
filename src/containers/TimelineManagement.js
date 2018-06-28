@@ -8,7 +8,7 @@ import { requestContents, hideLoading, handleError } from '../actions'
 
 import NavigationBar from '../components/NavigationBar'
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 var containerStyle = {
     height: '100%',

@@ -47,7 +47,7 @@ import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
 import { requestContents, logout } from './actions';
 
-const inWxApp = window.__wxjs_environment === 'miniprogram';
+const inWxApp = newApi.inWxApp;
 
 class Routes extends React.Component {
 
