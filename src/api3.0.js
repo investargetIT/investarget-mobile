@@ -5,7 +5,7 @@ import { ApiError, baseUrl } from './request'
 
 export const SOURCE = 1
 
-export const inWxApp = window.wx.miniProgram.getEnv() || navigator.userAgent.toLowerCase().includes("micromessenger"); //__wxjs_environment === 'miniprogram';
+export const inWxApp = window.wx.miniProgram.getEnv(function(){}) || navigator.userAgent.toLowerCase().includes("micromessenger"); //__wxjs_environment === 'miniprogram';
 
 function r(url, method, body, isUploadFile) {
 
