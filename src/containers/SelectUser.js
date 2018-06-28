@@ -6,8 +6,12 @@ import * as utils from '../utils'
 import { handleError, requestContents, hideLoading, setRecommendInvestors, clearRecommend } from '../actions'
 import { connect } from 'react-redux'
 import Modal from '../components/Modal'
+import Transform from '../transform'
+import AlloyTouch from 'alloytouch'
 
-
+const loadingStyle = {
+    width: '20px'
+  }
 const containerStyle = {
     height: '100%',
 }
@@ -99,6 +103,8 @@ class SelectUser extends React.Component {
         this.state = {
             myUsers: [],
             showModal: false,
+            isLoadingMore: false,
+            isLoadingAll: false,
         }
         this.confirmSelect = this.confirmSelect.bind(this)
         this.handleBackIconClicked = this.handleBackIconClicked.bind(this)
@@ -199,9 +205,159 @@ class SelectUser extends React.Component {
                     this.props.dispatch(handleError(error))
                 })      
         }
+        var scroller = document.querySelector("#scroller"),
+      arrow = document.querySelector("#arrow"),
+      pull_refresh = document.querySelector("#pull_refresh"),
+      alloyTouch = null,
+      loading = false;
+
+    Transform(pull_refresh, true);
+    Transform(scroller, true);
+
+    var react = this
+
+    alloyTouch = new AlloyTouch({
+      touch: "#wrapper1",//反馈触摸的dom
+      vertical: true,//不必需，默认是true代表监听竖直方向touch
+      target: scroller, //运动的对象
+      property: "translateY",  //被滚动的属性
+      initialValue: 0,
+      min: window.innerHeight - 45 - 48 - 850, //不必需,滚动属性的最小值
+      max: 0, //不必需,滚动属性的最大值
+      touchStart: function () {
+        resetMin();
+      },
+      change: function (value) {
+        if (this.min < 0 && value <= this.min + 5 && !loading) {
+          loading = true;
+          loadMore();
+        }
+        pull_refresh.translateY = value;
+      },
+      touchMove: function (evt, value) {
+        if (value > 70) {
+          //http://caniuse.com/#search=classList
+          arrow.classList.add("arrow_up");
+        } else {
+          arrow.classList.remove("arrow_up");
+        }
+      },
+      touchEnd: function (evt, value) {
+        if (value > 70) {
+          this.to(60);
+          mockRequest(this);
+          // this.touchStart = false;
+          return false;
+        }
+      },
+      tap: (evt, value) => {
+      }
+    })
+    
+    function resetMin() {
+      const result = -1 * parseInt(getComputedStyle(scroller).height, 10) + window.innerHeight - 45 
+      alloyTouch.min = result < 0 ? result : 0
     }
 
+    function loadMore() {
+      react.setState({ isLoadingMore: true })
+
+      let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+    //   param.page_size = react.state.myUsers.length
+      param.page_index = react.state.myUsers.length / 10 + 1;
+      newApi.getUserRelation(param)
+      .then(data => {
+          setTimeout(() => {
+              react.setState({ isLoadingMore: false })
+              resetMin()
+              if (data.data.length > 0) {
+                  const myPartener = data.data.map(item => {
+                      const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+                      const { id, username, org, photourl } = user
+                      return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+                  })
+                  const partner = react.state.myUsers.concat(myPartener)
+                  react.setState({ myUsers: partner })
+              } else {
+                  alloyTouch.to(alloyTouch.min + 50, 0)
+                  react.setState({ isLoadingAll: true });
+              }
+              loading = false
+          }, 1000);
+      })
+    
+      .catch(error => {
+        react.props.dispatch(handleError(error))
+      })
+    }
+
+    function mockRequest(at) {
+
+        pull_refresh.classList.add("refreshing");
+        react.setState({ isLoadingAll: false });
+        let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
+        param.page_size = 10
+        param.page_index = 1
+        newApi.getUserRelation(param)
+        .then(data => {
+          arrow.classList.remove("arrow_up")
+          pull_refresh.classList.remove("refreshing")
+          at.to(at.initialValue)
+
+
+          const myUsers = data.data.map(item => {
+            const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+            const { id, username, org, photourl } = user
+            return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+        })
+        react.setState({ myUsers })
+
+        })
+        .catch(error => {
+          react.props.dispatch(handleError(error))
+        })
+      }
+
+      document.ontouchmove = function (evt) {
+        evt.preventDefault();
+      }
+
+    }
+
+    componentWillUnmount() {
+        // You have to remove ontouchmove listener otherwise you can not scroll on other page
+        document.ontouchmove = null
+      }
+
     render() {
+        const content = this.state.myUsers.map(user => 
+            (
+                <div style={userWrapStyle} key={user.id}>
+                    <div style={ this.props.selectedUsers.includes(user.id) ? userActiveStyle : userStyle }
+                         onClick={this.toggleSelect.bind(this, user.id)}>
+                        <div style={userPhotoWrapStyle}>
+                            <img style={userPhotoStyle} src={user.photoUrl || api.baseUrl + '/images/userCenter/defaultAvatar@2x.png'} alt="photo"/>
+                        </div>
+                        <div style={userContentStyle}>
+                            <div style={userOrgStyle}>{user.org}</div>
+                            <div style={userPersonStyle}>
+                                <span style={userNameStyle}>{user.name}</span>
+                                <span style={userTitleStyle}>{user.title}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        );
+        var loadmoreStyle = {
+            height: '50px',
+            lineHeight: '50px',
+            textAlign: 'center',
+            transformOrigin: '0px 0px 0px',
+            opacity: 1,
+            transform: 'scale(1, 1)'
+          }
+          loadmoreStyle.visibility = this.state.isLoadingMore ? 'visible' : 'hidden'
         return (
             <div style={containerStyle}>
 
@@ -210,7 +366,21 @@ class SelectUser extends React.Component {
                                action={this.props.selectedUsers.length ? '确定' : null }
                                onActionButtonClicked={this.confirmSelect} />  
 
-                <div style={contentStyle}>
+                <div className="pull_refresh" id="pull_refresh">
+
+                    <div className="pull">
+                        <div id="arrow" className="arrow">
+                            <img src={api.baseUrl + '/images/ic_arrow_down.svg'} alt="" /><br />
+                        </div>
+                    </div>
+
+                    <div className="loading">
+                        <img src={api.baseUrl + '/images/loading.svg'} alt="" />
+                    </div>
+
+                </div>
+
+                {/* <div style={contentStyle}>
                     { this.state.myUsers.length ?
                         this.state.myUsers.map(user => 
                             (
@@ -237,7 +407,21 @@ class SelectUser extends React.Component {
                             <p style={emptyUserTextStyle}>{this.props.userType === 1 ? '您还没有交易师' : '您还没有投资人'}</p>
                         </div>
                     }
-                </div>
+                </div> */}
+
+        <div id="wrapper1">
+          <div id="scroller">
+            <ul id="list" ref="listContainer" style={{ overflow: 'auto' }}>
+              { content }
+            </ul>
+
+            { this.state.isLoadingAll ? 
+              <div style={loadmoreStyle}><span style={{ fontSize: 12, color: 'gray' }}>---没有更多了---</span></div> :
+              <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + '/images/loading.svg'} alt="" /></div>
+            }
+
+          </div>
+        </div>
 
                 <Modal show={this.state.showModal}
                        title="通知"

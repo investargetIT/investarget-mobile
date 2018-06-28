@@ -89,7 +89,8 @@ class MyPartener extends Component {
 
     this.state = { 
       myPartener: [],
-      isLoadingMore: false
+      isLoadingMore: false,
+      isLoadingAll: false,
      }
 
     this.readFile = this.readFile.bind(this)
@@ -180,24 +181,27 @@ class MyPartener extends Component {
       react.setState({ isLoadingMore: true })
 
       let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
-      param.page_size = react.state.myPartener.length
-      param.page_index = 1
+      param.page_size = 15; 
+      param.page_index = react.state.myPartener.length / 15 + 1; 
       newApi.getUserRelation(param)
       .then(data => {
-        resetMin()
-        if (data.data.length > 0) {
-        const myPartener = data.data.map(item => {
-          const user = react.props.userType == 1 ? item.traderuser : item.investoruser
-          const { id, username, org, photourl } = user
-          return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
-        })
-        const partner = react.state.myPartener.concat(myPartener)
-        react.setState({ myPartener: partner })
-        } else {
-          alloyTouch.to(alloyTouch.min + 50, 0)
-        }
-        loading = false
+        setTimeout(() => {
           react.setState({ isLoadingMore: false })
+          resetMin()
+          if (data.data.length > 0) {
+            const myPartener = data.data.map(item => {
+              const user = react.props.userType == 1 ? item.traderuser : item.investoruser
+              const { id, username, org, photourl } = user
+              return { id, name: username, org: org ? org.orgname : '', photoUrl: photourl }
+            })
+            const partner = react.state.myPartener.concat(myPartener)
+            react.setState({ myPartener: partner })
+          } else {
+            alloyTouch.to(alloyTouch.min + 50, 0)
+            react.setState({ isLoadingAll: true });
+          }
+          loading = false
+        }, 1000)
       })
     
       .catch(error => {
@@ -209,6 +213,7 @@ class MyPartener extends Component {
     function mockRequest(at) {
 
       pull_refresh.classList.add("refreshing");
+      react.setState({ isLoadingAll: false });
       let param = react.props.userType == 1 ? { investoruser: userId } : { traderuser: userId }
       param.page_size = 15
       param.page_index = 1
@@ -371,7 +376,10 @@ var loadmoreStyle = {
             <ul id="list" ref="listContainer" style={{ overflow: 'auto' }}>
               { content }
             </ul>
-            <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + '/images/loading.svg'} alt="" /></div>
+            { this.state.isLoadingAll ? 
+              <div style={loadmoreStyle}><span style={{ fontSize: 12, color: 'gray' }}>---没有更多了---</span></div> :
+              <div className="loading-more" style={loadmoreStyle}><img style={loadingStyle} src={api.baseUrl + '/images/loading.svg'} alt="" /></div>
+            }
           </div>
         </div>
 
