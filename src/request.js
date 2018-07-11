@@ -1,8 +1,11 @@
+let prodUrl = 'https://api.investarget.com';
+prodUrl = 'http://192.168.1.251:8080'; // 编译到测试环境需要用到这行代码
+
 let devUrl = "http://192.168.1.251:8080";
-const prodUrl = 'https://api.investarget.com';
 // devUrl = 'http://192.168.1.201:8000';
 // devUrl = prodUrl;
-let baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
+
+const baseUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
 export { baseUrl };
 
 export class ApiError extends Error {
