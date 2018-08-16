@@ -1,5 +1,5 @@
 let prodUrl = 'https://api.investarget.com';
-prodUrl = 'http://192.168.1.251:8080'; // 编译到测试环境需要用到这行代码
+// prodUrl = 'http://192.168.1.251:8080'; // 编译到测试环境需要用到这行代码
 
 let devUrl = "http://192.168.1.251:8080";
 // devUrl = 'http://192.168.1.201:8000';

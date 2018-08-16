@@ -610,9 +610,9 @@ class DownloadFiles extends React.Component {
   
         const q = attachments.map(item => {
           let { bucket, key } = item;
-          key = key + '?attname=' + encodeURIComponent(key);
+        //   key = key + '?attname=' + encodeURIComponent(key);
           return newApi.getdProjAttUrlWithToken(bucket, key, this.props.token).then(result => {
-            return result
+            return '/pdf_viewer.html?file=' +  encodeURIComponent(result);
           })
         })
         Promise.all(q).then(urls => {
@@ -685,8 +685,8 @@ class DownloadFiles extends React.Component {
           {dirs.map((dir, index) => {
             const files = this.state.attachments.filter(item => item.filetype == dir)
             const isLast = index == dirs.length - 1
-  
-  
+ 
+            
             return (
               <div key={index}>
                 <div style={highlightTitleStyle}>{dir}</div>
@@ -694,8 +694,8 @@ class DownloadFiles extends React.Component {
                   {files.map(file => {
                     return (
                         <a
-                        disabled={!file.url}
-                        download={file.filename}
+                        // disabled={!file.url}
+                        // download={file.filename}
                         href={file.url}
                       >
                       <li key={file.key} style={liStyle}>
