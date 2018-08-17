@@ -190,6 +190,7 @@ class ProjectDetailForRN extends React.Component {
             "modalActions": [],
             "showGuide": false,
             "userToken": null,
+            "email": 'Investarget',
         }
 
         this.favorProject = this.favorProject.bind(this)
@@ -278,9 +279,15 @@ class ProjectDetailForRN extends React.Component {
       const userTokenArr = /userToken=([^&]+)(&|$)/.exec(this.props.location.search);
       if (userTokenArr && userTokenArr.length > 1) {
           const userToken = userTokenArr[1];
-          this.setState({ userToken });
-      }
+          const emailArr = /email=([^&]+)(&|$)/.exec(this.props.location.search);
+          if (emailArr && emailArr.length > 1) {
+              const email = emailArr[1];
+              this.setState({ userToken, email });
+          } else {
+              this.setState({ userToken });
+          }
 
+      }
     }
 
 
@@ -559,7 +566,7 @@ class ProjectDetailForRN extends React.Component {
                 { this.state.userToken ?
                   <div style={dataSetStyle}>
                     <h4 style={dataTitleStyle}>附件下载</h4>
-                    <DownloadFiles projectId={this.props.match.params.id} token={this.state.userToken} />
+                    <DownloadFiles projectId={this.props.match.params.id} token={this.state.userToken} email={this.state.email} />
                   </div>
                 : null }
 
@@ -612,7 +619,7 @@ class DownloadFiles extends React.Component {
           let { bucket, key } = item;
         //   key = key + '?attname=' + encodeURIComponent(key);
           return newApi.getdProjAttUrlWithToken(bucket, key, this.props.token).then(result => {
-            return '/pdf_viewer.html?file=' +  encodeURIComponent(result);
+            return '/pdf_viewer.html?file=' +  encodeURIComponent(result) + '&watermark=' + this.props.email;
           })
         })
         Promise.all(q).then(urls => {
