@@ -16,3 +16,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# 测试环境打包编译生成的内容
+test
+# 生产环境打包编译生成的内容
+prod
