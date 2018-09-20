@@ -46,6 +46,7 @@ import AddInvestor from './containers/AddInvestor'
 import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
 import { requestContents, logout } from './actions';
+import ShareMeetings from './containers/ShareMeetings';
 
 const inWxApp = newApi.inWxApp;
 
@@ -203,6 +204,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/add_investor"} component={AddInvestor} />
           <Route path={api.baseUrl + "/upload"} component={Upload} />
           <Route path={api.baseUrl + "/select_org"} component={SelectOrg} />
+          <Route path={api.baseUrl + "/share/meeting"} component={ShareMeetings} />
         </div>
       </Router>
     )

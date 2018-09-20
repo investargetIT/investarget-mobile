@@ -700,3 +700,5 @@ export const getdProjAttUrlWithToken = (bucket, key, token) => {
   const body = { bucket, key };
   return reqWithToken('/service/downloadUrl', token, 'POST', body);
 }
+
+export const getSharedMeeting = key => r('/bd/meetbd/share/?token=' + key);
