@@ -104,7 +104,7 @@ var inputStyle = {
 const placeholderStyle = {
   position: 'fixed',
   backgroundColor: 'rgb(238, 243, 244)',
-  minHeight: window.innerHeight - 48 + 'px',
+  minHeight: inWxApp && window.wx ? window.innerHeight + 'px' : (window.innerHeight - 48) + 'px',
   width: '100%',
   zIndex: -1
 }
