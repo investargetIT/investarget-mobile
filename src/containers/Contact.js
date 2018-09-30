@@ -21,7 +21,7 @@ class Contact extends Component {
         <NavigationBar title="联系我们" />
 
         <div style={containerStyle}>
-          <LeftLabelRightContent label="客服电话：" content="021-51684188" />
+          <LeftLabelRightContent label="客服电话：" content="021-31776196" />
           <LeftLabelRightContent label="客服邮箱：" content="customer@investarget.com" />
           <LeftLabelRightContent label="联系地址：" content={<div style={longContentStyle}>中国上海市徐汇区虹桥路777号17楼7单元</div>} />
         </div>
