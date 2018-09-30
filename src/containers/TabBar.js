@@ -3,9 +3,13 @@ import TabBarItem from '../components/TabBarItem'
 import { connect } from 'react-redux'
 import { withRouter} from 'react-router-dom'
 import api from '../api'
+import * as newApi from '../api3.0.js'
+
+const inWxApp = newApi.inWxApp;
 
 const containerStyle = {
-  height: '48px'
+  height: '48px',
+  display: inWxApp && window.wx ? 'none' : 'flex', 
 }
 
 var style = {
@@ -22,12 +26,10 @@ var style = {
 
 class TabBar extends Component {
 
-  inWxApp = window.__wxjs_environment === 'miniprogram';
-  
   render() {
     return (
       <div style={containerStyle}>
-        <div className="tab-bar" style={{...style, display: this.inWxApp ? "none" : "flex"}}>
+        <div className="tab-bar" style={{...style, display: 'flex'}}>
 	  <TabBarItem label="首页" route={api.baseUrl + "/"} isActive={this.props.location.pathname === (api.baseUrl + "/")} iconSrc={ api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/") ? "/images/tabbar/home_fill.png" : "/images/tabbar/home.png")} />
 	  <TabBarItem label="智库" route={api.baseUrl + "/posts"} isActive={this.props.location.pathname === (api.baseUrl + "/posts")} iconSrc={ api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/posts") ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png")} />
 	  <TabBarItem label="活动" url={this.props.eventUrl} iconSrc={api.baseUrl + "/images/tabbar/activity.png"} />

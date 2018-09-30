@@ -19,7 +19,7 @@ function r(url, method, body, isUploadFile) {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "clienttype": "4",
+      "clienttype": inWxApp && window.wx ? "5" : "4",
       "source": source
     }
   }
