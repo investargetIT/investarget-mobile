@@ -2,6 +2,7 @@ import React from 'react';
 import NavigationBar from '../components/NavigationBar';
 import * as api from '../api3.0';
 import { selectOrAddOrg } from '../actions';
+import debounce from 'lodash.debounce';
 
 function OrgItem({ orgname, description, onPress }) {
   return (
@@ -20,6 +21,7 @@ class SelectOrg extends React.Component {
       search: '',
       orgs: [],
     };
+    this.searchOrg = debounce(this.searchOrg, 400);
   }
 
   componentDidMount() {
