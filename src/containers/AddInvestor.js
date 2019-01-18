@@ -324,7 +324,7 @@ class AddInvestor extends React.Component {
 
 
 
-        <div style={containerStyle}>
+        <div style={{ ...containerStyle, display: !this.state.showChooseOrgModal ? 'block' : 'none' }}>
 
           <div style={cardImageContainerStyle}>
             <img style={cardStyle} alt="" src={ this.state.image || "/images/userCenter/emptyCardImage@2x.png" } />
@@ -371,7 +371,7 @@ class AddInvestor extends React.Component {
           </div>
         </div>
 
-        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, backgroundColor: 'white', display: this.state.showChooseOrgModal ? 'block' : 'none' }}>
+        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, backgroundColor: 'blue', display: this.state.showChooseOrgModal ? 'block' : 'none' }}>
           <SelectOrg 
             backIconClicked={() => this.setState({ showChooseOrgModal: false })} 
             onSelectOrg={org => this.setState({ company: org, showChooseOrgModal: false })} 
