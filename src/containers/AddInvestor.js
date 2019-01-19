@@ -287,6 +287,10 @@ class AddInvestor extends React.Component {
     showChooseGroupModal: false 
   });
 
+  handleSelectOrg = () => {
+    this.setState({ showChooseOrgModal: true }, () => window.scrollTo(0, 0)); 
+  };
+
   render() {
 
     const titleOptions = this.props.titles.map(item => {
@@ -345,7 +349,7 @@ class AddInvestor extends React.Component {
             <LeftLabelRightContent label="邮箱" content={<input name="email" style={inputStyle} value={this.state.email} onChange={this.handleInputChange} />} />
             <LeftLabelRightContent label="机构" 
               // content={<input disabled name="company" style={inputStyle} value={this.state.company} onChange={this.handleInputChange} />} 
-              content={<div onClick={() => this.setState({ showChooseOrgModal: true })} style={{ fontSize: 16, width: '96%', height: 42, overflow: 'hidden' }}>{ orgText }</div>}
+              content={<div onClick={this.handleSelectOrg} style={{ fontSize: 16, width: '96%', height: 42, overflow: 'hidden' }}>{ orgText }</div>}
             />
           </div>
 
@@ -371,7 +375,7 @@ class AddInvestor extends React.Component {
           </div>
         </div>
 
-        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, backgroundColor: 'blue', display: this.state.showChooseOrgModal ? 'block' : 'none' }}>
+        <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, backgroundColor: 'white', display: this.state.showChooseOrgModal ? 'block' : 'none' }}>
           <SelectOrg 
             backIconClicked={() => this.setState({ showChooseOrgModal: false })} 
             onSelectOrg={org => this.setState({ company: org, showChooseOrgModal: false })} 
