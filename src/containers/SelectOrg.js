@@ -68,8 +68,8 @@ class SelectOrg extends React.Component {
               style={{ width: 20, height: 20, marginRight: 8, flexGrow: 0, flexShrink: 0, flexBasis: 20 }}
             />
             <input 
-              style={{ fontSize: 15, flex: 1 }}
-              placeholder="搜索项目"
+              style={{ fontSize: 15, flex: 1, outline: 'none', border: 'none' }}
+              placeholder="搜索机构"
               value={this.state.search}
               onChange={this.handleSearchTextChange}
             />
