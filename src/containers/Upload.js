@@ -18,6 +18,7 @@ class Upload extends React.Component {
     this.state = {
       isActive: true,
       showModal: false,
+      thumbnails: [],
     }
   }
 
@@ -32,6 +33,7 @@ class Upload extends React.Component {
   }
 
   handleInputChange = e => {
+    this.setState({ thumbnails: [...e.target.files].filter(f => /^image\//i.test(f.type)).map(m => URL.createObjectURL(m)) });
     const file = e.target.files[0];
     window.echo(file);
     const filename = file.name;
@@ -94,13 +96,18 @@ class Upload extends React.Component {
           style={{ display: 'none' }}
           type="file"
           onChange={this.handleInputChange}
+          multiple
         />
         <div style={{ position: 'relative' }}>
         <p style={{ textAlign: 'center', width: '100%' }}>手机上传附件</p>
         <img style={{ position: 'absolute', top: 0, height: 20 }} src="/images/shareLogo@2x.png" />
         </div>
-        <div style={{ margin: '10px 0', height: 200, border: '1px solid lightGray', borderRadius: 21, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img style={{ width: 88 }} src="/images/emptyBox@2x.png" />
+        <div style={{ margin: '10px 0', minHeight: 200, border: '1px solid lightGray', borderRadius: 21, padding: '10px 20px', overflow: 'auto' }}>
+          {this.state.thumbnails.length === 0 ? (
+            <img style={{ width: 88, margin: 'auto', marginTop: 52, display: 'block' }} src="/images/emptyBox@2x.png" /> 
+          ) : (
+            this.state.thumbnails.map((m, i) => <div key={i} style={{ float: 'left', marginTop: 10, width: '48%', marginRight: i % 2 === 0 ? '4%' : undefined }}><img style={{ width: '100%' }} src={m} /></div>)
+          )}
         </div>
         <Button type="primary" value="上传" onClick={this.handleUploadBtnPressed} disabled={!this.state.isActive} />
         <p style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
