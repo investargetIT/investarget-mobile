@@ -33,30 +33,32 @@ class Upload extends React.Component {
   }
 
   handleInputChange = e => {
-    this.setState({ thumbnails: [...e.target.files].filter(f => /^image\//i.test(f.type)).map(m => URL.createObjectURL(m)) });
-    const file = e.target.files[0];
-    window.echo(file);
-    const filename = file.name;
-    let bucket;
-    if (/^image\//i.test(file.type)) {
-      bucket = 'image';
-    } else {
-      bucket = 'file';
-    }
+    const allFiles = [...e.target.files];
+    this.setState({ thumbnails: allFiles.filter(f => /^image\//i.test(f.type)).map(m => URL.createObjectURL(m)) });
+    let files = [];
+    const uploadAllReq = allFiles.map((file, i) => {
+      let bucket;
+      if (/^image\//i.test(file.type)) {
+        bucket = 'image';
+      } else {
+        bucket = 'file';
+      }
+      files[i] = {};
+      files[i].bucket = bucket;
+      files[i].filename = file.name;
+      return newApi.qiniuUpload(bucket, file);
+    });
     this.props.dispatch(requestContents());
     let body;
     let isActive = true;
     // 上传文件
-    newApi.qiniuUpload(bucket, file)
+    Promise.all(uploadAllReq) 
       .then(result => {
-        const { key: cardKey, url: cardUrl, realfilekey } = result.data;
+        files = result.map((m, i) => ({ ...files[i], key: m.data.key, realfilekey: m.data.realfilekey }));
         body = {
           record: this.key,
-          filename,
-          bucket,
-          key: cardKey,
-          realfilekey
-        }
+          files
+        };
         // 查询二维码是否有效
         return newApi.queryMobileUploadKey(this.key);
       })
