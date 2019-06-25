@@ -19,6 +19,7 @@ class Upload extends React.Component {
       isActive: true,
       showModal: false,
       thumbnails: [],
+      files: [],
     }
   }
 
@@ -32,11 +33,45 @@ class Upload extends React.Component {
       .catch(err => this.setState({ isActive: false }));
   }
 
+  findIconByFilename = filename => {
+    if (/\.(gif|jpg|jpeg|bmp|png|webp)$/i.test(filename)) {
+      return '/images/image.png';
+    } else if (/\.(doc|docx)$/i.test(filename)) {
+      return '/images/doc.png';
+    } else if (/\.(ppt|pptx)$/i.test(filename)) {
+      return '/images/ppt.png';
+    } else if (/\.(xls|xlsx)$/i.test(filename)) {
+      return '/images/xls.png';
+    } else if (/\.(mp4|avi)$/i.test(filename)) {
+      return '/images/file-video-icon.png';
+    } else if (/\.(pdf)$/i.test(filename)) {
+      return '/images/pdf.png';
+    } else {
+      return '/images/unknow.png';
+    }
+  }
+
   handleInputChange = e => {
     const allFiles = [...e.target.files];
-    this.setState({ thumbnails: allFiles.filter(f => /^image\//i.test(f.type)).map(m => URL.createObjectURL(m)) });
+    this.setState({
+      files: allFiles,
+      thumbnails: allFiles.map(m => {
+        if (/^image\//i.test(m.type)) {
+          return URL.createObjectURL(m);
+        } else {
+          return this.findIconByFilename(m.name);
+        }
+      }),
+    });
+  }
+
+  handleChooseFilesBtnPressed = () => {
+    this.inputElement.click();
+  }
+
+  handleUploadBtnPressed = () => {
     let files = [];
-    const uploadAllReq = allFiles.map((file, i) => {
+    const uploadAllReq = this.state.files.map((file, i) => {
       let bucket;
       if (/^image\//i.test(file.type)) {
         bucket = 'image';
@@ -86,10 +121,6 @@ class Upload extends React.Component {
       });
   }
 
-  handleUploadBtnPressed = () => {
-    this.inputElement.click();
-  }
-
   render () {
     return (
       <div style={{ padding: 10 }}>
@@ -108,10 +139,16 @@ class Upload extends React.Component {
           {this.state.thumbnails.length === 0 ? (
             <img style={{ width: 88, margin: 'auto', marginTop: 52, display: 'block' }} src="/images/emptyBox@2x.png" /> 
           ) : (
-            this.state.thumbnails.map((m, i) => <div key={i} style={{ float: 'left', marginTop: 10, width: '48%', marginRight: i % 2 === 0 ? '4%' : undefined }}><img style={{ width: '100%' }} src={m} /></div>)
+            this.state.thumbnails.map((m, i) => <div key={i} style={{ float: 'left', marginTop: 10, width: '48%', marginRight: i % 2 === 0 ? '4%' : undefined }}>
+              <img style={{ width: '100%' }} src={m} />
+              <p style={{ wordBreak: 'break-all', textAlign: 'center' }}>{this.state.files[i].name}</p>
+            </div>)
           )}
         </div>
-        <Button type="primary" value="上传" onClick={this.handleUploadBtnPressed} disabled={!this.state.isActive} />
+        <Button type="primary" value="选择文件" onClick={this.handleChooseFilesBtnPressed} disabled={!this.state.isActive} />
+        <div style={{ marginTop: 10 }}>
+          <Button type="primary" value="上传" onClick={this.handleUploadBtnPressed} disabled={this.state.files.length === 0} />
+        </div>
         <p style={{ fontSize: 12, marginTop: 8, textAlign: 'center' }}>
         { this.state.isActive ? '本网页包含隐私信息，请勿将本网页分享给他人' : '二维码已过期，请重新生成二维码' }
         </p>
