@@ -60,6 +60,11 @@ class Routes extends React.Component {
 
   componentDidMount() {
 
+    const clear = window.location.search.substr(1).split('&').filter(k => k.startsWith("clear"))[0];
+    if (clear) {
+      this.props.dispatch(logout());
+    }
+
     // 从 search 中剥离微信小程序 code 并保存
     let wxid = null;
     let wxList = window.location.search.substr(1).split('&').filter(k => k.startsWith("wxid="))[0]
