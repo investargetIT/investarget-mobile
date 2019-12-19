@@ -507,7 +507,8 @@ export function register(user) {
   const usernameC = user.username
   const orgname = user.organization
   const mobileAreaCode = user.prefix
-  const param = {...user, mobilecode, mobilecodetoken, usernameC, orgname, mobileAreaCode}
+  const registersource = 4
+  const param = {...user, mobilecode, mobilecodetoken, usernameC, orgname, mobileAreaCode, registersource}
   return r('/user/register/', 'POST', param)
 }
 
