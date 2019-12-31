@@ -690,7 +690,7 @@ export const ccUpload = formData => r('/service/ccupload', 'POST', formData, tru
 /**
  * 获取智库文章列表和活动地址
  */
-export const getPostsAndEvent = () => r('/activity/');
+export const getPostsAndEvent = () => r('/activity/?page_size=1000');
 
 export const queryMobileUploadKey = key => r('/service/selectUpload?record=' + key);
 export const updateMobileUploadKey = body => r('/service/updateUpload', 'POST', body);
