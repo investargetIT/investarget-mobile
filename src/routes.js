@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom'
 import App from './containers/App'
 import Posts from './containers/Posts'
+import Activities from './containers/Activities'
 import Events from './containers/Events'
 import User from './containers/User'
 import LoadingAndToast from './containers/LoadingAndToast'
@@ -178,6 +179,7 @@ class Routes extends React.Component {
 
           <Route exact path={api.baseUrl + "/"} component={App} />
           <Route path={api.baseUrl + "/posts"} component={Posts} />
+          <Route path={api.baseUrl + "/activities"} component={Activities} />
           <Route path={api.baseUrl + "/events"} component={Events} />
           <Route path={api.baseUrl + "/user"} component={User} />
           <Route path={api.baseUrl + "/login"} component={Login} />

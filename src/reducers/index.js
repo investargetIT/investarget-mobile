@@ -34,6 +34,7 @@ const initialState = {
   projects: [],
   projectStructure: [],
   posts: [],
+  activities: [],
   eventUrl: 'https://www.baidu.com/',
   continentsAndCountries: [],
   filter: [],
@@ -69,6 +70,7 @@ export default function (state = initialState, action) {
       const eventUrl = events.length > 0 ? events[0].detailUrl : initialState.eventUrl
       return Object.assign({}, state, {
         posts: action.posts.filter(post => post.isNews),
+        activities: action.posts.filter(post => !post.isNews),
         eventUrl: eventUrl
       })
     case APPEND_PROJECTS:
