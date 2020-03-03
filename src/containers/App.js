@@ -146,8 +146,8 @@ class App extends Component {
         obj['country'] = item.country.country
         obj['currency'] = item.currency.id
         obj['amount_cny'] = item.financeAmount
-        obj['imgUrl'] = item.industries[0].url
-        obj['industrys'] = item.industries.map(i => i.name)
+        obj['imgUrl'] = item.industries && item.industries.length > 0 ? item.industries[0].url : ''
+        obj['industrys'] = item.industries ? item.industries.map(i => i.name) : []
         obj['isMarketPlace'] = false
         return obj
       })
@@ -177,8 +177,8 @@ class App extends Component {
           obj['country'] = item.country.country
           obj['currency'] = item.currency.id
           obj['amount_cny'] = item.financeAmount 
-          obj['imgUrl'] = item.industries[0].url
-          obj['industrys'] = item.industries.map(i => i.name)
+          obj['imgUrl'] = item.industries.length > 0 ? item.industries[0].url : ''
+          obj['industrys'] = item.industries ? item.industries.map(i => i.name) : []
           obj['isMarketPlace'] = false
           return obj
         })
