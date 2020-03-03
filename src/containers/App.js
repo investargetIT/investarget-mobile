@@ -78,73 +78,39 @@ class App extends Component {
     })
     return result
   }
-  getPublicAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+  getPublicProjects = (skipCount, maxSize) => newApi.getProj(
     Object.assign(
       filterToObject(this.props.filter),
       {
         projstatus: 4,
-        ismarketplace: false,
         skip_count: skipCount,
         max_size: maxSize,
       },
     )
   )
-  getPublicAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
-    Object.assign(
-      filterToObject(this.props.filter),
-      {
-        projstatus: 4,
-        ismarketplace: true,
-        skip_count: skipCount,
-        max_size: maxSize,
-      },
-    )
-  )
-  getClosedAndNotMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
+  getClosedProjects = (skipCount, maxSize) => newApi.getProj(
     Object.assign(
       filterToObject(this.props.filter),
       {
         projstatus: 8,
-        ismarketplace: false,
-        skip_count: skipCount,
-        max_size: maxSize,
-      },
-    )
-  )
-  getClosedAndMarketPlaceProjects = (skipCount, maxSize) => newApi.getProj(
-    Object.assign(
-      filterToObject(this.props.filter),
-      {
-        projstatus: 8,
-        ismarketplace: true,
         skip_count: skipCount,
         max_size: maxSize,
       },
     )
   )
   getProjectsArray = [
-    this.getPublicAndNotMarketPlaceProjects,
-    this.getPublicAndMarketPlaceProjects,
-    this.getClosedAndNotMarketPlaceProjects,
-    this.getClosedAndMarketPlaceProjects,
+    this.getPublicProjects,
+    this.getClosedProjects,
   ]
 
   getProjects = callback => {
 
     const count = []
     let newArray = []
-    this.getPublicAndNotMarketPlaceProjects(0, 1)
+    this.getPublicProjects(0, 1)
     .then(data => {
       count.push(data.count);
-      return this.getPublicAndMarketPlaceProjects(0, 1);
-    })
-    .then(data => {
-      count.push(data.count);
-      return this.getClosedAndNotMarketPlaceProjects(0, 1);
-    })
-    .then(data => {
-      count.push(data.count);
-      return this.getClosedAndMarketPlaceProjects(0, 1);
+      return this.getClosedProjects(0, 1);
     })
     .then(data => {
       count.push(data.count);
@@ -182,7 +148,7 @@ class App extends Component {
         obj['amount_cny'] = item.financeAmount
         obj['imgUrl'] = item.industries[0].url
         obj['industrys'] = item.industries.map(i => i.name)
-        obj['isMarketPlace'] = item.ismarketplace
+        obj['isMarketPlace'] = false
         return obj
       })
       callback(projects, newArray);
@@ -199,7 +165,7 @@ class App extends Component {
       }
     })
     if (requestArr.length === 0) {
-      requestArr.push(this.getClosedAndMarketPlaceProjects(10000, 10))
+      requestArr.push(this.getClosedProjects(10000, 10))
     }
     Promise.all(requestArr)
       .then(result => {
@@ -213,7 +179,7 @@ class App extends Component {
           obj['amount_cny'] = item.financeAmount 
           obj['imgUrl'] = item.industries[0].url
           obj['industrys'] = item.industries.map(i => i.name)
-          obj['isMarketPlace'] = item.ismarketplace
+          obj['isMarketPlace'] = false
           return obj
         })
         callback(projects)
