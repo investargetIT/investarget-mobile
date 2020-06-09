@@ -63,7 +63,7 @@ function FormContainer(props) {
         <div className="head_box">
 
           <div className="logo_box">
-            <a href="#"><img src="images/导航logo.png" className="m-logo" alt="" /></a>
+            <a href="#"><img src="/images/new_logo.png" className="m-logo" alt="" /></a>
           </div>
 
           <div className="nav_box"></div>

@@ -23,7 +23,7 @@ body {
   display: none;
 }
 .nav_act .head_box .nav_box {
-  background-image: url('../images/close .png');
+  background-image: url('/images/login/close.png');
 }
 .nav_act .head_box .act_list {
   display: block;
@@ -78,7 +78,7 @@ nav .head_box .nav_box {
   background-position: center;
   background-size: contain;
   position: relative;
-  background-image: url('../images/menu icon.png');
+  background-image: url('/images/login/menu_icon.png');
   z-index: 9999;
   transition: all 0.5s;
 }
@@ -293,9 +293,18 @@ footer .fend_ {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url('../images/top arrow.png');
+  background-image: url('/images/login/top_arrow.png');
   position: fixed;
   right: 0.9662rem;
   bottom: 7.4976rem;
   display: none;
+}
+nav a {
+  color: inherit;
+}
+nav li {
+  list-style: none;
+}
+nav i {
+  font-style: normal;
 }
