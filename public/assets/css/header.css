@@ -2,6 +2,9 @@
   font-family:'Fp';
   src: url('DTLArgoTCapsRegular.otf');
 }
+html {
+  font-size: 20.7px;
+}
 body {
   /* font-family:'Fp'; */
   font-family: PingFangSC-Regular;
@@ -307,4 +310,47 @@ nav li {
 }
 nav i {
   font-style: normal;
+}
+.ewm {
+  margin: 20px auto;
+  width: 15.266rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.ewm .WeChat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.ewm .WeChat span {
+  font-family: PingFangSC-Semibold;
+  font-size: 16px;
+  color: #747474;
+  text-align: center;
+  line-height: 26px;
+  font-weight: bold;
+}
+.ewm .WeChat img {
+  width: 4.44rem;
+  height: 4.44rem;
+}
+.ewm .download {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.ewm .download span {
+  font-family: PingFangSC-Semibold;
+  font-size: 16px;
+  color: #747474;
+  text-align: center;
+  line-height: 26px;
+  font-weight: bold;
+}
+.ewm .download img {
+  width: 4.44rem;
+  height: 4.44rem;
 }

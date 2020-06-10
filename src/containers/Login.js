@@ -2,6 +2,7 @@ import React from 'react'
 import { requestContents, receiveCurrentUserInfo, handleError, hideLoading } from '../actions'
 import { connect } from 'react-redux'
 import TextInput from '../components/TextInput'
+import NewTextInput from '../components/NewTextInput';
 import Button from '../components/Button'
 import FormContainer from './FormContainer'
 import { Link } from 'react-router-dom'
@@ -161,12 +162,13 @@ class Login extends React.Component {
     var content = (
       <div>
 
+        <div>登录访问您的账号！</div>
         <div style={usernameInputStyle}>
-          <TextInput iconUrl={api.baseUrl + "/images/login/User-copy@2x.png"} iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
+          <NewTextInput iconUrl={api.baseUrl + "/images/login/User-copy@2x.png"} iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
         </div>
 
         <div style={passwordInputStyle}>
-          <TextInput iconUrl={api.baseUrl + "/images/login/Locked@2x.png"} iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
+          <NewTextInput iconUrl={api.baseUrl + "/images/login/Locked@2x.png"} iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
         <div style={loginButtonStyle}>

@@ -6,6 +6,7 @@ import api from '../api'
 var navbarStyle = {
   width: '100%',
   height: '36px',
+  marginTop: '3.673rem',
 }
 
 var backIconContainerStyle = {

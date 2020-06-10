@@ -10,7 +10,7 @@ const inWxApp = newApi.inWxApp;
 var containerStyle = {
   width: '100%',
   minHeight: '100%',
-  backgroundImage: 'url(' + api.baseUrl + '/images/login/backgroungImage@2x.png)',
+  // backgroundImage: 'url(' + api.baseUrl + '/images/login/backgroungImage@2x.png)',
   backgroundRepeat: 'repeat-y',
   backgroundSize: '100% auto',
   backgroundPosition: '50% 0',
@@ -42,7 +42,7 @@ var backIconStyle = {
 }
 
 var formContainer = {
-  margin: '55% auto 35%',
+  margin: '4.25rem auto 35%',
   width: '76.27%',
 }
 
@@ -108,6 +108,17 @@ function FormContainer(props) {
       
       <div style={{...formContainer, ...props.formStyle}}>
         {props.innerHtml}
+      </div>
+
+      <div className="ewm">
+        <div className="WeChat">
+          <span>微信公众号</span>
+          <img src="/images/login/wechat_qrcode.png" alt="" />
+        </div>
+        <div className="download">
+          <span>客户端下载</span>
+          <img src="/images/login/app_qrcode.png" alt="" />
+        </div>
       </div>
 
     </div>
