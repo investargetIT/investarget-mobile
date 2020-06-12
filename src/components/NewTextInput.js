@@ -6,7 +6,7 @@ var containerStyle = {
   justifyContent: 'flex-start',
   alignItems: 'center',
   backgroundColor: '#F0F0F0',
-  padding: '10px 20px',
+  padding: '8px 20px',
   borderRadius: 6,
 }
 

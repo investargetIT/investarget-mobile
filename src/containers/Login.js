@@ -3,7 +3,7 @@ import { requestContents, receiveCurrentUserInfo, handleError, hideLoading } fro
 import { connect } from 'react-redux'
 import TextInput from '../components/TextInput'
 import NewTextInput from '../components/NewTextInput';
-import Button from '../components/Button'
+import ButtonForLogin from '../components/ButtonForLogin'
 import FormContainer from './FormContainer'
 import { Link } from 'react-router-dom'
 import api from '../api'
@@ -14,15 +14,15 @@ import qs from 'qs'
 const inWxApp = newApi.inWxApp;
 
 var usernameInputStyle = {
-  margin: '30px 10px',
+  margin: '10px 0',
 }
 
 var passwordInputStyle = {
-  margin: '30px 10px 40px',
+  margin: '20px 0',
 }
 
 var loginButtonStyle = {
-  margin: '10px 0',
+  margin: '20px 0',
   fontSize: '16px',
 }
 
@@ -32,12 +32,13 @@ var registerButtonStyle = {
 }
 
 var forgetPasswordStyle = {
-  textAlign: 'center',
-  marginTop: '20px',
+  textAlign: 'right',
+  margin: '20px 0',
+  fontSize: 12,
 }
 
 var forgetPasswordLinkStyle = {
-  color: 'rgb(34, 105, 212)',
+  color: '#0b3666',
 }
 
 var showPasswordStyle = {
@@ -162,7 +163,7 @@ class Login extends React.Component {
     var content = (
       <div>
 
-        <div>登录访问您的账号！</div>
+        <div style={{ textAlign: 'center', fontSize: 18 }}>登录访问您的账号！</div>
         <div style={usernameInputStyle}>
           <NewTextInput iconUrl={api.baseUrl + "/images/login/User-copy@2x.png"} iconAlt="用户名" name="username" placeholder="请输入手机号/邮箱" handleInputChange={this.handleInputChange} />
         </div>
@@ -171,17 +172,22 @@ class Login extends React.Component {
           <NewTextInput iconUrl={api.baseUrl + "/images/login/Locked@2x.png"} iconAlt="密码" name="password" type={this.state.showPassword ? 'text' : 'password'} placeholder="请输入密码" handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
-        <div style={loginButtonStyle}>
-          <Button type="primary" disabled={this.state.username === '' || this.state.password === ''} onClick={this.handleSubmit} value="登录" />
-        </div>
-
-        <div style={registerButtonStyle}>
-          <Link to={api.baseUrl + "/register"}><Button type="secondary" isTransparent="true" value="注册" /></Link>
-        </div>
-
         <div style={forgetPasswordStyle}>
-          <Link to={api.baseUrl + "/retrieve_password"} style={forgetPasswordLinkStyle}>忘记密码？</Link>
+          <Link to={api.baseUrl + "/retrieve_password"} style={forgetPasswordLinkStyle}>忘记密码</Link>
         </div>
+
+        <div style={loginButtonStyle}>
+          <ButtonForLogin type="primary" disabled={this.state.username === '' || this.state.password === ''} onClick={this.handleSubmit} value="登录" />
+        </div>
+
+        <p style={{ textAlign: 'center', fontSize: 12 }}>
+          <span>还不是会员？</span>
+          <Link to={api.baseUrl + "/register"}><span style={{ color: '#00182a' }}>立即注册</span></Link>
+        </p>
+
+        {/* <div style={registerButtonStyle}>
+          <Link to={api.baseUrl + "/register"}><ButtonForLogin type="secondary" isTransparent="true" value="注册" /></Link>
+        </div> */}
 
       </div>
     )

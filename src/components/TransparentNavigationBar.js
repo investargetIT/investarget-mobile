@@ -10,22 +10,22 @@ var navbarStyle = {
 }
 
 var backIconContainerStyle = {
-  width: '36px',
-  height: '36px',
+  width: 48,
+  height: 48,
   float: 'left',
   textAlign: 'center'
 }
 
 var titleStyle = {
-  marginRight: '36px',
-  lineHeight: '36px',
+  marginRight: 48,
+  lineHeight: '48px',
   textAlign: 'center',
-  fontSize: '20px',
+  fontSize: 16,
   fontWeight: '200',
 }
 
 var backIconStyle = {
-  margin: '4px'
+  margin: 12, 
 }
 
 function TransparentNavigationBar(props) {

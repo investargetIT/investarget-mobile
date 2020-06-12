@@ -42,7 +42,7 @@ var backIconStyle = {
 }
 
 var formContainer = {
-  margin: '4.25rem auto 35%',
+  margin: '4.25rem auto 2rem',
   width: '76.27%',
 }
 
