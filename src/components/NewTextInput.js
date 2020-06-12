@@ -34,7 +34,7 @@ var inputStyle = {
 var rightContentStyle = {
   position: 'absolute',
   top: '0',
-  right: '0',
+  right: 8,
   height: '100%',
   display: 'flex',
   alignItems: 'center',
