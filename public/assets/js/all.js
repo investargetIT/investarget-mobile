@@ -565,14 +565,17 @@ $(function() {
     const inx = new inxf();
     inx.Totop(); 
     // 移动端列表展开与关闭 
-    $('.nav_box').click(function(){ 
-        $('nav').toggleClass('nav_act'); 
-        if($('nav').hasClass('nav_act')) {
-          $('body').css({overflow: 'hidden'});
-        }else {
-          $('body').css({overflow: 'inherit'})
-        }
-    })
+    setTimeout(() => {
+        $('.nav_box').click(function () {
+            console.log('hello nav box');
+            $('nav').toggleClass('nav_act');
+            if ($('nav').hasClass('nav_act')) {
+                $('body').css({ overflow: 'hidden' });
+            } else {
+                $('body').css({ overflow: 'inherit' })
+            }
+        })
+    }, 500);
     $('nav ul li').click(function() { 
         event.stopPropagation();
         $('nav ul li').removeClass('on');
