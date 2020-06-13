@@ -30,7 +30,7 @@ var backIconStyle = {
 
 function TransparentNavigationBar(props) {
   return (
-      <div style={navbarStyle}>
+      <div style={{ ...navbarStyle, ...props.style }}>
           <div style={backIconContainerStyle} onClick={props.backIconClicked || props.history.goBack}>
               <img style={backIconStyle} src={api.baseUrl + "/images/ic_navigate_before.svg"} alt="Back" />
           </div>
