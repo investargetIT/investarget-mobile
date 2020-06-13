@@ -1,7 +1,7 @@
 import React from 'react'
 import FormContainer from './FormContainer'
 import TextInput from '../components/TextInput'
-import MobileInput from '../components/MobileInput'
+import NewMobileInput from '../components/NewMobileInput'
 import ButtonForLogin from '../components/ButtonForLogin'
 import NewTextInput from '../components/NewTextInput'
 import api from '../api'
@@ -15,7 +15,7 @@ const VERIFICATION_CODE_TOKEN = 'VERIFICATION_CODE_TOKEN'
 
 
 var inputStyle = {
-    margin: '30px 0',
+    margin: '20px 0',
 }
 var sendCodeButtonStyle = {
   width: '90px',
@@ -158,7 +158,7 @@ class RetrievePassword extends React.Component {
         var content = (
             <div>
                 <div style={inputStyle}>
-                    <MobileInput areaCode={this.state.areaCode} mobile={this.state.mobile} onChange={this.handleMobileChange} />
+                    <NewMobileInput areaCode={this.state.areaCode} mobile={this.state.mobile} onChange={this.handleMobileChange} />
                 </div>
                 <div style={inputStyle}>
                     <NewTextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
