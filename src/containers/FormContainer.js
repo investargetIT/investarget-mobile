@@ -46,83 +46,97 @@ var formContainer = {
   width: '76.27%',
 }
 
-function FormContainer(props) {
+class FormContainer extends React.Component {
 
-  function back() {
-    if (inWxApp && window.wx && props.root) {
-      return () => {window.wx.miniProgram.switchTab({url: "/pages/index/index"})};
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      navActive: false,
+    };
+  }
+
+  handleBackIconClick = () => {
+    if (inWxApp && window.wx && this.props.root) {
+      return () => { window.wx.miniProgram.switchTab({ url: "/pages/index/index" }) };
     } else {
-      return props.backIconClicked;
+      return this.props.backIconClicked;
     }
   }
 
-  return (
-    <div style={{...containerStyle, ...props.style}} >
+  toggleNav = () => {
+    this.setState({ navActive: !this.state.navActive });
+  }
 
-      <nav>
-        <div className="head_box">
+  render() {
+    return (
+      <div style={{ ...containerStyle, ...this.props.style }} >
 
-          <div className="logo_box">
-            <a href="#"><img src="/images/new_logo.png" className="m-logo" alt="" /></a>
-          </div>
+        <nav className={this.state.navActive ? 'nav_act' : null}>
+          <div className="head_box">
 
-          <div className="nav_box"></div>
-          <div className="act_list">
-            <div className="change_box">
-              <span className="lg En"><a href="#">En</a></span>
-              <span className="lg Cn active"><a href="#">中</a></span>
+            <div className="logo_box">
+              <a href="#"><img src="/images/new_logo.png" className="m-logo" alt="" /></a>
             </div>
-            <ul className="list_">
-              <li><a href="index.html">首页</a></li>
-              <li>
-                <div className="fx">精品投行<i>+</i></div>
-                <div className="hover_box">
-                  <div className="getHeight">
-                    <span><a href="股权融资.html">股权融资</a></span>
-                    <span><a href="2_2.html">兼收并购</a></span>
-                    <span><a href="2_3.html">核心团队</a></span>
+
+            <div className="nav_box" onClick={this.toggleNav}></div>
+            <div className="act_list">
+              <div className="change_box">
+                <span className="lg En"><a href="#">En</a></span>
+                <span className="lg Cn active"><a href="#">中</a></span>
+              </div>
+              <ul className="list_">
+                <li><a href="index.html">首页</a></li>
+                <li>
+                  <div className="fx">精品投行<i>+</i></div>
+                  <div className="hover_box">
+                    <div className="getHeight">
+                      <span><a href="股权融资.html">股权融资</a></span>
+                      <span><a href="2_2.html">兼收并购</a></span>
+                      <span><a href="2_3.html">核心团队</a></span>
+                    </div>
                   </div>
-                </div>
-              </li>
-              <li><a href="3.html">产业投资</a></li>
-              <li>
-                <div className="fx">产业发展<i>+</i></div>
-                <div className="hover_box">
-                  <div className="getHeight">
-                    <span><a href="4_1.html">简介历程</a></span>
-                    <span><a href="4_2.html">产业综合体</a></span>
+                </li>
+                <li><a href="3.html">产业投资</a></li>
+                <li>
+                  <div className="fx">产业发展<i>+</i></div>
+                  <div className="hover_box">
+                    <div className="getHeight">
+                      <span><a href="4_1.html">简介历程</a></span>
+                      <span><a href="4_2.html">产业综合体</a></span>
+                    </div>
                   </div>
-                </div>
-              </li>
-            </ul>
-            <div className="link_box">
-              <a href="login.html" className="login_">登 入</a>
-              <a href="contact.html" className="about_us">关于我们 ></a>
+                </li>
+              </ul>
+              <div className="link_box">
+                <a href="login.html" className="login_">登 入</a>
+                <a href="contact.html" className="about_us">关于我们 ></a>
+              </div>
             </div>
+
           </div>
+        </nav>
 
+        <TransparentNavigationBar title={this.props.title} backIconClicked={this.handleBackIconClick()} />
+
+        <div style={{ ...formContainer, ...this.props.formStyle }}>
+          {this.props.innerHtml}
         </div>
-      </nav>
-    
-      <TransparentNavigationBar title={props.title} backIconClicked={back()} />
-      
-      <div style={{...formContainer, ...props.formStyle}}>
-        {props.innerHtml}
+
+        <div className="ewm">
+          <div className="WeChat">
+            <span>微信公众号</span>
+            <img src="/images/login/wechat_qrcode.png" alt="" />
+          </div>
+          <div className="download">
+            <span>客户端下载</span>
+            <img src="/images/login/app_qrcode.png" alt="" />
+          </div>
+        </div>
+
       </div>
-
-      <div className="ewm">
-        <div className="WeChat">
-          <span>微信公众号</span>
-          <img src="/images/login/wechat_qrcode.png" alt="" />
-        </div>
-        <div className="download">
-          <span>客户端下载</span>
-          <img src="/images/login/app_qrcode.png" alt="" />
-        </div>
-      </div>
-
-    </div>
-  )
+    )
+  }
 }
 
 function mapStateToProps(state) {
