@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import api from '../api'
 import * as newApi from '../api3.0'
 import TransparentNavigationBar from '../components/TransparentNavigationBar'
+import $ from 'jquery';
 
 const inWxApp = newApi.inWxApp;
 
@@ -66,6 +67,29 @@ class FormContainer extends React.Component {
 
   toggleNav = () => {
     this.setState({ navActive: !this.state.navActive });
+  }
+
+  componentDidMount() {
+    $('nav ul li').click(function () {
+      event.stopPropagation();
+      $('nav ul li').removeClass('on');
+      $('nav ul li').find('.hover_box').removeClass('active');
+      $('nav ul li').find('i').text('+');
+      $('nav ul li').find('.hover_box').height(0);
+
+      $(this).toggleClass('on');
+      $(this).find('.hover_box').toggleClass('active');
+      let hei = $(this).find('.hover_box').find('.getHeight').height();
+      // nav .head_box .act_list ul li i
+      if ($(this).hasClass('on')) {
+        $(this).find('i').text('-')
+        $(this).find('.hover_box').height(hei);
+        // $(this).siblings().find('.hover_box').addClass('off');
+      } else {
+        $(this).find('i').text('+')
+        $(this).find('.hover_box').height(0);
+      }
+    })
   }
 
   render() {
