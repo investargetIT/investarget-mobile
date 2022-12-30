@@ -50,6 +50,7 @@ const initialState = {
   showToast: false,
   toastMessage: '',
   redirectUrl: null,
+  selectedTag: [],
   
 }
 
