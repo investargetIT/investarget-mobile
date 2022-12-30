@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "alloytouch": "^0.2.3",
+    "alloytouch": "0.2.3",
     "axios": "^0.15.3",
     "jquery": "^3.5.1",
     "lodash.debounce": "^4.0.8",
