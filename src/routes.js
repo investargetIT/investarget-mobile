@@ -48,6 +48,7 @@ import Upload from './containers/Upload';
 import SelectOrg from './containers/SelectOrg';
 import { requestContents, logout } from './actions';
 import ShareMeetings from './containers/ShareMeetings';
+import SelectTag from './containers/SelectTag';
 
 const inWxApp = newApi.inWxApp;
 
@@ -188,6 +189,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/register2"} component={Register2} />
           <Route path={api.baseUrl + "/agreement"} component={Agreement} />
           <Route path={api.baseUrl + "/filter"} component={Filter} />
+          <Route path={api.baseUrl + "/select-tag"} component={SelectTag} />
           <Route path={api.baseUrl + "/project/:id"} component={ProjectDetail} />
           <Route path={api.baseUrl + "/project_for_rn/:id"} component={ProjectDetailForRN} />
           <Route path={api.baseUrl + "/timeline_management"} component={TimelineManagement} />
