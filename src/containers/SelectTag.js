@@ -296,23 +296,23 @@ class SelectTag extends Component {
 
   render() {
 
-    const area = <MasterDetail
-      name={CATEGORY_1}
-      data={this.props.continentsAndCountries}
-      masterName="continentName"
-      detailName="countryName"
-      masterDetail="countries"
-      handleDetailItemClicked={this.handleCountryClicked}
-      chosenItem={this.props.filter.filter(item => item.type === CATEGORY_1).map(item => item.id)} />
+    // const area = <MasterDetail
+    //   name={CATEGORY_1}
+    //   data={this.props.continentsAndCountries}
+    //   masterName="continentName"
+    //   detailName="countryName"
+    //   masterDetail="countries"
+    //   handleDetailItemClicked={this.handleCountryClicked}
+    //   chosenItem={this.props.filter.filter(item => item.type === CATEGORY_1).map(item => item.id)} />
 
-    const industry = <MasterDetail
-      name={CATEGORY_2}
-      data={this.props.industries}
-      masterName="industryName"
-      detailName="industryName"
-      masterDetail="subIndustries"
-      handleDetailItemClicked={this.handleCountryClicked}
-      chosenItem={this.props.filter.filter(item => item.type === CATEGORY_2).map(item => item.id)} />
+    // const industry = <MasterDetail
+    //   name={CATEGORY_2}
+    //   data={this.props.industries}
+    //   masterName="industryName"
+    //   detailName="industryName"
+    //   masterDetail="subIndustries"
+    //   handleDetailItemClicked={this.handleCountryClicked}
+    //   chosenItem={this.props.filter.filter(item => item.type === CATEGORY_2).map(item => item.id)} />
 
     const tag = <TableView
       name={CATEGORY_3}
@@ -325,10 +325,10 @@ class SelectTag extends Component {
     return (
       <div>
 
-        <NavigationBar title={search} backIconClicked={this.props.history.goBack} />
+        <NavigationBar title={search} hideBack />
 
-        <div style={categoryPlaceholderStyle}></div>
-        <div style={cateogryStyle}>
+        {/* <div style={categoryPlaceholderStyle}></div> */}
+        {/* <div style={cateogryStyle}>
 
           <FilterCategory name="地区" onClick={this.handleAreaCategoryClicked} isActive={this.state.activeCategory === CATEGORY_1} />
 
@@ -336,14 +336,16 @@ class SelectTag extends Component {
 
           <FilterCategory name="标签" onClick={this.handleTagCategoryClicked} isActive={this.state.activeCategory === CATEGORY_3} />
 
-        </div>
+        </div> */}
 
-        {this.state.activeCategory === CATEGORY_1 ? area : null}
+        {/* {this.state.activeCategory === CATEGORY_1 ? area : null}
         {this.state.activeCategory === CATEGORY_2 ? industry : null}
-        {this.state.activeCategory === CATEGORY_3 ? tag : null}
+        {this.state.activeCategory === CATEGORY_3 ? tag : null} */}
+        
+        {tag}
 
         <div style={selectedContainerStyle}>
-          <p style={selectedLabelStyle}>已选条件：</p>
+          <p style={selectedLabelStyle}>已选标签：</p>
           <p style={selectedContentStyle}>{this.props.filter.map(item => item.name).join('，')}</p>
         </div>
 
