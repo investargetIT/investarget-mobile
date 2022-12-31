@@ -151,10 +151,6 @@ class Select extends React.Component {
                     {items}
                 </div>
             </div>
-            <div style={actionStyle}>
-                <div style={clearStyle} onClick={this.clear}>重置</div>
-                <div style={confirmStyle} onClick={this.confirm}>确定</div>
-            </div>
         </div>
     }
 }

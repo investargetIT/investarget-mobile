@@ -7,6 +7,52 @@ import * as newApi from '../api3.0'
 import * as utils from '../utils'
 import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
 
+const searchContainerStyle = {
+  flex: 1,
+  marginRight: 10,
+  height: '30px',
+  backgroundColor: 'lightgrey',
+  lineHeight: 'normal',
+  borderRadius: '10px'
+}
+const searchInputStyle = {
+  fontSize: '16px',
+  backgroundColor: 'lightgrey',
+  border: 'none',
+  height: '100%',
+  width: '80%',
+  verticalAlign: 'middle'
+}
+const searchIconStyle = {
+  width: '20px',
+  height: '20px',
+  marginLeft: 8,
+  marginRight: '8px',
+  verticalAlign: 'middle',
+}
+
+class Search extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  onChange = event => {
+    this.props.onChange(event.target.value);
+  }
+
+  render() {
+    return (
+      <div style={{ backgroundColor: 'white', position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
+        <div style={searchContainerStyle}>
+          <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
+          <input style={searchInputStyle} type="text" placeholder="搜索标签" onChange={this.onChange} />
+        </div>
+        <button style={{ padding: '0 10px' }}>提交</button>
+      </div>
+    );
+  }
+}
+
 class MyTag extends Component {
 
   constructor(props) {
@@ -52,20 +98,25 @@ class MyTag extends Component {
 
   }
 
+  handleSearchChange = content => {
+    console.log('content', content);
+  }
+
   render() {
     return (
       <div>
-        <NavigationBar title="选择标签" hideBack />
-        <SelectWithSearch
-          // title="为投资人设置标签"
-          multiple={true}
-          options={this.props.tags.map(item =>
-            Object.assign({}, item, {
-              name: item.tagName
-            })
-          )}
-          selected={this.props.selectedTag.map(item => item.id)}
-          onConfirm={this.handleSelectTags} />
+        <Search onChange={this.handleSearchChange} />
+        <div style={{ marginTop: 50 }}>
+          <SelectWithSearch
+            multiple={true}
+            options={this.props.tags.map(item =>
+              Object.assign({}, item, {
+                name: item.tagName
+              })
+            )}
+            selected={this.props.selectedTag.map(item => item.id)}
+            onConfirm={this.handleSelectTags} />
+        </div>
       </div>
     )
   }
