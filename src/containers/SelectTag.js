@@ -6,6 +6,7 @@ import api from '../api'
 import * as newApi from '../api3.0'
 import * as utils from '../utils'
 import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
+import qs from 'qs';
 
 const searchContainerStyle = {
   flex: 1,
@@ -68,10 +69,13 @@ class SelectTag extends Component {
       cardUrl: null,
       selectedTags: null,
     }
+
+    this.accessToken = qs.parse(this.props.location.search.slice(1)).access_token;
+    console.log('access token', this.accessToken);
   }
 
   componentDidMount() {
-    newApi.getUserBase(this.props.match.params.id)
+    newApi.getUserBaseWithToken(this.props.match.params.id, this.accessToken)
       .then(res => {
         this.setState({ userInfo: res, selectedTags: res.tags ? res.tags.map(m => m.id) : [] });
         const { cardBucket, cardKey } = res;
@@ -95,7 +99,7 @@ class SelectTag extends Component {
 
   handleSubmitBtnClicked = () => {
     this.props.dispatch(requestContents(''));
-    newApi.editUser([this.state.userInfo.id], { tags: this.state.selectedTags })
+    newApi.editUserWithToken([this.state.userInfo.id], { tags: this.state.selectedTags }, this.accessToken)
       .then(() => {
         this.props.dispatch(hideLoading());
         this.props.dispatch(handleError(new Error('更新成功！')));

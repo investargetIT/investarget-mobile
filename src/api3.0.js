@@ -455,9 +455,19 @@ export function editUser(idArr, param) {
   return r('/user/', 'PUT', data)
 }
 
+export function editUserWithToken(idArr, param, token) {
+  const data = {
+    'userlist': idArr,
+    'userdata': param,
+  }
+  return reqWithToken('/user/', token, 'PUT', data);
+}
+
 export function getUserBase(id) {
   return r('/user/' + id + '/')
 }
+
+export const getUserBaseWithToken = (id, token) => reqWithToken('/user/' + id + '/', token);
 
 /**
  * 获取单个用户详情
