@@ -7,6 +7,7 @@ import * as newApi from '../api3.0'
 import * as utils from '../utils'
 import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
 import qs from 'qs';
+import debounce from 'lodash.debounce';
 
 const searchContainerStyle = {
   flex: 1,
@@ -68,10 +69,14 @@ class SelectTag extends Component {
       userInfo: null,
       cardUrl: null,
       selectedTags: null,
+      tagOptions: [],
+      keyword: '',
+      current: -1,
+      total: 0,
     }
 
     this.accessToken = qs.parse(this.props.location.search.slice(1)).access_token;
-    console.log('access token', this.accessToken);
+    this.searchKeyword = debounce(this.searchKeyword, 500);
   }
 
   componentDidMount() {
@@ -95,6 +100,65 @@ class SelectTag extends Component {
 
   handleSearchChange = content => {
     console.log('content', content);
+    this.setState({ keyword: content });
+    this.searchKeyword(content);
+  }
+
+  searchKeyword = (keyword, callback) => {
+    const { tagOptions, total } = this.searchInParagraphs(this.props.tags, keyword);
+    const current = total > 0 ? 0 : -1;
+    this.setState({
+      keyword,
+      tagOptions,
+      total,
+      current,
+    }, () => {
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
+  searchInParagraphs = (paragraphs, keyword) => {
+    if (keyword == null || keyword === '') {
+      return {
+        tagOptions: paragraphs.map(m => {
+          let { label } = m;
+          label = [{ text: label, matchIndex: -1 }];
+          return { ...m, label };
+        }),
+        total: 0,
+      };
+    }
+    const keywordRegExp = new RegExp('(' + keyword + ')');
+    const newParagraphs = [];
+    let matchIndex = -1;
+
+    paragraphs.forEach((paragraph) => {
+      const label = [];
+      const spans = paragraph.label.split(keywordRegExp).filter((item) => item !== '');
+      spans.forEach((span) => {
+        label.push({
+          text: span,
+          matchIndex: span === keyword ? ++matchIndex : -1,
+        });
+      });
+
+      newParagraphs.push({
+        ...paragraph,
+        label,
+      });
+    });
+    return {
+      tagOptions: newParagraphs,
+      total: matchIndex + 1,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.tags.length !== this.props.tags.length) {
+      this.searchKeyword(this.state.keyword);
+    }
   }
 
   handleSubmitBtnClicked = () => {
@@ -120,11 +184,7 @@ class SelectTag extends Component {
         {this.state.selectedTags && <div style={{ marginTop: 60 }}>
           <SelectWithSearch
             multiple={true}
-            options={this.props.tags.map(item =>
-              Object.assign({}, item, {
-                name: item.tagName
-              })
-            )}
+            options={this.state.tagOptions}
             selected={this.state.selectedTags}
             onChange={this.handleSelectChange}
           />
@@ -138,7 +198,7 @@ class SelectTag extends Component {
 
 function mapStateToProps(state) {
   const { tags, userInfo } = state;
-  return { tags, userInfo };
+  return { tags: tags.map(m => ({ ...m, label: m.tagName })), userInfo };
 }
 
 export default connect(mapStateToProps)(SelectTag)

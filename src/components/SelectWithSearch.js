@@ -97,9 +97,8 @@ class Select extends React.Component {
     }
 
     handleMultipleSelect(event) {
-        var target = event.target
+        var target = event.currentTarget;
         var id = parseInt(target.dataset.id)
-
         var array = this.state.selected.slice()
         var index = array.indexOf(id)
         if (index > -1) {
@@ -142,7 +141,26 @@ class Select extends React.Component {
     render() {
         var items = this.props.options.map(option => {
             var style = (this.state.selected.indexOf(option.id) == -1) ? optionStyle : activeOptionStyle
-            return <span style={style} key={option.id} data-id={option.id} onClick={this.handleSelect}>{option.name}</span>
+            return <span style={style} key={option.id} data-id={option.id} onClick={this.handleSelect}>
+                {option.label.map(({ text, matchIndex }, index) => {
+                    if (matchIndex > -1) {
+                        return (
+                            <mark
+                                key={index}
+                                data-match-index={matchIndex}
+                                style={{
+                                    padding: 0,
+                                    background: matchIndex === this.state.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
+                                }}
+                            >
+                                {text}
+                            </mark>
+                        );
+                    } else {
+                        return <span key={index}>{text}</span>;
+                    }
+                })}
+            </span>
         })
         
         return <div style={containerStyle}>
