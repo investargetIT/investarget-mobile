@@ -13,21 +13,23 @@ const searchContainerStyle = {
   height: '30px',
   backgroundColor: 'lightgrey',
   lineHeight: 'normal',
-  borderRadius: '10px'
+  borderRadius: 4,
+  display: 'flex',
+  alignItems: 'center',
 }
 const searchInputStyle = {
   fontSize: '16px',
   backgroundColor: 'lightgrey',
   border: 'none',
   height: '100%',
-  width: '80%',
+  flex: 1,
   verticalAlign: 'middle'
 }
 const searchIconStyle = {
   width: '20px',
   height: '20px',
-  marginLeft: 8,
-  marginRight: '8px',
+  marginLeft: 4,
+  marginRight: 4,
   verticalAlign: 'middle',
 }
 
@@ -46,6 +48,9 @@ class Search extends Component {
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
           <input style={searchInputStyle} type="text" placeholder="搜索标签" onChange={this.onChange} />
+          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} />
+          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} />
+          <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} />
         </div>
         <button style={{ padding: '0 10px' }} onClick={this.props.onSubmit}>提交</button>
       </div>
