@@ -41,7 +41,7 @@ var optionStyle = {
     lineHeight: '1',
     textAlign: 'center',
     color: '#999',
-    fontSize: '12px',
+    fontSize: '14px',
     backgroundColor: '#fff',
     maxWidth: '50%',
 }

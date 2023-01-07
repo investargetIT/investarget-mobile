@@ -11,7 +11,7 @@ import qs from 'qs';
 const searchContainerStyle = {
   flex: 1,
   marginRight: 10,
-  height: '30px',
+  height: 40,
   backgroundColor: 'lightgrey',
   lineHeight: 'normal',
   borderRadius: 4,
@@ -27,8 +27,8 @@ const searchInputStyle = {
   verticalAlign: 'middle'
 }
 const searchIconStyle = {
-  width: '20px',
-  height: '20px',
+  width: 24,
+  height: 24,
   marginLeft: 4,
   marginRight: 4,
   verticalAlign: 'middle',
@@ -117,7 +117,7 @@ class SelectTag extends Component {
     return (
       <div>
         <Search onChange={this.handleSearchChange} onSubmit={this.handleSubmitBtnClicked} />
-        {this.state.selectedTags && <div style={{ marginTop: 50 }}>
+        {this.state.selectedTags && <div style={{ marginTop: 60 }}>
           <SelectWithSearch
             multiple={true}
             options={this.props.tags.map(item =>
