@@ -111,6 +111,7 @@ class Select extends React.Component {
         this.setState({
             selected: array,
         })
+        this.props.onChange(array);
 
     }
 
