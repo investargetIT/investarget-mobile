@@ -66,7 +66,7 @@ class SelectTag extends Component {
   }
 
   componentDidMount() {
-    newApi.getUserBase(100022122)
+    newApi.getUserBase(this.props.match.params.id)
       .then(res => {
         this.setState({ userInfo: res, selectedTags: res.tags ? res.tags.map(m => m.id) : [] });
         const { cardBucket, cardKey } = res;
