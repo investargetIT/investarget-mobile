@@ -25,7 +25,8 @@ const searchInputStyle = {
   border: 'none',
   height: '100%',
   flex: 1,
-  verticalAlign: 'middle'
+  verticalAlign: 'middle',
+  outline: 0,
 }
 const searchIconStyle = {
   width: 24,

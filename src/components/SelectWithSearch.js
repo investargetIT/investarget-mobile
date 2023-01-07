@@ -149,6 +149,7 @@ class Select extends React.Component {
                                 key={index}
                                 data-match-index={matchIndex}
                                 style={{
+                                    color: 'inherit',
                                     padding: 0,
                                     background: matchIndex === this.state.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
                                 }}
