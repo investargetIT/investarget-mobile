@@ -8,6 +8,7 @@ import * as utils from '../utils'
 import { modifyUserInfo, handleError, requestContents, hideLoading } from '../actions'
 import qs from 'qs';
 import debounce from 'lodash.debounce';
+import Button from '../components/Button';
 
 const searchContainerStyle = {
   flex: 1,
@@ -55,7 +56,7 @@ class Search extends Component {
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} />
         </div>
-        <button style={{ padding: '0 10px' }} onClick={this.props.onSubmit}>提交</button>
+        <Button type="primary" onClick={this.props.onSubmit} value="提交" style={{ height: '100%', borderRadius: 4, padding: '0 10px', border: 'none', fontSize: 16 }} />
       </div>
     );
   }
