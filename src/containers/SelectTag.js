@@ -12,7 +12,6 @@ import Button from '../components/Button';
 
 const searchContainerStyle = {
   flex: 1,
-  marginRight: 10,
   height: 40,
   backgroundColor: 'lightgrey',
   lineHeight: 'normal',
@@ -59,7 +58,6 @@ class Search extends Component {
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onNext} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} onClick={() => this.props.onChange('')} />
         </div>
-        <Button type="primary" onClick={this.props.onSubmit} value="提交" style={{ height: '100%', borderRadius: 4, padding: '0 10px', border: 'none', fontSize: 16 }} />
       </div>
     );
   }
@@ -188,7 +186,7 @@ class SelectTag extends Component {
     const markElem = document.querySelector(`[data-match-index="${current}"]`);
     if (markElem) {
       const { top, bottom } = markElem.getBoundingClientRect();
-      const isInView = top > 60 + 10 && window.innerHeight - bottom > 10;
+      const isInView = top > 60 + 10 && window.innerHeight - bottom > 60 + 10;
       if (!isInView) {
         markElem.scrollIntoView({
           block: 'center',
@@ -241,6 +239,9 @@ class SelectTag extends Component {
           />
         </div>}
         {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
+        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: 'white', padding: 10 }}>
+          <Button type="primary" onClick={this.handleSubmitBtnClicked} value="提交" style={{ height: 40, borderRadius: 4, border: 'none', fontSize: 16 }} />
+        </div>
       </div>
     )
   }
