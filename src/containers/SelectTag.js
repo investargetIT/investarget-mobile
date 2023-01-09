@@ -52,6 +52,9 @@ class Search extends Component {
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
           <input style={searchInputStyle} size="10" type="text" placeholder="搜索标签" onChange={this.onChange} />
+          {this.props.total > 0 && (
+            <span style={{ margin: '0 4px', color: 'gray' }}>{this.props.current + 1}/{this.props.total}</span>
+          )}
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onPrev} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onNext} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} />
@@ -206,6 +209,8 @@ class SelectTag extends Component {
     return (
       <div>
         <Search
+          current={this.state.current}
+          total={this.state.total}
           onChange={this.handleSearchChange}
           onPrev={this.handlePrev}
           onNext={this.handleNext}
