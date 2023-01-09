@@ -47,7 +47,7 @@ class Search extends Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: 'white', position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
           <input value={this.props.keyword} style={searchInputStyle} size="10" type="text" placeholder="搜索标签" onChange={this.onChange} />
@@ -239,7 +239,7 @@ class SelectTag extends Component {
           />
         </div>}
         {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
-        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: 'white', padding: 10 }}>
+        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', padding: 10 }}>
           <Button type="primary" onClick={this.handleSubmitBtnClicked} value="提交" style={{ height: 40, borderRadius: 4, border: 'none', fontSize: 16 }} />
         </div>
       </div>
