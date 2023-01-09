@@ -193,3 +193,15 @@ a {
 a[title="站长统计"] {
   display: none;
 }
+.select-tag__submit-btn {
+  width: 100%;
+  background: #339bd2;
+  color: white;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+}
+.select-tag__submit-btn:active {
+  background: #2076ab;
+}

@@ -240,7 +240,7 @@ class SelectTag extends Component {
         </div>}
         {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
         <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', padding: 10 }}>
-          <Button type="primary" onClick={this.handleSubmitBtnClicked} value="提交" style={{ height: 40, borderRadius: 4, border: 'none', fontSize: 16 }} />
+          <button className="select-tag__submit-btn" onClick={this.handleSubmitBtnClicked}>提交</button>
         </div>
       </div>
     )

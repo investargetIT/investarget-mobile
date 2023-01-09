@@ -47,8 +47,8 @@ var optionStyle = {
 }
 
 var activeOptionStyle = Object.assign({}, optionStyle, {
-    border: '1px solid rgb(34, 105, 212)',
-    color: 'rgb(34, 105, 212)',
+    border: '1px solid #339bd2',
+    color: '#339bd2',
 })
 
 var actionStyle = {
