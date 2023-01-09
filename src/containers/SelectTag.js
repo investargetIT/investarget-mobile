@@ -104,9 +104,8 @@ class SelectTag extends Component {
   }
 
   handleSearchChange = content => {
-    console.log('content', content);
     this.setState({ keyword: content });
-    this.searchKeyword(content);
+    this.searchKeyword(content, () => this.scrollToCurrent(this.state.current));
   }
 
   searchKeyword = (keyword, callback) => {
@@ -168,7 +167,7 @@ class SelectTag extends Component {
     this.setState({
       current: newCurrent,
     });
-    // this.scrollToCurrent(newCurrent);
+    this.scrollToCurrent(newCurrent);
   }
 
   handleNext = () => {
@@ -180,7 +179,22 @@ class SelectTag extends Component {
     this.setState({
       current: newCurrent,
     });
-    // this.scrollToCurrent(newCurrent);
+    this.scrollToCurrent(newCurrent);
+  }
+
+  scrollToCurrent = (current) => {
+    if (current === -1) return;
+
+    const markElem = document.querySelector(`[data-match-index="${current}"]`);
+    if (markElem) {
+      const { top, bottom } = markElem.getBoundingClientRect();
+      const isInView = top > 60 + 10 && window.innerHeight - bottom > 10;
+      if (!isInView) {
+        markElem.scrollIntoView({
+          block: 'center',
+        });
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
