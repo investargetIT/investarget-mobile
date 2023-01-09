@@ -51,7 +51,7 @@ class Search extends Component {
       <div style={{ backgroundColor: 'white', position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
-          <input style={searchInputStyle} type="text" placeholder="搜索标签" onChange={this.onChange} />
+          <input style={searchInputStyle} size="10" type="text" placeholder="搜索标签" onChange={this.onChange} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} />
