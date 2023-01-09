@@ -151,7 +151,7 @@ class Select extends React.Component {
                                 style={{
                                     color: 'inherit',
                                     padding: 0,
-                                    background: matchIndex === this.state.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
+                                    background: matchIndex === this.props.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
                                 }}
                             >
                                 {text}

@@ -52,8 +52,8 @@ class Search extends Component {
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
           <input style={searchInputStyle} size="10" type="text" placeholder="搜索标签" onChange={this.onChange} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} />
+          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onPrev} />
+          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onNext} />
           <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} />
         </div>
         <Button type="primary" onClick={this.props.onSubmit} value="提交" style={{ height: '100%', borderRadius: 4, padding: '0 10px', border: 'none', fontSize: 16 }} />
@@ -157,6 +157,29 @@ class SelectTag extends Component {
     };
   }
 
+  handlePrev = () => {
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current > 0 ? current - 1 : total - 1;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
+  handleNext = () => {
+    console.log('handle next');
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current < total - 1 ? current + 1 : 0;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.tags.length !== this.props.tags.length) {
       this.searchKeyword(this.state.keyword);
@@ -182,13 +205,19 @@ class SelectTag extends Component {
   render() {
     return (
       <div>
-        <Search onChange={this.handleSearchChange} onSubmit={this.handleSubmitBtnClicked} />
+        <Search
+          onChange={this.handleSearchChange}
+          onPrev={this.handlePrev}
+          onNext={this.handleNext}
+          onSubmit={this.handleSubmitBtnClicked}
+        />
         {this.state.selectedTags && <div style={{ marginTop: 60 }}>
           <SelectWithSearch
             multiple={true}
             options={this.state.tagOptions}
             selected={this.state.selectedTags}
             onChange={this.handleSelectChange}
+            current={this.state.current}
           />
         </div>}
         {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
