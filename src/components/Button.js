@@ -61,7 +61,7 @@ function Button(props) {
 
   return (
     <div style={buttonContainerStyle}>
-      <button type="button" name={props.name} style={buttonStyle} onClick={props.onClick} disabled={props.disabled}>{props.value}</button>
+      <button type="button" name={props.name} style={{ ...buttonStyle, ...props.style }} onClick={props.onClick} disabled={props.disabled}>{props.value}</button>
     </div>
   )
 }
