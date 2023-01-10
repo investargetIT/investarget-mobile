@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce';
 import Button from '../components/Button';
 
 const searchContainerStyle = {
+  padding: '0 4px',
   flex: 1,
   height: 40,
   backgroundColor: 'lightgrey',
