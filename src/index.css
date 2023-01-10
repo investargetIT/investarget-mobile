@@ -205,3 +205,16 @@ a[title="站长统计"] {
 .select-tag__submit-btn:active {
   background: #2076ab;
 }
+.select-tag__icon-btn {
+  border: none;
+  background-color: unset;
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-position: center;
+  background-size: 24px;
+}
+.select-tag__icon-btn:active {
+  background-color: darkgray;
+}

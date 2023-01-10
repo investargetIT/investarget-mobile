@@ -54,9 +54,9 @@ class Search extends Component {
           {this.props.total > 0 && (
             <span style={{ margin: '0 4px', color: 'gray' }}>{this.props.current + 1}/{this.props.total}</span>
           )}
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onPrev} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onNext} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} onClick={() => this.props.onChange('')} />
+          <button className="select-tag__icon-btn" onClick={this.props.onPrev} style={{ backgroundImage: "url(/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg)"}} />
+          <button className="select-tag__icon-btn" onClick={this.props.onNext} style={{ backgroundImage: "url(/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg)"}} />
+          <button className="select-tag__icon-btn" onClick={() => this.props.onChange('')} style={{ backgroundImage: "url(/images/cancel_FILL0_wght400_GRAD0_opsz48.svg)"}} />
         </div>
       </div>
     );
