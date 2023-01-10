@@ -84,6 +84,7 @@ class SelectTag extends Component {
   }
 
   componentDidMount() {
+    this.props.dispatch(requestContents(''));
     newApi.getUserBaseWithToken(this.props.match.params.id, this.accessToken)
       .then(res => {
         this.setState({ userInfo: res, selectedTags: res.tags ? res.tags.map(m => m.id) : [] });
@@ -99,6 +100,9 @@ class SelectTag extends Component {
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
+      })
+      .finally(() => {
+        this.props.dispatch(hideLoading());
       });
   }
 
