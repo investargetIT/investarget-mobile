@@ -80,6 +80,7 @@ class SelectTag extends Component {
     }
 
     this.accessToken = qs.parse(this.props.location.search.slice(1)).access_token;
+    this.traderUser = qs.parse(this.props.location.search.slice(1)).trader_user;
     this.searchKeyword = debounce(this.searchKeyword, 500);
   }
 
@@ -208,7 +209,7 @@ class SelectTag extends Component {
 
   handleSubmitBtnClicked = () => {
     this.props.dispatch(requestContents(''));
-    newApi.editUserWithToken([this.state.userInfo.id], { tags: this.state.selectedTags }, this.accessToken)
+    newApi.editUserWithToken([this.state.userInfo.id], { tags: this.state.selectedTags, createuser: this.traderUser }, this.accessToken)
       .then(() => {
         this.props.dispatch(hideLoading());
         this.props.dispatch(handleError(new Error('更新成功！')));

@@ -79,10 +79,10 @@ class HandleError extends Component {
         case 'Please contact to modify':
           showError = true
           errMsg = '请联系客服人员进行修改'
-	  break
-	case 'Please wait patient':
-	  showError = true
-	  errMsg = "图像更新需要时间，请耐心等待"
+	        break
+	      case 'Please wait patient':
+	        showError = true
+	        errMsg = "图像更新需要时间，请耐心等待"
           break
         case 'content can not be empty':
           showError = true
@@ -143,6 +143,11 @@ class HandleError extends Component {
         case 3000:
           showError = true
           errMsg = '请登录后访问'
+          break
+        case 20071:
+          showError = true
+          errMsg = error.message
+          break
         default:
           console.error(error)
       }
