@@ -7,8 +7,8 @@ import * as newApi from '../api3.0'
 import * as utils from '../utils'
 
 import FormContainer from './FormContainer'
-import TextInput from '../components/TextInput'
-import Button from '../components/Button'
+import NewTextInput from '../components/NewTextInput'
+import ButtonForLogin from '../components/ButtonForLogin'
 import Select from '../components/Select'
 import Modal from '../components/Modal'
 
@@ -16,34 +16,40 @@ import Modal from '../components/Modal'
 const REGISTER_BASIC_INFO = 'REGISTER_BASIC_INFO'
 
 var inputStyle = {
-  margin: '30px 10px',
+  margin: '20px 0',
 }
 
 var selectStyle = {
   position: 'relative',
-  margin: '30px 10px',
+  margin: '20px 0',
 }
 
 var selectTextStyle = {
-  borderBottom: '1px solid rgb(34, 105, 212)',
-  height: '30px',
-  lineHeight: '30px',
-  fontSize: '16px',
+  height: 46,
+  fontSize: '0.68rem',
   color: '#333',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  position: 'relative',
+  backgroundColor: '#F0F0F0',
+  lineHeight: '46px',
+  borderRadius: 6,
+  padding: '0 20px',
 }
 
 var unselectTextStyle = {
-  borderBottom: '1px solid rgb(34, 105, 212)',
-  height: '30px',
-  lineHeight: '30px',
-  fontSize: '16px',
+  height: 46,
+  fontSize: '0.68rem',
   color: '#a9a9a9',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  position: 'relative',
+  backgroundColor: '#F0F0F0',
+  lineHeight: '46px',
+  borderRadius: 6,
+  padding: '0 20px',
 }
 
 
@@ -213,11 +219,11 @@ class Register2 extends React.Component {
       <div>
 
         <div style = {inputStyle}>
-            <TextInput name="name" placeholder="姓名" value={this.state.name} handleInputChange={this.handleInputChange} />
+            <NewTextInput name="name" placeholder="姓名" value={this.state.name} handleInputChange={this.handleInputChange} />
         </div>
 
         <div style = {inputStyle}>
-            <TextInput name="company" placeholder="公司名称" value={this.state.company} handleInputChange={this.handleInputChange} />
+            <NewTextInput name="company" placeholder="公司名称" value={this.state.company} handleInputChange={this.handleInputChange} />
         </div>
 
         <div style = {selectStyle}>
@@ -241,11 +247,11 @@ class Register2 extends React.Component {
         </div>
 
         <div style = {inputStyle}>
-            <TextInput name="password" placeholder="请输入密码" value={this.state.password} type={this.state.showPassword ? 'text' : 'password'} handleInputChange={this.handleInputChange} rightContent={showPassword} />
+            <NewTextInput name="password" placeholder="请输入密码" value={this.state.password} type={this.state.showPassword ? 'text' : 'password'} handleInputChange={this.handleInputChange} rightContent={showPassword} />
         </div>
 
         <div>
-            <Button name="register" type="primary" disabled={disabled} onClick={this.handleSubmit} value="注册" />
+            <ButtonForLogin name="register" type="primary" disabled={disabled} onClick={this.handleSubmit} value="注册" />
         </div>
 
         <Modal show={this.state.showModal}
