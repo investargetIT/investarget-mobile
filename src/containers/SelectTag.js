@@ -82,6 +82,7 @@ class SelectTag extends Component {
     this.accessToken = qs.parse(this.props.location.search.slice(1)).access_token;
     this.traderUser = qs.parse(this.props.location.search.slice(1)).trader_user;
     this.searchKeyword = debounce(this.searchKeyword, 500);
+    this.safeBottom = getComputedStyle(document.documentElement).getPropertyValue("--sab");
   }
 
   componentDidMount() {
@@ -192,7 +193,7 @@ class SelectTag extends Component {
     const markElem = document.querySelector(`[data-match-index="${current}"]`);
     if (markElem) {
       const { top, bottom } = markElem.getBoundingClientRect();
-      const isInView = top > 60 + 10 && window.innerHeight - bottom > 60 + 10;
+      const isInView = top > 60 + 10 && window.innerHeight - bottom > 60 + 10 + parseInt(this.safeBottom);
       if (!isInView) {
         markElem.scrollIntoView({
           block: 'center',
@@ -244,8 +245,8 @@ class SelectTag extends Component {
             current={this.state.current}
           />
         </div>}
-        {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
-        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', padding: 10 }}>
+        {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginBottom: 'calc(60px + env(safe-area-inset-bottom))', marginTop: 20, width: '100%' }} />}
+        <div style={{ position: 'fixed', bottom: 'env(safe-area-inset-bottom)', left: 0, width: '100%', padding: 10 }}>
           <button className="select-tag__submit-btn" onClick={this.handleSubmitBtnClicked}>提交</button>
         </div>
       </div>

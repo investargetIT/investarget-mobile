@@ -218,3 +218,9 @@ a[title="站长统计"] {
 .select-tag__icon-btn:active {
   background-color: darkgray;
 }
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
