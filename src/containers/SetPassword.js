@@ -1,8 +1,8 @@
 import React from 'react'
 import FormContainer from './FormContainer'
-import TextInput from '../components/TextInput'
-import MobileInput from '../components/MobileInput'
-import Button from '../components/Button'
+import NewTextInput from '../components/NewTextInput'
+import NewMobileInput from '../components/NewMobileInput'
+import ButtonForLogin from '../components/ButtonForLogin'
 import api from '../api'
 import * as newApi from '../api3.0'
 import { handleError } from '../actions'
@@ -12,18 +12,17 @@ const VERIFICATION_CODE_TOKEN = 'VERIFICATION_CODE_TOKEN'
 
 
 var inputStyle = {
-    margin: '30px 10px',
+    margin: '20px 0',
 }
 var sendCodeButtonStyle = {
   width: '90px',
   fontSize: '14px',
-  background: 'rgb(34, 105, 212)',
-  border: '1px solid rgb(34, 105, 212)',
+  background: '#13356c',
+  border: 'none',
   color: 'white',
   borderRadius: '4px',
   lineHeight: '26px',
   height: '26px',
-  borderRadius: '13px',
 }
 var sendCodeButtonDisabledStyle = Object.assign({}, sendCodeButtonStyle, {
   background: 'grey',
@@ -157,17 +156,17 @@ class SetPassword extends React.Component {
         var content = (
             <div>
                 <div style={inputStyle}>
-                    <MobileInput areaCode={this.state.areaCode} mobile={this.state.mobile} onChange={this.handleMobileChange} />
+                    <NewMobileInput areaCode={this.state.areaCode} mobile={this.state.mobile} onChange={this.handleMobileChange} />
                 </div>
                 <div style={inputStyle}>
-                    <TextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
+                    <NewTextInput name="code" placeholder="请输入验证码" value={this.state.code} handleInputChange={this.handleInputChange} rightContent={sendCode} />
                 </div>
                 <div style={inputStyle}>
-                    <TextInput name="newPassword" placeholder="请输入新的密码" value={this.state.newPassword} handleInputChange={this.handleInputChange} />
+                    <NewTextInput name="newPassword" placeholder="请输入新的密码" value={this.state.newPassword} handleInputChange={this.handleInputChange} />
                 </div>
 
                 <div style={buttonStyle}>
-                    <Button name="confirm" type="primary" disabled={disabled} onClick={this.handleSubmit} value="确认" />
+                    <ButtonForLogin name="confirm" type="primary" disabled={disabled} onClick={this.handleSubmit} value="确认" />
                 </div>
             </div>
         )

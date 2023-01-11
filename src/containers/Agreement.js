@@ -5,7 +5,7 @@ import api from '../api'
 const bgStyle = {
     width: '100%',
     minHeight: '100%',
-    backgroundImage: 'url(' + api.baseUrl +'/images/login/backgroungImage@2x.png)',
+    // backgroundImage: 'url(' + api.baseUrl +'/images/login/backgroungImage@2x.png)',
     backgroundRepeat: 'repeat-y',
     backgroundSize: '100% auto',
     backgroundPosition: '50% 0',
@@ -37,7 +37,7 @@ class Agreement extends React.Component {
     render() {
         return (
         <div style={bgStyle}>
-            <TransparentNavigationBar title="用户协议" />
+            <TransparentNavigationBar title="用户协议" style={{ marginTop: 0 }} />
             
             <div style={containerStyle}>
                 <div>
