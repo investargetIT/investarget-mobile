@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "alloytouch": "0.2.3",
-    "axios": "^0.15.3",
+    "axios": "^1.2.2",
     "lodash.debounce": "^4.0.8",
     "qs": "^6.5.0",
     "react": "^15.4.2",
@@ -15,7 +15,7 @@
     "redux-logger": "^2.8.2"
   },
   "devDependencies": {
-    "react-scripts": "0.9.5"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
