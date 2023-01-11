@@ -5,6 +5,7 @@
   "dependencies": {
     "alloytouch": "0.2.3",
     "axios": "^0.15.3",
+    "jquery": "^3.5.1",
     "lodash.debounce": "^4.0.8",
     "qs": "^6.5.0",
     "react": "^15.4.2",
