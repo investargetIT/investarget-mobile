@@ -214,6 +214,7 @@ class SelectTag extends Component {
       .then(() => {
         this.props.dispatch(hideLoading());
         this.props.dispatch(handleError(new Error('更新成功！')));
+        location.reload();
       })
       .catch(error => {
         this.props.dispatch(handleError(error))
