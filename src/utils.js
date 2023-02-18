@@ -481,3 +481,12 @@ export function getCurrentUserId() {
 export function checkMobile(mobile) {
   return /^\d{6,20}$/.test(mobile);
 } 
+
+export function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}

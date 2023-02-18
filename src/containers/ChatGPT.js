@@ -3,6 +3,7 @@ import './ChatGPT.css';
 import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
 import { handleError } from '../actions';
+import { isJsonString } from '../utils';
 
 class ChatApp extends Component {
   constructor(props) {
@@ -19,6 +20,24 @@ class ChatApp extends Component {
     newApi.getMessageWithChatGPT()
       .then(res => {
         console.log('res', res);
+        let allMessages = res.data.sort((a, b) => new Date(a.msgtime)- new Date(b.msgtime))
+          .filter(f => !(f.isAI && !isJsonString(f.content)))
+          .map(m => {
+            let message = '';
+            let avatarUrl = '/images/page_logo.png';
+            if (m.isAI) {
+              const reply = JSON.parse(m.content);
+              message = reply.choices[0].text.trim();
+            } else {
+              message = m.content;
+              avatarUrl = this.props.userInfo.photoUrl;
+            }
+            return { ...m, message, avatarUrl };
+          });
+        console.log('all messages', allMessages);
+        this.setState({
+          messages: allMessages,
+        });
       })
       .catch(error => {
         this.props.dispatch(handleError(error))
@@ -51,7 +70,7 @@ class ChatApp extends Component {
           console.log('reply', reply);
 
           const replyMessage = {
-            message: reply.choices[0].text,
+            message: reply.choices[0].text.trim(),
             avatarUrl: '/images/page_logo.png',
           };
           this.setState({
@@ -70,7 +89,7 @@ class ChatApp extends Component {
     return (
       <div className="chat-container">
         <div className="header">
-          <div className="header-text">Chat App</div>
+          <div className="header-text">InvesTarget</div>
         </div>
         <div className="messages">
           {this.state.messages.map((message, index) => (
