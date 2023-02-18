@@ -246,7 +246,7 @@ class WxLogin extends React.Component {
         localStorage.setItem("WXAPPREG", "1")
 
         this.reload(true, data);
-        this.props.history.push("/user");
+        this.props.history.push("/chatgpt");
       })
       .catch(error => {
 
