@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import './ChatGPT.css';
+import * as newApi from '../api3.0';
+import { connect } from 'react-redux';
+import { handleError } from '../actions';
 
 class ChatApp extends Component {
   constructor(props) {
@@ -12,6 +15,16 @@ class ChatApp extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    newApi.getMessageWithChatGPT()
+      .then(res => {
+        console.log('res', res);
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error))
+      });
+  }
+
   handleInputChange(event) {
     this.setState({ inputValue: event.target.value });
   }
@@ -21,12 +34,35 @@ class ChatApp extends Component {
     if (this.state.inputValue !== '') {
       const newMessage = {
         message: this.state.inputValue,
-        avatarUrl: 'https://i.pravatar.cc/50',
+        avatarUrl: this.props.userInfo.photoUrl,
       };
       this.setState({
         messages: [...this.state.messages, newMessage],
         inputValue: '',
       });
+      const body = {
+        prompt: this.state.inputValue,
+        max_tokens: 100,
+      };
+      newApi.postMessageToChatGPT(body)
+        .then(res => {
+          console.log('res', res);
+          const reply = JSON.parse(res);
+          console.log('reply', reply);
+
+          const replyMessage = {
+            message: reply.choices[0].text,
+            avatarUrl: '/images/page_logo.png',
+          };
+          this.setState({
+            messages: [...this.state.messages, replyMessage],
+            inputValue: '',
+          });
+
+        })
+        .catch(error => {
+          this.props.dispatch(handleError(error))
+        });
     }
   }
 
@@ -64,5 +100,9 @@ class ChatApp extends Component {
     );
   }
 }
-
-export default ChatApp;
+function mapStateToProps(state) {
+  const isLogin = state.isLogin
+  const userInfo = state.userInfo
+  return { isLogin, userInfo }
+}
+export default connect(mapStateToProps)(ChatApp);
