@@ -134,7 +134,7 @@ class WxLogin extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.push(api.baseUrl + "/user")
+      this.props.history.push(api.baseUrl + "/chatgpt")
     }
   }
 

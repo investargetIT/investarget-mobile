@@ -24,7 +24,7 @@ class ChatApp extends Component {
           .filter(f => !(f.isAI && !isJsonString(f.content)))
           .map(m => {
             let message = '';
-            let avatarUrl = '/images/page_logo.png';
+            let avatarUrl = '/images/logo.jpg';
             if (m.isAI) {
               const reply = JSON.parse(m.content);
               message = reply.choices[0].text.trim();
@@ -71,7 +71,7 @@ class ChatApp extends Component {
 
           const replyMessage = {
             message: reply.choices[0].text.trim(),
-            avatarUrl: '/images/page_logo.png',
+            avatarUrl: '/images/logo.jpg',
           };
           this.setState({
             messages: [...this.state.messages, replyMessage],
@@ -88,9 +88,6 @@ class ChatApp extends Component {
   render() {
     return (
       <div className="chat-container">
-        <div className="header">
-          <div className="header-text">InvesTarget</div>
-        </div>
         <div className="messages">
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
@@ -108,11 +105,11 @@ class ChatApp extends Component {
             type="text"
             value={this.state.inputValue}
             onChange={this.handleInputChange}
-            placeholder="Type your message here"
+            placeholder="在这儿输入您的问题"
             className="input-field"
           />
           <button type="submit" className="send-button">
-            Send
+            发送
           </button>
         </form>
       </div>
