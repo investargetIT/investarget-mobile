@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ChatGPT.css';
 import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
-import { handleError } from '../actions';
+import { handleError, requestContents, hideLoading } from '../actions';
 import { isJsonString } from '../utils';
 
 class ChatApp extends Component {
@@ -11,6 +11,7 @@ class ChatApp extends Component {
     this.state = {
       messages: [],
       inputValue: '',
+      virtualKeyboard: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -63,6 +64,7 @@ class ChatApp extends Component {
         prompt: this.state.inputValue,
         max_tokens: 100,
       };
+      this.props.dispatch(requestContents(''));
       newApi.postMessageToChatGPT(body)
         .then(res => {
           console.log('res', res);
@@ -77,18 +79,34 @@ class ChatApp extends Component {
             messages: [...this.state.messages, replyMessage],
             inputValue: '',
           });
-
+          this.props.dispatch(hideLoading());
         })
         .catch(error => {
-          this.props.dispatch(handleError(error))
+          this.props.dispatch(handleError(error));
+          this.props.dispatch(hideLoading());
         });
     }
+  }
+
+  handleInputOnFocus = () => {
+    console.log('focus');
+    this.setState({ virtualKeyboard: true });
+  }
+
+  handleInputOnBlur = () => {
+    console.log('blur');
+    this.setState({ virtualKeyboard: false });
+  }
+
+  handleMessageScroll = e => {
+    e.target.preventDefault();
   }
 
   render() {
     return (
       <div className="chat-container">
-        <div className="messages">
+        
+        <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
               <img
@@ -99,12 +117,15 @@ class ChatApp extends Component {
               <div className="message">{message.message}</div>
             </div>
           ))}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>Bottom of the Conversation!</div>
         </div>
-        <form onSubmit={this.handleSubmit} className="input-form">
+        <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           <input
             type="text"
             value={this.state.inputValue}
             onChange={this.handleInputChange}
+            onFocus={this.handleInputOnFocus}
+            onBlur={this.handleInputOnBlur}
             placeholder="在这儿输入您的问题"
             className="input-field"
           />
