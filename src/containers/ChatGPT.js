@@ -4,6 +4,7 @@ import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
 import { handleError, requestContents, hideLoading } from '../actions';
 import { isJsonString } from '../utils';
+import NavigationBar from '../components/NavigationBar'
 
 class ChatApp extends Component {
   constructor(props) {
@@ -105,7 +106,7 @@ class ChatApp extends Component {
   render() {
     return (
       <div className="chat-container">
-        
+        <NavigationBar title="联系我们" />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">

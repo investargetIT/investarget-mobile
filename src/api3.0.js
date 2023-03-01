@@ -716,3 +716,5 @@ export const getSharedMeeting = key => r('/bd/meetbd/share/?token=' + key);
 
 export const postMessageToChatGPT = body => r('/service/openai/text/completions', 'POST', body);
 export const getMessageWithChatGPT = params => r('/mongolog/aichat/?' + qs.stringify(params));
+export const createChatGPTTopic = body => r('/mongolog/aichattopic/', 'POST', body);
+export const getChatGPTTopic = params => r('/mongolog/aichattopic/?' + qs.stringify(params));

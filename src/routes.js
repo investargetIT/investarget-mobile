@@ -50,6 +50,7 @@ import { requestContents, logout } from './actions';
 import ShareMeetings from './containers/ShareMeetings';
 import SelectTag from './containers/SelectTag';
 import ChatGPT from './containers/ChatGPT';
+import AllChats from './containers/AllChats';
 
 const inWxApp = newApi.inWxApp;
 
@@ -216,6 +217,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/select_org"} component={SelectOrg} />
           <Route path={api.baseUrl + "/share/meeting"} component={ShareMeetings} />
           <Route path={api.baseUrl + "/chatgpt"} component={ChatGPT} />
+          <Route path={api.baseUrl + "/allchats"} component={AllChats} />
         </div>
       </Router>
     )
