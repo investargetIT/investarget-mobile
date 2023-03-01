@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TabBar from './TabBar'
-import LeftIconRightLabel from '../components/LeftIconRightLabel'
+import AdvancedLeftIconRightLabel from '../components/AdvancedLeftIconRightLabel'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
 import { logout, handleError, requestContents, hideLoading, modifyUserInfo, saveRedirectUrl } from '../actions'
@@ -156,6 +156,27 @@ class User extends Component {
     this.setState({ inputValue: event.target.value });
   }
 
+  handleDeleteBtnClicked = topicID => {
+    console.log('delete topic id', topicID);
+    if (confirm('确定删除？')) {
+      this.props.dispatch(requestContents(''));
+      newApi.deleteChatGPTTopic(topicID)
+        .then(res => {
+          const newTopics = this.state.allTopics.filter(f => f.id !== topicID);
+          this.setState({ allTopics: newTopics });
+          this.props.dispatch(hideLoading());
+        })
+        .catch(error => {
+          this.props.dispatch(handleError(error));
+          this.props.dispatch(hideLoading());
+        });
+    }
+  }
+
+  handleTopicClicked = (topicID, topicName) => {
+    this.props.history.push("/chatgpt/" + topicID + "?topic_name=" + topicName);
+  }
+
   render () {
     if (!this.props.isLogin) {
       this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
@@ -185,9 +206,16 @@ class User extends Component {
           <ul>
             <Group>
               {this.state.allTopics.map(m => (
-                <Link key={m.id} to={api.baseUrl + "/chatgpt/" + m.id + "?topic_name=" + m.topic_name}>
-                  <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-1@2x.png"} label={m.topic_name}/>
-                </Link>
+                // <Link key={m.id} to={api.baseUrl + "/chatgpt/" + m.id + "?topic_name=" + m.topic_name}>
+                  <AdvancedLeftIconRightLabel
+                    key={m.id}
+                    icon={api.baseUrl + "/images/userCenter/ht-usercenter-1@2x.png"}
+                    label={m.topic_name}
+                    topicID={m.id}
+                    onDelete={this.handleDeleteBtnClicked}
+                    onClick={this.handleTopicClicked}
+                  />
+                // </Link>
               ))}
             </Group>
 
