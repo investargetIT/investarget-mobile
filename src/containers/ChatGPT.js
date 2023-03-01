@@ -4,8 +4,8 @@ import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
 import { handleError, requestContents, hideLoading } from '../actions';
 import { isJsonString } from '../utils';
-import NavigationBar from '../components/NavigationBar'
 import qs from 'qs';
+import NavigationBarForChatGPT from '../components/NavigationBarForChatGPT';
 
 class ChatApp extends Component {
   constructor(props) {
@@ -26,6 +26,7 @@ class ChatApp extends Component {
   componentDidMount() {
     const params = {
       topic_id: this.topicID,
+      page_size: 100,
     };
     this.props.dispatch(requestContents(''));
     newApi.getMessageWithChatGPT(params)
@@ -91,7 +92,7 @@ class ChatApp extends Component {
           this.setState({
             messages: [...this.state.messages, replyMessage],
             inputValue: '',
-          });
+          }, () => window.scrollTo({ top: document.body.scrollHeight }));
           this.props.dispatch(hideLoading());
         })
         .catch(error => {
@@ -117,8 +118,8 @@ class ChatApp extends Component {
 
   render() {
     return (
-      <div className="chat-container">
-        <NavigationBar title={this.topicName} />
+      <div className="chat-container" ref="messageContainer">
+        <NavigationBarForChatGPT title={this.topicName} />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
