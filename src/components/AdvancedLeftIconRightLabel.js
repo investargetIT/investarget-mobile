@@ -65,11 +65,27 @@ class LeftIconRightLabel extends React.Component {
 
     this.state = {
       inputValue: props.label,
+      isEditMode: false,
     }
   }
 
   handleValueChange = e => {
     this.setState({ inputValue: e.target.value });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.label !== this.props.label) {
+      this.setState({ isEditMode: false });
+    }
+  }
+
+  handleUpdateTopic = (id, name) => {
+    if (!name) return;
+    if (name === this.props.label) {
+      this.setState({ isEditMode: false });
+      return;
+    }
+    this.props.onUpdateTopic(id, name);
   }
 
   render() {
@@ -83,20 +99,27 @@ class LeftIconRightLabel extends React.Component {
             </div>
 
             <div style={labelContainerStyle}>
-              {/* <span onClick={() => this.props.onClick(this.props.topicID, this.props.label)}>{this.props.label}</span> */}
-              <input value={this.state.inputValue} onChange={this.handleValueChange} />
+              {!this.state.isEditMode ?
+                <span onClick={() => this.props.onClick(this.props.topicID, this.props.label)}>{this.props.label}</span>
+                :
+                <input value={this.state.inputValue} onChange={this.handleValueChange} />
+              }
             </div>
           </div>
 
-          {/* <div style={rightIconContainerStyle}>
-            <img alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
-            <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
-          </div> */}
-
-          <div style={rightIconContainerStyle}>
-          <img onClick={() => this.props.onUpdateTopic(this.props.topicID, this.state.inputValue)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/done_FILL0_wght400_GRAD0_opsz48.svg"} />
-          <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/close_FILL0_wght400_GRAD0_opsz48.svg"} />
-        </div>
+          {!this.state.isEditMode ? (
+            <div style={rightIconContainerStyle}>
+              <img onClick={() => this.setState({ isEditMode: true, inputValue: this.props.label })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
+              <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
+            </div>
+          )
+            :
+            (
+              <div style={rightIconContainerStyle}>
+                <img onClick={() => this.handleUpdateTopic(this.props.topicID, this.state.inputValue)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/done_FILL0_wght400_GRAD0_opsz48.svg"} />
+                <img onClick={() => this.setState({ isEditMode: false })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/close_FILL0_wght400_GRAD0_opsz48.svg"} />
+              </div>
+            )}
 
         </div>
 
