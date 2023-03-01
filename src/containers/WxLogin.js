@@ -134,7 +134,7 @@ class WxLogin extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.push(api.baseUrl + "/chatgpt")
+      this.props.history.push(api.baseUrl + "/allchats")
     }
   }
 
@@ -240,7 +240,7 @@ class WxLogin extends React.Component {
         const userInfo = utils.convertUserInfo(user_info, permissions)
         this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
         localStorage.setItem("WXAPPREG", "1")
-        this.props.history.push("/chatgpt");
+        this.props.history.push("/allchats");
       })
       .catch(error => {
         this.props.dispatch(handleError(error))
