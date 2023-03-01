@@ -719,3 +719,4 @@ export const getMessageWithChatGPT = params => r('/mongolog/aichat/?' + qs.strin
 export const createChatGPTTopic = body => r('/mongolog/aichattopic/', 'POST', body);
 export const getChatGPTTopic = params => r('/mongolog/aichattopic/?' + qs.stringify(params));
 export const deleteChatGPTTopic = id => r(`/mongolog/aichattopic/?id=${id}`, 'DELETE');
+export const updateChatGPTTopic = (id, body) => r(`/mongolog/aichattopic/?id=${id}`, 'PUT', body);

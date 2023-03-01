@@ -1,5 +1,6 @@
 import React from 'react'
 import api from '../api'
+import TextInput from './TextInput'
 
 const height = 44
 
@@ -46,45 +47,64 @@ var itemContainerStyle = {
   justifyContent: 'space-between',
 }
 
-function LeftIconRightLabel(props) {
+const border = {
+  WebkitTransform: 'scale(0.5)',
+  transform: 'scale(0.5)',
+  position: 'absolute',
+  borderBottom: '1px solid lightGray',
+  top: '-50%',
+  right: '-50%',
+  bottom: '-50%',
+  left: '-50%',
+}
 
-  const border = {
-    WebkitTransform: 'scale(0.5)',
-    transform: 'scale(0.5)',
-    position: 'absolute',
-    borderBottom: '1px solid lightGray',
-    top: '-50%',
-    right: '-50%',
-    bottom: '-50%',
-    left: '-50%',
+class LeftIconRightLabel extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      inputValue: props.label,
+    }
   }
 
-  if (props.hideBorder) {
-    delete border.borderBottom
+  handleValueChange = e => {
+    this.setState({ inputValue: e.target.value });
   }
 
-  return (
-    <div style={container}>
+  render() {
+    return (
+      <div style={container}>
 
-      <div style={itemContainerStyle} >
-        <div style={{ flex: 1 }}>
-          <div style={leftIconContainerStyle}>
-            <img alt="" style={iconStyle} src={props.icon} />
+        <div style={itemContainerStyle} >
+          <div style={{ flex: 1 }}>
+            <div style={leftIconContainerStyle}>
+              <img alt="" style={iconStyle} src={this.props.icon} />
+            </div>
+
+            <div style={labelContainerStyle}>
+              {/* <span onClick={() => this.props.onClick(this.props.topicID, this.props.label)}>{this.props.label}</span> */}
+              <input value={this.state.inputValue} onChange={this.handleValueChange} />
+            </div>
           </div>
 
-          <div style={labelContainerStyle}><span onClick={() => props.onClick(props.topicID, props.label)}>{props.label}</span></div>
+          {/* <div style={rightIconContainerStyle}>
+            <img alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
+            <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
+          </div> */}
+
+          <div style={rightIconContainerStyle}>
+          <img onClick={() => this.props.onUpdateTopic(this.props.topicID, this.state.inputValue)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/done_FILL0_wght400_GRAD0_opsz48.svg"} />
+          <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/close_FILL0_wght400_GRAD0_opsz48.svg"} />
         </div>
 
-        <div style={rightIconContainerStyle}>
-          <img alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
-          <img onClick={() => props.onDelete(props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
         </div>
+
+        <div style={border}></div>
+
       </div>
-
-      <div style={border}></div>
-
-    </div>
-  )
+    );
+  }
 }
 
 export default LeftIconRightLabel

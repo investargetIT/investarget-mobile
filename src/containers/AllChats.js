@@ -173,6 +173,30 @@ class User extends Component {
     }
   }
 
+  handleUpdateTopic = (topicID, topicName) => {
+    console.log('update topic id', topicID);
+    const body = {
+      topic_name: topicName,
+    };
+    this.props.dispatch(requestContents(''));
+    newApi.updateChatGPTTopic(topicID, body)
+      .then(res => {
+        const newTopics = this.state.allTopics.map(m => {
+          if (m.id === topicID) {
+            return res;
+          }
+          return m;
+        });
+        this.setState({ allTopics: newTopics });
+        this.props.dispatch(hideLoading());
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error));
+        this.props.dispatch(hideLoading());
+      });
+  }
+
+
   handleTopicClicked = (topicID, topicName) => {
     this.props.history.push("/chatgpt/" + topicID + "?topic_name=" + topicName);
   }
@@ -214,6 +238,7 @@ class User extends Component {
                     topicID={m.id}
                     onDelete={this.handleDeleteBtnClicked}
                     onClick={this.handleTopicClicked}
+                    onUpdateTopic={this.handleUpdateTopic}
                   />
                 // </Link>
               ))}
