@@ -10,34 +10,17 @@ var iconStyle = {
   margin: (height - 20) / 2 + 'px 0px'
 }
 
-const leftIconContainerStyle = {
-  float: 'left',
-  width: '42px',
-  height: height + 'px'
-}
-
-const rightIconContainerStyle = {
-  float: 'right',
-  width: '48px',
-  height: height + 'px',
-  textAlign: 'center'
-}
-
-const labelContainerStyle = {
-  lineHeight: height + 'px',
-  color: '#333',
-  fontSize: '16px'
-}
 
 const rightIconStyle = {
-  width: '24px',
-  height: '24px',
-  margin: (height - 24) / 2 + 'px 0px'
+  width: '20px',
+  height: '20px',
+  marginRight: 8,
 }
 
 const container = {
   position: 'relative',
-  marginLeft: '22px',
+  marginLeft: 14,
+  marginRight: 8,
 }
 
 var itemContainerStyle = {
@@ -45,6 +28,8 @@ var itemContainerStyle = {
   position: 'relative',
   display: 'flex',
   justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '8px 0',
 }
 
 const border = {
@@ -93,29 +78,26 @@ class LeftIconRightLabel extends React.Component {
       <div style={container}>
 
         <div style={itemContainerStyle} >
-          <div style={{ flex: 1 }}>
-            <div style={leftIconContainerStyle}>
-              <img alt="" style={iconStyle} src={this.props.icon} />
-            </div>
-
-            <div style={labelContainerStyle}>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            <img alt="" style={{ width: 20 }} src="/images/userCenter/chat_bubble_FILL0_wght400_GRAD0_opsz48.svg" />
+            <div style={{ margin: '0 12px', fontSize: 14, color: '#ececf1' }}>
               {!this.state.isEditMode ?
                 <span onClick={() => this.props.onClick(this.props.topicID, this.props.label)}>{this.props.label}</span>
                 :
-                <input value={this.state.inputValue} onChange={this.handleValueChange} />
+                <input value={this.state.inputValue} style={{ color: 'gray' }} onChange={this.handleValueChange} />
               }
             </div>
           </div>
 
           {!this.state.isEditMode ? (
-            <div style={rightIconContainerStyle}>
+            <div style={{}}>
               <img onClick={() => this.setState({ isEditMode: true, inputValue: this.props.label })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
               <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
             </div>
           )
             :
             (
-              <div style={rightIconContainerStyle}>
+              <div style={{}}>
                 <img onClick={() => this.handleUpdateTopic(this.props.topicID, this.state.inputValue)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/done_FILL0_wght400_GRAD0_opsz48.svg"} />
                 <img onClick={() => this.setState({ isEditMode: false })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/close_FILL0_wght400_GRAD0_opsz48.svg"} />
               </div>
@@ -123,7 +105,7 @@ class LeftIconRightLabel extends React.Component {
 
         </div>
 
-        <div style={border}></div>
+        {/* <div style={border}></div> */}
 
       </div>
     );

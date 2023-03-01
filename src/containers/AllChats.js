@@ -29,7 +29,7 @@ const border = {
 const container = {
   position: 'relative',
   marginBottom: '16px',
-  backgroundColor: 'white'
+  // backgroundColor: 'white'
 }
 function Group(props) {
   return (
@@ -210,7 +210,7 @@ class User extends Component {
     }
 
     return (
-      <div>
+      <div style={{ minHeight: '100vh', backgroundColor: 'rgb(29, 30, 32)'  }}>
 
         <form onSubmit={this.handleSubmit} className="input-form" style={{ position: 'unset' }}>
           <input
@@ -226,9 +226,7 @@ class User extends Component {
         </form>
 
         <div style={settingContainerStyle}>
-          <div style={{ marginLeft: 22, color: 'gray' }}>历史话题</div>
           <ul>
-            <Group>
               {this.state.allTopics.map(m => (
                 // <Link key={m.id} to={api.baseUrl + "/chatgpt/" + m.id + "?topic_name=" + m.topic_name}>
                   <AdvancedLeftIconRightLabel
@@ -242,8 +240,6 @@ class User extends Component {
                   />
                 // </Link>
               ))}
-            </Group>
-
           </ul>
         </div>
 
