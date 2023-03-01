@@ -216,7 +216,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/upload"} component={Upload} />
           <Route path={api.baseUrl + "/select_org"} component={SelectOrg} />
           <Route path={api.baseUrl + "/share/meeting"} component={ShareMeetings} />
-          <Route path={api.baseUrl + "/chatgpt"} component={ChatGPT} />
+          <Route path={api.baseUrl + "/chatgpt/:id"} component={ChatGPT} />
           <Route path={api.baseUrl + "/allchats"} component={AllChats} />
         </div>
       </Router>

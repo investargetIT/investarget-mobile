@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { handleError, requestContents, hideLoading } from '../actions';
 import { isJsonString } from '../utils';
 import NavigationBar from '../components/NavigationBar'
+import qs from 'qs';
 
 class ChatApp extends Component {
   constructor(props) {
@@ -16,10 +17,18 @@ class ChatApp extends Component {
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.topicID = this.props.match.params.id;
+    console.log('topic id', this.topicID);
+    this.topicName = qs.parse(this.props.location.search.slice(1)).topic_name;
+    console.log('topic name', this.topicName);
   }
 
   componentDidMount() {
-    newApi.getMessageWithChatGPT()
+    const params = {
+      topic_id: this.topicID,
+    };
+    this.props.dispatch(requestContents(''));
+    newApi.getMessageWithChatGPT(params)
       .then(res => {
         console.log('res', res);
         let allMessages = res.data.sort((a, b) => new Date(a.msgtime)- new Date(b.msgtime))
@@ -40,9 +49,11 @@ class ChatApp extends Component {
         this.setState({
           messages: allMessages,
         });
+        this.props.dispatch(hideLoading());
       })
       .catch(error => {
-        this.props.dispatch(handleError(error))
+        this.props.dispatch(handleError(error));
+        this.props.dispatch(hideLoading());
       });
   }
 
@@ -62,6 +73,7 @@ class ChatApp extends Component {
         inputValue: '',
       });
       const body = {
+        topic_id: this.topicID,
         prompt: this.state.inputValue,
         max_tokens: 100,
       };
@@ -106,7 +118,7 @@ class ChatApp extends Component {
   render() {
     return (
       <div className="chat-container">
-        <NavigationBar title="联系我们" />
+        <NavigationBar title={this.topicName} />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
@@ -118,7 +130,7 @@ class ChatApp extends Component {
               <div className="message">{message.message}</div>
             </div>
           ))}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>Bottom of the Conversation!</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           <input

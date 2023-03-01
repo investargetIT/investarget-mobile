@@ -185,7 +185,7 @@ class User extends Component {
           <ul>
             <Group>
               {this.state.allTopics.map(m => (
-                <Link key={m.id} to={api.baseUrl + "/my_tag"}>
+                <Link key={m.id} to={api.baseUrl + "/chatgpt/" + m.id + "?topic_name=" + m.topic_name}>
                   <LeftIconRightLabel icon={api.baseUrl + "/images/userCenter/ht-usercenter-1@2x.png"} label={m.topic_name}/>
                 </Link>
               ))}
