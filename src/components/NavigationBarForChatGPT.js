@@ -30,7 +30,10 @@ var titleStyle = {
 const navigationBarPlaceholderStyle = {
     width: '100%',
     height: '48px',
-    backgroundColor: '#303133'
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'lightgray',
 }
 
 const buttonStyle = {
@@ -57,7 +60,7 @@ const NavigationBar = (props) => {
   return (
     <div>
 
-      <div style={navigationBarPlaceholderStyle}></div>
+      <div style={navigationBarPlaceholderStyle}>Top of the conversation!</div>
 
       <div style={containerStyle}>
 
