@@ -51,7 +51,8 @@ class LeftIconRightLabel extends React.Component {
     this.state = {
       inputValue: props.label,
       isEditMode: false,
-    }
+    };
+    this.inputRef = null;
   }
 
   handleValueChange = e => {
@@ -84,14 +85,16 @@ class LeftIconRightLabel extends React.Component {
               {!this.state.isEditMode ?
                 <span onClick={() => this.props.onClick(this.props.topicID, this.props.label)}>{this.props.label}</span>
                 :
-                <input value={this.state.inputValue} style={{ border: 0, fontSize: 14, color: 'inherit', width: '100%', backgroundColor: 'inherit' }} onChange={this.handleValueChange} />
+                <input ref={el => this.inputRef = el} value={this.state.inputValue} style={{ border: 0, fontSize: 14, color: 'inherit', width: '100%', backgroundColor: 'inherit' }} onChange={this.handleValueChange} />
               }
             </div>
           </div>
 
           {!this.state.isEditMode ? (
             <div style={{}}>
-              <img onClick={() => this.setState({ isEditMode: true, inputValue: this.props.label })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
+              <img onClick={() => this.setState({ isEditMode: true, inputValue: this.props.label }, () => {
+                this.inputRef.focus();
+              })} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/edit_FILL0_wght400_GRAD0_opsz48.svg"} />
               <img onClick={() => this.props.onDelete(this.props.topicID)} alt="" style={rightIconStyle} src={api.baseUrl + "/images/userCenter/delete_FILL0_wght400_GRAD0_opsz48.svg"} />
             </div>
           )
