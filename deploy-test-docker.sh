@@ -1,7 +1,7 @@
 #!/bin/sh
 
 sed -i '' -e 's|https://api|http://apitest|' src/request.js
-docker exec -it investarget-mobile npm build
+docker exec -it investarget-mobile npm run build
 cp -r build/* test/
 cd test
 git add .
