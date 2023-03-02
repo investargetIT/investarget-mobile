@@ -71,7 +71,7 @@ class Login extends React.Component {
   componentDidMount() {
     if (this.props.isLogin) {
       if (inWxApp) {
-        this.props.history.push(api.baseUrl + "/user")
+        this.props.history.push(api.baseUrl + "/allchats")
       } else {
         this.props.history.push(api.baseUrl + "/")
       }

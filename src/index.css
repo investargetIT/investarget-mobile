@@ -193,3 +193,34 @@ a {
 a[title="站长统计"] {
   display: none;
 }
+.select-tag__submit-btn {
+  width: 100%;
+  background: #339bd2;
+  color: white;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+}
+.select-tag__submit-btn:active {
+  background: #2076ab;
+}
+.select-tag__icon-btn {
+  border: none;
+  background-color: unset;
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-position: center;
+  background-size: 24px;
+}
+.select-tag__icon-btn:active {
+  background-color: darkgray;
+}
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}

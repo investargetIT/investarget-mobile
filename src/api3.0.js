@@ -713,3 +713,10 @@ export const getdProjAttUrlWithToken = (bucket, key, token) => {
 }
 
 export const getSharedMeeting = key => r('/bd/meetbd/share/?token=' + key);
+
+export const postMessageToChatGPT = body => r('/service/openai/text/completions', 'POST', body);
+export const getMessageWithChatGPT = params => r('/mongolog/aichat/?' + qs.stringify(params));
+export const createChatGPTTopic = body => r('/mongolog/aichattopic/', 'POST', body);
+export const getChatGPTTopic = params => r('/mongolog/aichattopic/?' + qs.stringify(params));
+export const deleteChatGPTTopic = id => r(`/mongolog/aichattopic/?id=${id}`, 'DELETE');
+export const updateChatGPTTopic = (id, body) => r(`/mongolog/aichattopic/?id=${id}`, 'PUT', body);

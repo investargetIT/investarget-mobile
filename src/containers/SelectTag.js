@@ -11,8 +11,8 @@ import debounce from 'lodash.debounce';
 import Button from '../components/Button';
 
 const searchContainerStyle = {
+  padding: '0 4px',
   flex: 1,
-  marginRight: 10,
   height: 40,
   backgroundColor: 'lightgrey',
   lineHeight: 'normal',
@@ -48,18 +48,17 @@ class Search extends Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: 'white', position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', display: 'flex', padding: 10 }}>
         <div style={searchContainerStyle}>
           <img style={searchIconStyle} src={api.baseUrl + "/images/home/ic_search.svg"} />
           <input value={this.props.keyword} style={searchInputStyle} size="10" type="text" placeholder="搜索标签" onChange={this.onChange} />
           {this.props.total > 0 && (
             <span style={{ margin: '0 4px', color: 'gray' }}>{this.props.current + 1}/{this.props.total}</span>
           )}
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onPrev} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg"} onClick={this.props.onNext} />
-          <img style={searchIconStyle} src={api.baseUrl + "/images/cancel_FILL0_wght400_GRAD0_opsz48.svg"} onClick={() => this.props.onChange('')} />
+          <button className="select-tag__icon-btn" onClick={this.props.onPrev} style={{ backgroundImage: "url(/images/keyboard_arrow_up_FILL0_wght400_GRAD0_opsz48.svg)"}} />
+          <button className="select-tag__icon-btn" onClick={this.props.onNext} style={{ backgroundImage: "url(/images/keyboard_arrow_down_FILL0_wght400_GRAD0_opsz48.svg)"}} />
+          <button className="select-tag__icon-btn" onClick={() => this.props.onChange('')} style={{ backgroundImage: "url(/images/cancel_FILL0_wght400_GRAD0_opsz48.svg)"}} />
         </div>
-        <Button type="primary" onClick={this.props.onSubmit} value="提交" style={{ height: '100%', borderRadius: 4, padding: '0 10px', border: 'none', fontSize: 16 }} />
       </div>
     );
   }
@@ -81,10 +80,13 @@ class SelectTag extends Component {
     }
 
     this.accessToken = qs.parse(this.props.location.search.slice(1)).access_token;
+    this.traderUser = qs.parse(this.props.location.search.slice(1)).trader_user;
     this.searchKeyword = debounce(this.searchKeyword, 500);
+    this.safeBottom = getComputedStyle(document.documentElement).getPropertyValue("--sab");
   }
 
   componentDidMount() {
+    this.props.dispatch(requestContents(''));
     newApi.getUserBaseWithToken(this.props.match.params.id, this.accessToken)
       .then(res => {
         this.setState({ userInfo: res, selectedTags: res.tags ? res.tags.map(m => m.id) : [] });
@@ -100,6 +102,9 @@ class SelectTag extends Component {
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
+      })
+      .finally(() => {
+        this.props.dispatch(hideLoading());
       });
   }
 
@@ -188,7 +193,7 @@ class SelectTag extends Component {
     const markElem = document.querySelector(`[data-match-index="${current}"]`);
     if (markElem) {
       const { top, bottom } = markElem.getBoundingClientRect();
-      const isInView = top > 60 + 10 && window.innerHeight - bottom > 10;
+      const isInView = top > 60 + 10 && window.innerHeight - bottom > 60 + 10 + parseInt(this.safeBottom);
       if (!isInView) {
         markElem.scrollIntoView({
           block: 'center',
@@ -205,10 +210,11 @@ class SelectTag extends Component {
 
   handleSubmitBtnClicked = () => {
     this.props.dispatch(requestContents(''));
-    newApi.editUserWithToken([this.state.userInfo.id], { tags: this.state.selectedTags }, this.accessToken)
+    newApi.editUserWithToken([this.state.userInfo.id], { tags: this.state.selectedTags, createuser: this.traderUser }, this.accessToken)
       .then(() => {
         this.props.dispatch(hideLoading());
         this.props.dispatch(handleError(new Error('更新成功！')));
+        location.reload();
       })
       .catch(error => {
         this.props.dispatch(handleError(error))
@@ -240,7 +246,10 @@ class SelectTag extends Component {
             current={this.state.current}
           />
         </div>}
-        {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginTop: 20, width: '100%' }} />}
+        {this.state.cardUrl && <img src={this.state.cardUrl} style={{ marginBottom: 'calc(60px + env(safe-area-inset-bottom))', marginTop: 20, width: '100%' }} />}
+        <div style={{ position: 'fixed', bottom: 'env(safe-area-inset-bottom)', left: 0, width: '100%', padding: 10 }}>
+          <button className="select-tag__submit-btn" onClick={this.handleSubmitBtnClicked}>提交</button>
+        </div>
       </div>
     )
   }

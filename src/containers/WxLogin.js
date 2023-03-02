@@ -134,7 +134,7 @@ class WxLogin extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.push(api.baseUrl + "/user")
+      this.props.history.push(api.baseUrl + "/allchats")
     }
   }
 
@@ -225,6 +225,7 @@ class WxLogin extends React.Component {
   handleLogin() {
 
     if (this.wxidIndex >= this.wxid.length) this.wxidIndex = this.wxid.length - 1
+    
     const param = {
       username: this.state.username,
       password: this.state.password,
@@ -232,30 +233,18 @@ class WxLogin extends React.Component {
     }
 
     this.props.dispatch(requestContents(''))
-
-    let projectID, isMarketPlace;
     newApi.login(param)
       .then(data => {
         const { token: authToken, user_info, permissions } = data
         this.props.dispatch(hideLoading())
         const userInfo = utils.convertUserInfo(user_info, permissions)
         this.props.dispatch(receiveCurrentUserInfo(authToken, userInfo, this.state.username, this.state.password))
-        let redirectUrl = this.props.redirectUrl || api.baseUrl + "/" 
-        const isProjectRoute = /project\/detail\?projectID=(.*)&isMarketPlace=(.*)/.test(redirectUrl);
-        
         localStorage.setItem("WXAPPREG", "1")
-
-        this.reload(true, data);
-        this.props.history.push("/user");
+        this.props.history.push("/allchats");
       })
       .catch(error => {
-
-        if (error.code === 2050 && window.wx) {
-          //
-        }
         this.props.dispatch(handleError(error))
-        this.reload(false, error);
-      })
+      });
 
   }
 
