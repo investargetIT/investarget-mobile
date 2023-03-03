@@ -490,3 +490,13 @@ export function isJsonString(str) {
     }
     return true;
 }
+
+export const requestAllData = async (request, params, page_size) => {
+  const firstRes = await request({ ...params, page_size });
+  const { count } = firstRes;
+  if (count <= page_size) {
+    return firstRes;
+  }
+  const secondRes = await request({ ...params, page_size: count });
+  return secondRes;
+}

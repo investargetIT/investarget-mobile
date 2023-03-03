@@ -140,7 +140,7 @@ class User extends Component {
 
   componentDidMount() {
     this.props.dispatch(requestContents(''));
-    newApi.getChatGPTTopic()
+    utils.requestAllData(newApi.getChatGPTTopic, {}, 10)
       .then(res => {
         console.log('res', res);
         this.props.dispatch(hideLoading());

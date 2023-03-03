@@ -3,7 +3,7 @@ import './ChatGPT.css';
 import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
 import { handleError, requestContents, hideLoading } from '../actions';
-import { isJsonString } from '../utils';
+import { isJsonString, requestAllData } from '../utils';
 import qs from 'qs';
 import NavigationBarForChatGPT from '../components/NavigationBarForChatGPT';
 
@@ -26,22 +26,23 @@ class ChatApp extends Component {
   componentDidMount() {
     const params = {
       topic_id: this.topicID,
-      page_size: 100,
     };
     this.props.dispatch(requestContents(''));
-    newApi.getMessageWithChatGPT(params)
+    requestAllData(newApi.getMessageWithChatGPT, params, 100)
       .then(res => {
         console.log('res', res);
-        let allMessages = res.data.sort((a, b) => new Date(a.msgtime)- new Date(b.msgtime))
+        let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
           .filter(f => !(f.isAI && !isJsonString(f.content)))
           .map(m => {
             let message = '';
             let avatarUrl = '/images/logo.jpg';
             if (m.isAI) {
               const reply = JSON.parse(m.content);
-              message = reply.choices[0].text.trim();
+              // message = reply.choices[0].text.trim();
+              message = reply.choices[0].message.content.trim();
             } else {
-              message = m.content;
+              const match = /'content': '(.*)',/.exec(m.content);
+              message = match[1];
               avatarUrl = this.props.userInfo.photoUrl;
             }
             return { ...m, message, avatarUrl };
@@ -63,6 +64,7 @@ class ChatApp extends Component {
   }
 
   handleSubmit(event) {
+    // newApi.deleteMessageWithChatGPT('64016b47a6ac015ad8772bfb');
     event.preventDefault();
     if (this.state.inputValue !== '') {
       const newMessage = {
@@ -75,7 +77,11 @@ class ChatApp extends Component {
       });
       const body = {
         topic_id: this.topicID,
-        prompt: this.state.inputValue,
+        // prompt: this.state.inputValue,
+        messages: [{
+          role: 'user',
+          content: this.state.inputValue,
+        }],
         max_tokens: 100,
       };
       this.props.dispatch(requestContents(''));
@@ -86,7 +92,8 @@ class ChatApp extends Component {
           console.log('reply', reply);
 
           const replyMessage = {
-            message: reply.choices[0].text.trim(),
+            // message: reply.choices[0].text.trim(),
+            message: reply.choices[0].message.content.trim(),
             avatarUrl: '/images/logo.jpg',
           };
           this.setState({
