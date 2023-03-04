@@ -41,7 +41,7 @@ class ChatApp extends Component {
               // message = reply.choices[0].text.trim();
               message = reply.choices[0].message.content.trim();
             } else {
-              const match = /'content': '(.*)',/.exec(m.content);
+              const match = /'content': '(.*?)'/g.exec(m.content);
               message = match[1];
               avatarUrl = this.props.userInfo.photoUrl;
             }
@@ -82,7 +82,7 @@ class ChatApp extends Component {
           role: 'user',
           content: this.state.inputValue,
         }],
-        max_tokens: 100,
+        max_tokens: 4000,
       };
       this.props.dispatch(requestContents(''));
       newApi.postMessageToChatGPT(body)
