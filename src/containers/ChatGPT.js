@@ -86,7 +86,6 @@ class ChatApp extends Component {
           role: 'user',
           content: this.state.inputValue,
         }],
-        max_tokens: 3000,
       };
       this.props.dispatch(requestContents(''));
       newApi.postMessageToChatGPT(body)
