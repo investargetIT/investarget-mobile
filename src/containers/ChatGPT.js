@@ -37,16 +37,11 @@ class ChatApp extends Component {
             let message = '';
             let avatarUrl = '/images/logo.jpg';
             if (m.isAI) {
-              // const reply = JSON.parse(m.content);
               let reply = JSON.parse(m.content);
-              console.log('reply', reply);
-              reply = JSON.parse(reply.result);
-              console.log('reply1', reply);
-              // message = reply.choices[0].text.trim();
-              message = reply.choices[0].message.content.trim();
+              message = reply.content.trim();
             } else {
-              const match = /'content': '(.*?)'/g.exec(m.content);
-              message = match[1];
+              const match = JSON.parse(m.content);
+              message = match[0].content;
               avatarUrl = this.props.userInfo.photoUrl;
             }
             return { ...m, message, avatarUrl };
@@ -90,15 +85,8 @@ class ChatApp extends Component {
       this.props.dispatch(requestContents(''));
       newApi.postMessageToChatGPT(body)
         .then(res => {
-          console.log('res', res);
-          let reply = JSON.parse(res);
-          console.log('reply', reply);
-          reply = JSON.parse(reply.result);
-          console.log('reply1', reply);
-
           const replyMessage = {
-            // message: reply.choices[0].text.trim(),
-            message: reply.choices[0].message.content.trim(),
+            message: res.content.trim(),
             avatarUrl: '/images/logo.jpg',
           };
           this.setState({
