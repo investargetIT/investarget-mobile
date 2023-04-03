@@ -45,9 +45,7 @@
   white-space: pre-wrap;
 }
 
-.input-form {
-  display: flex;
-  align-items: center;
+.input-form {  
   background-color: rgb(46, 47, 56);
   padding: 10px;
   width: 100%;
@@ -55,23 +53,30 @@
   bottom: 0;
 }
 
+.form-container {
+  padding: 10px;
+  display: flex;
+  background-color: rgb(56, 57, 69);
+}
+
 .input-field {
   line-height: 24px;
   resize: none;
   flex: 1;
   border: none;
-  padding: 10px;
+  outline: 0;
   font-size: 16px;
   background-color: rgb(56, 57, 69);
   color: white;
 }
 
 .send-button {
+  line-height: 24px;
   background-color: rgb(56, 57, 69);
   color: lightgray;
   border: none;
-  padding: 8px;
   margin-left: 10px;
   font-size: 16px;
   cursor: pointer;
+  align-self: flex-end;
 }

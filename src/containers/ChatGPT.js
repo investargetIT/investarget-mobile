@@ -66,7 +66,7 @@ class ChatApp extends Component {
     if (currentRows > 10) {
       currentRows = 10; // Max 10 rows
     }
-    event.target.style.height = `${currentRows * lineHeight + 20}px`;
+    event.target.style.height = `${currentRows * lineHeight}px`;
   }
 
   handleSubmit(event) {
@@ -141,18 +141,20 @@ class ChatApp extends Component {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
-          <textarea
-            rows={1}
-            value={this.state.inputValue}
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputOnFocus}
-            onBlur={this.handleInputOnBlur}
-            placeholder="在这儿输入您的问题"
-            className="input-field"
-          />
-          <button type="submit" className="send-button">
-            发送
-          </button>
+          <div className="form-container">
+            <textarea
+              rows={1}
+              value={this.state.inputValue}
+              onChange={this.handleInputChange}
+              onFocus={this.handleInputOnFocus}
+              onBlur={this.handleInputOnBlur}
+              placeholder="在这儿输入您的问题"
+              className="input-field"
+            />
+            <button type="submit" className="send-button">
+              发送
+            </button>
+          </div>
         </form>
       </div>
     );
