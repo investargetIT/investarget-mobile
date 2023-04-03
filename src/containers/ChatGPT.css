@@ -56,6 +56,8 @@
 }
 
 .input-field {
+  line-height: 24px;
+  resize: none;
   flex: 1;
   border: none;
   padding: 10px;

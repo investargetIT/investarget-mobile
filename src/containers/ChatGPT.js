@@ -60,6 +60,13 @@ class ChatApp extends Component {
 
   handleInputChange(event) {
     this.setState({ inputValue: event.target.value });
+    const lineHeight = 24; // You can adjust this to match your CSS line-height
+    event.target.style.height = 0; // Reset height to caculate actual scroll height
+    let currentRows = Math.floor(event.target.scrollHeight / lineHeight);
+    if (currentRows > 10) {
+      currentRows = 10; // Max 10 rows
+    }
+    event.target.style.height = `${currentRows * lineHeight + 20}px`;
   }
 
   handleSubmit(event) {
@@ -134,8 +141,8 @@ class ChatApp extends Component {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
-          <input
-            type="text"
+          <textarea
+            rows={1}
             value={this.state.inputValue}
             onChange={this.handleInputChange}
             onFocus={this.handleInputOnFocus}
