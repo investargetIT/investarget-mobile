@@ -212,15 +212,16 @@ class User extends Component {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: 'rgb(29, 30, 32)'  }}>
 
-        <form onSubmit={this.handleSubmit} className="input-form" style={{ position: 'unset' }}>
+        <form onSubmit={this.handleSubmit} className="input-form" style={{ position: 'unset', display: 'flex' }}>
           <input
+            style={{ padding: 8 }}
             type="text"
             value={this.state.inputValue}
             onChange={this.handleInputChange}
             placeholder="新话题"
             className="input-field"
           />
-          <button type="submit" className="send-button">
+          <button type="submit" className="send-button" style={{ padding: 8 }}>
             创建
           </button>
         </form>
