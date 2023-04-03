@@ -21,6 +21,7 @@ class ChatApp extends Component {
     console.log('topic id', this.topicID);
     this.topicName = qs.parse(this.props.location.search.slice(1)).topic_name;
     console.log('topic name', this.topicName);
+    this.textareaRef = null;
   }
 
   componentDidMount() {
@@ -61,17 +62,17 @@ class ChatApp extends Component {
   handleInputChange(event) {
     this.setState({ inputValue: event.target.value });
     const lineHeight = 24; // You can adjust this to match your CSS line-height
-    event.target.style.height = 0; // Reset height to caculate actual scroll height
+    this.textareaRef.style.height = 0; // Reset height to caculate actual scroll height
     let currentRows = Math.floor(event.target.scrollHeight / lineHeight);
     if (currentRows > 10) {
       currentRows = 10; // Max 10 rows
     }
-    event.target.style.height = `${currentRows * lineHeight + 20}px`;
+    this.textareaRef.style.height = `${currentRows * lineHeight + 20}px`;
   }
 
   handleSubmit(event) {
     // newApi.deleteMessageWithChatGPT('64016b47a6ac015ad8772bfb');
-    event.preventDefault();
+    event.preventDefault();    
     if (this.state.inputValue !== '') {
       const newMessage = {
         message: this.state.inputValue,
@@ -81,6 +82,7 @@ class ChatApp extends Component {
         messages: [...this.state.messages, newMessage],
         inputValue: '',
       });
+      this.textareaRef.style.height = 'unset'; // Reset height
       const body = {
         topic_id: this.topicID,
         // prompt: this.state.inputValue,
@@ -143,6 +145,7 @@ class ChatApp extends Component {
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           <div className="form-container" style={{ position: 'relative' }}>
             <textarea
+              ref={el => this.textareaRef = el}
               style={{ width: '100%', padding: 10, paddingRight: 44 }}
               rows={1}
               value={this.state.inputValue}
