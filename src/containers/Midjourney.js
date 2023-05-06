@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './ChatGPT.css';
+import './Midjourney.css';
 import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
 import { handleError, requestContents, hideLoading } from '../actions';
@@ -29,24 +29,25 @@ class ChatApp extends Component {
       topic_id: this.topicID,
     };
     this.props.dispatch(requestContents(''));
-    requestAllData(newApi.getMessageWithChatGPT, params, 100)
+    requestAllData(newApi.getMessageWithMidjourney, params, 100)
       .then(res => {
         console.log('res', res);
-        let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
-          .filter(f => !(f.isAI && !isJsonString(f.content)))
+        let allMessages = res.data.sort((a, b) => new Date(a.promtime) - new Date(b.promtime))
+          // .filter(f => !(f.isAI && !isJsonString(f.content)))
           .map(m => {
-            let message = '';
-            let avatarUrl = '/images/logo.jpg';
-            if (m.isAI) {
-              let reply = JSON.parse(m.content);
-              message = reply.content.trim();
-            } else {
-              const match = JSON.parse(m.content);
-              message = match[0].content;
-              avatarUrl = this.props.userInfo.photoUrl;
-            }
-            return { ...m, message, avatarUrl };
-          });
+            const userMsg = {
+              type: 'prompt',
+              message: m.prompt,
+              avatarUrl: this.props.userInfo.photoUrl,
+            };
+            const midjourneyMsg = {
+              type: 'midjourney',
+              message: 'https://learnopencv.com/wp-content/uploads/2023/02/midjourney_prompt_a_women_staring_straight_into_the_camera_with_cinemati_7efca518-91c9-4269-b73f-6af1ea619174.png',
+              avatarUrl: '/images/logo.jpg',
+            };
+            return [userMsg, midjourneyMsg];
+          })
+          .reduce((prev, curr) => curr.concat(prev), []);
         console.log('all messages', allMessages);
         this.setState({
           messages: allMessages,
@@ -85,14 +86,10 @@ class ChatApp extends Component {
       this.textareaRef.style.height = 'unset'; // Reset height
       const body = {
         topic_id: this.topicID,
-        // prompt: this.state.inputValue,
-        messages: [{
-          role: 'user',
-          content: this.state.inputValue,
-        }],
+        prompt: this.state.inputValue,
       };
       this.props.dispatch(requestContents(''));
-      newApi.postMessageToChatGPT(body)
+      newApi.postMessageToMidjourney(body)
         .then(res => {
           const replyMessage = {
             message: res.content.trim(),
@@ -130,7 +127,7 @@ class ChatApp extends Component {
       <div className="chat-container" ref="messageContainer">
         <NavigationBarForChatGPT title={this.topicName} />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
-          {this.state.messages.map((message, index) => (
+          {this.state.messages.map((message, index) => message.type === 'prompt' ? (
             <div key={index} className="message-container">
               <img
                 src={message.avatarUrl}
@@ -138,6 +135,15 @@ class ChatApp extends Component {
                 className="message-avatar"
               />
               <div className="message">{message.message}</div>
+            </div>
+          ) : (
+            <div key={index} className="message-container">
+              <img
+                src={message.avatarUrl}
+                alt="Avatar"
+                className="message-avatar"
+              />
+             <img className="message-pic" src={message.message} style={{ width: 72 }} />
             </div>
           ))}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start generating pictures with me!' : 'Bottom of the conversation!'}</div>

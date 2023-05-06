@@ -44,7 +44,9 @@
   max-width: 80%;
   white-space: pre-wrap;
 }
-
+.message-pic {
+  border-radius: 5px;
+}
 .input-form {  
   background-color: rgb(46, 47, 56);
   padding: 10px;
