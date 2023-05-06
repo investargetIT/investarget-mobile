@@ -50,6 +50,7 @@ import { requestContents, logout } from './actions';
 import ShareMeetings from './containers/ShareMeetings';
 import SelectTag from './containers/SelectTag';
 import ChatGPT from './containers/ChatGPT';
+import Midjourney from './containers/Midjourney';
 import AllChats from './containers/AllChats';
 import AllPictures from './containers/AllPictures';
 
@@ -218,6 +219,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/select_org"} component={SelectOrg} />
           <Route path={api.baseUrl + "/share/meeting"} component={ShareMeetings} />
           <Route path={api.baseUrl + "/chatgpt/:id"} component={ChatGPT} />
+          <Route path={api.baseUrl + "/midjourney/:id"} component={Midjourney} />
           <Route path={api.baseUrl + "/allchats"} component={AllChats} />
           <Route path={api.baseUrl + "/allpics"} component={AllPictures} />
         </div>
