@@ -199,7 +199,7 @@ class User extends Component {
 
 
   handleTopicClicked = (topicID, topicName) => {
-    this.props.history.push("/chatgpt/" + topicID + "?topic_name=" + topicName);
+    this.props.history.push("/midjourney/" + topicID + "?topic_name=" + topicName);
   }
 
   render () {

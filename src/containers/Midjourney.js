@@ -140,7 +140,7 @@ class ChatApp extends Component {
               <div className="message">{message.message}</div>
             </div>
           ))}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start generating pictures with me!' : 'Bottom of the conversation!'}</div>
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           <div className="form-container" style={{ position: 'relative' }}>
@@ -152,7 +152,7 @@ class ChatApp extends Component {
               onChange={this.handleInputChange}
               onFocus={this.handleInputOnFocus}
               onBlur={this.handleInputOnBlur}
-              placeholder="在这儿输入您的问题"
+              placeholder="在这儿输入图片提示"
               className="input-field"
             />
             <button type="submit" className="send-button" style={{ position: 'absolute', right: 10, bottom: 10 }}>
