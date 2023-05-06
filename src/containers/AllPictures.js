@@ -124,6 +124,7 @@ class User extends Component {
     if (!this.state.inputValue) return;
     const body = {
       topic_name: this.state.inputValue,
+      type: 2, // ChatGPT 类型为 1，Midjourney 类型为 2
     };
     this.props.dispatch(requestContents(''));
     newApi.createChatGPTTopic(body)
@@ -140,7 +141,7 @@ class User extends Component {
 
   componentDidMount() {
     this.props.dispatch(requestContents(''));
-    utils.requestAllData(newApi.getChatGPTTopic, {}, 10)
+    utils.requestAllData(newApi.getChatGPTTopic, { type: 2 }, 10)
       .then(res => {
         console.log('res', res);
         this.props.dispatch(hideLoading());
