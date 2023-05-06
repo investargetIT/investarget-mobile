@@ -218,7 +218,7 @@ class User extends Component {
             type="text"
             value={this.state.inputValue}
             onChange={this.handleInputChange}
-            placeholder="新聊天话题"
+            placeholder="新图片类别"
             className="input-field"
           />
           <button type="submit" className="send-button" style={{ padding: 8 }}>
