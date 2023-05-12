@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import './Midjourney.css';
 import * as newApi from '../api3.0';
 import { connect } from 'react-redux';
-import { handleError, requestContents, hideLoading } from '../actions';
+import { handleError, requestContents, hideLoading, showToast, hideToast } from '../actions';
 import { isJsonString, requestAllData } from '../utils';
 import qs from 'qs';
 import NavigationBarForChatGPT from '../components/NavigationBarForChatGPT';
+import Modal from '../components/Modal';
 
 class ChatApp extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class ChatApp extends Component {
       messages: [],
       inputValue: '',
       virtualKeyboard: false,
+      showModal: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +78,7 @@ class ChatApp extends Component {
     event.preventDefault();    
     if (this.state.inputValue !== '') {
       const newMessage = {
+        type: 'prompt',
         message: this.state.inputValue,
         avatarUrl: this.props.userInfo.photoUrl,
       };
@@ -91,8 +94,13 @@ class ChatApp extends Component {
       this.props.dispatch(requestContents(''));
       newApi.postMessageToMidjourney(body)
         .then(res => {
+          this.props.dispatch(showToast('图片正在生成中，请稍后再试'))
+          setTimeout(() => {
+            this.props.dispatch(hideToast())
+          }, 2000);
           const replyMessage = {
-            message: res.content.trim(),
+            type: 'midjourney',
+            message: '/images/placeholder.jpeg',
             avatarUrl: '/images/logo.jpg',
           };
           this.setState({
@@ -122,6 +130,10 @@ class ChatApp extends Component {
     e.target.preventDefault();
   }
 
+  handleImageThumbnailClicked = msg => {
+    this.setState({ showModal: true });
+  }
+
   render() {
     return (
       <div className="chat-container" ref="messageContainer">
@@ -143,7 +155,7 @@ class ChatApp extends Component {
                 alt="Avatar"
                 className="message-avatar"
               />
-             <img className="message-pic" src={message.message} style={{ width: 72 }} />
+             <img className="message-pic" src={message.message} style={{ width: 72 }} onClick={() => this.handleImageThumbnailClicked(message)} />
             </div>
           ))}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start generating pictures with me!' : 'Bottom of the conversation!'}</div>
@@ -166,6 +178,13 @@ class ChatApp extends Component {
             </button>
           </div>
         </form>
+
+        <Modal
+          show={this.state.showModal}
+          title="长按保存图片"
+          content={<img src="https://learnopencv.com/wp-content/uploads/2023/02/midjourney_prompt_a_women_staring_straight_into_the_camera_with_cinemati_7efca518-91c9-4269-b73f-6af1ea619174.png" style={{ width: '100%' }} onClick={() => this.setState({ showModal: false })} /> }
+        />
+
       </div>
     );
   }
