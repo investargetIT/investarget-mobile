@@ -43,6 +43,7 @@ function Group(props) {
 var settingContainerStyle = {
   padding: '20px 0px',
   paddingTop: 10,
+  paddingBottom: 'env(safe-area-inset-bottom)',
 }
 
 class User extends Component {

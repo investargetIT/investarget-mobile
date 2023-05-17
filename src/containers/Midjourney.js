@@ -16,6 +16,7 @@ class ChatApp extends Component {
       inputValue: '',
       virtualKeyboard: false,
       showModal: false,
+      activeMsg: null,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,7 +35,7 @@ class ChatApp extends Component {
     requestAllData(newApi.getMessageWithMidjourney, params, 100)
       .then(res => {
         console.log('res', res);
-        let allMessages = res.data.sort((a, b) => new Date(a.promtime) - new Date(b.promtime))
+        let allMessages = res.data.sort((a, b) => new Date(b.promtime) - new Date(a.promtime))
           // .filter(f => !(f.isAI && !isJsonString(f.content)))
           .map(m => {
             const userMsg = {
@@ -44,7 +45,7 @@ class ChatApp extends Component {
             };
             const midjourneyMsg = {
               type: 'midjourney',
-              message: 'https://learnopencv.com/wp-content/uploads/2023/02/midjourney_prompt_a_women_staring_straight_into_the_camera_with_cinemati_7efca518-91c9-4269-b73f-6af1ea619174.png',
+              message: m.attachment ? m.attachment.url : '/images/placeholder.jpeg',
               avatarUrl: '/images/logo.jpg',
             };
             return [userMsg, midjourneyMsg];
@@ -131,7 +132,7 @@ class ChatApp extends Component {
   }
 
   handleImageThumbnailClicked = msg => {
-    this.setState({ showModal: true });
+    this.setState({ showModal: true, activeMsg: msg });
   }
 
   render() {
@@ -182,7 +183,7 @@ class ChatApp extends Component {
         <Modal
           show={this.state.showModal}
           title="长按保存图片"
-          content={<img src="https://learnopencv.com/wp-content/uploads/2023/02/midjourney_prompt_a_women_staring_straight_into_the_camera_with_cinemati_7efca518-91c9-4269-b73f-6af1ea619174.png" style={{ width: '100%' }} onClick={() => this.setState({ showModal: false })} /> }
+          content={<img src={this.state.activeMsg ? this.state.activeMsg.message : ''} style={{ width: '100%' }} onClick={() => this.setState({ showModal: false, activeMsg: null })} /> }
         />
 
       </div>

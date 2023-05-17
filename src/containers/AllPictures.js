@@ -43,6 +43,7 @@ function Group(props) {
 var settingContainerStyle = {
   padding: '20px 0px',
   paddingTop: 10,
+  paddingBottom: 'env(safe-area-inset-bottom)',
 }
 
 class User extends Component {
@@ -229,10 +230,10 @@ class User extends Component {
 
         <div style={settingContainerStyle}>
           <ul>
-              {this.state.allTopics.map(m => (
+              {this.state.allTopics.map((m, idx) => (
                 // <Link key={m.id} to={api.baseUrl + "/chatgpt/" + m.id + "?topic_name=" + m.topic_name}>
                   <AdvancedLeftIconRightLabel
-                    key={m.id}
+                    key={idx}
                     icon={api.baseUrl + "/images/userCenter/ht-usercenter-1@2x.png"}
                     label={m.topic_name}
                     topicID={m.id}

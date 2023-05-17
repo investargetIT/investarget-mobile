@@ -15,7 +15,7 @@ const containerStyle = {
 
 var style = {
   padding: '6px',
-  height: '48px',
+  // height: '48px',
   display: 'flex',
   width: '100%',
   backgroundColor: '#F7F7FA',
@@ -30,8 +30,8 @@ class TabBar extends Component {
   render() {
     return (
       <div style={containerStyle}>
-        <div className="tab-bar" style={{ ...style, display: 'flex' }}>
-          <TabBarItem label="聊天" route={api.baseUrl + "/allchats"} isActive={this.props.location.pathname === (api.baseUrl + "/allchats")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/allchats") ? "/images/tabbar/home_fill.png" : "/images/tabbar/home.png")} />
+        <div className="tab-bar" style={{ ...style, display: 'flex', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <TabBarItem label="聊天" route={api.baseUrl + "/allchats"} isActive={this.props.location.pathname === (api.baseUrl + "/allchats")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/allchats") ? "/images/tabbar/news_hot_fill.png" : "/images/tabbar/news_hot.png")} />
           <TabBarItem label="图片" route={api.baseUrl + "/allpics"} isActive={this.props.location.pathname === (api.baseUrl + "/allpics")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/allpics") ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png")} />
         </div>
       </div>
