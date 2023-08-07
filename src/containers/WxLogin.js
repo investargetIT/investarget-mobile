@@ -249,7 +249,7 @@ class WxLogin extends React.Component {
   }
 
   reload() {
-    window.wx.miniProgram.reLaunch({url: "/pages/user/user"})
+    window.wx.miniProgram.reLaunch({url: "/pages/index/index"})
   }
 
   handleReset() {
