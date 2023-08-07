@@ -248,7 +248,7 @@ class User extends Component {
           </ul>
         </div>
 
-        <NewTabBar />
+        {/* <NewTabBar /> */}
 
       </div>
     )
