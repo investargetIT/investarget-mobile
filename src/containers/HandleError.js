@@ -14,8 +14,9 @@ class HandleError extends Component {
         if (this.props.error.message === 'Request failed with status code 401' ||
             this.props.error.code == 3000) {
           this.props.dispatch(logout())
-          this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
-          this.props.history.replace(api.baseUrl + '/login')
+          window.wx.miniProgram.reLaunch({url: "/pages/index/index"})
+          // this.props.dispatch(saveRedirectUrl(this.props.location.pathname))
+          // this.props.history.replace(api.baseUrl + '/login')
         }
       }, 1000)
     }
