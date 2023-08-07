@@ -160,19 +160,21 @@ class User extends Component {
 
   handleDeleteBtnClicked = topicID => {
     console.log('delete topic id', topicID);
-    if (confirm('确定删除？')) {
-      this.props.dispatch(requestContents(''));
-      newApi.deleteChatGPTTopic(topicID)
-        .then(res => {
-          const newTopics = this.state.allTopics.filter(f => f.id !== topicID);
-          this.setState({ allTopics: newTopics });
-          this.props.dispatch(hideLoading());
-        })
-        .catch(error => {
-          this.props.dispatch(handleError(error));
-          this.props.dispatch(hideLoading());
-        });
-    }
+    setTimeout(() => {
+      if (confirm('确定删除？')) {
+        this.props.dispatch(requestContents(''));
+        newApi.deleteChatGPTTopic(topicID)
+          .then(res => {
+            const newTopics = this.state.allTopics.filter(f => f.id !== topicID);
+            this.setState({ allTopics: newTopics });
+            this.props.dispatch(hideLoading());
+          })
+          .catch(error => {
+            this.props.dispatch(handleError(error));
+            this.props.dispatch(hideLoading());
+          });
+      }
+    });
   }
 
   handleUpdateTopic = (topicID, topicName) => {
