@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NewTabBar from './NewTabBar';
 import AdvancedLeftIconRightLabel from '../components/AdvancedLeftIconRightLabel'
+import Modal from '../components/Modal';
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
 import { logout, handleError, requestContents, hideLoading, modifyUserInfo, saveRedirectUrl } from '../actions'
@@ -55,6 +56,8 @@ class User extends Component {
       avatar: null,
       inputValue: '',
       allTopics: [],
+      showModal: false,
+      toDeleteTopicID: null,
     }
 
     this.handleClick = this.handleClick.bind(this)
@@ -159,21 +162,30 @@ class User extends Component {
   }
 
   handleDeleteBtnClicked = topicID => {
-    console.log('delete topic id', topicID);
-    setTimeout(() => {
-      if (confirm('确定删除？')) {
-        this.props.dispatch(requestContents(''));
-        newApi.deleteChatGPTTopic(topicID)
-          .then(res => {
-            const newTopics = this.state.allTopics.filter(f => f.id !== topicID);
-            this.setState({ allTopics: newTopics });
-            this.props.dispatch(hideLoading());
-          })
-          .catch(error => {
-            this.props.dispatch(handleError(error));
-            this.props.dispatch(hideLoading());
-          });
-      }
+    this.setState({
+      showModal: true,
+      toDeleteTopicID: topicID,
+    });
+  }
+
+  handleConfirmBtnClicked = () => {
+    this.props.dispatch(requestContents(''));
+    newApi.deleteChatGPTTopic(this.state.toDeleteTopicID)
+      .then(res => {
+        const newTopics = this.state.allTopics.filter(f => f.id !== this.state.toDeleteTopicID);
+        this.setState({ allTopics: newTopics, showModal: false, toDeleteTopicID: null });
+        this.props.dispatch(hideLoading());
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error));
+        this.props.dispatch(hideLoading());
+      });
+  }
+
+  handleCancelBtnClicked = () => {
+    this.setState({
+      showModal: false,
+      toDeleteTopicID: null,
     });
   }
 
@@ -249,6 +261,15 @@ class User extends Component {
         </div>
 
         {/* <NewTabBar /> */}
+
+        <Modal
+          show={this.state.showModal}
+          title="确认删除该话题？"
+          actions={[
+            { name: '确认', handler: this.handleConfirmBtnClicked },
+            { name: '取消', handler: this.handleCancelBtnClicked }
+          ]}
+        />
 
       </div>
     )
