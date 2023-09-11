@@ -7,6 +7,32 @@ import { isJsonString, requestAllData } from '../utils';
 import qs from 'qs';
 import NavigationBarForChatGPT from '../components/NavigationBarForChatGPT';
 
+const iconStyle = {
+  width: 24
+}
+
+const avatarContainerStyle = {
+  position: 'relative',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingLeft: 6,
+}
+
+const inputContainerStyle = {
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  width: '100%',
+  height: '100%',
+}
+
+const inputStyle = {
+  width: '100%',
+  height: '100%',
+  opacity: 0
+}
+
 class ChatApp extends Component {
   constructor(props) {
     super(props);
@@ -14,13 +40,12 @@ class ChatApp extends Component {
       messages: [],
       inputValue: '',
       virtualKeyboard: false,
+      file: null,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.topicID = this.props.match.params.id;
-    console.log('topic id', this.topicID);
     this.topicName = qs.parse(this.props.location.search.slice(1)).topic_name;
-    console.log('topic name', this.topicName);
     this.textareaRef = null;
   }
 
@@ -31,7 +56,6 @@ class ChatApp extends Component {
     this.props.dispatch(requestContents(''));
     requestAllData(newApi.getMessageWithChatGPT, params, 100)
       .then(res => {
-        console.log('res', res);
         let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
           .filter(f => !(f.isAI && !isJsonString(f.content)))
           .map(m => {
@@ -47,7 +71,6 @@ class ChatApp extends Component {
             }
             return { ...m, message, avatarUrl };
           });
-        console.log('all messages', allMessages);
         this.setState({
           messages: allMessages,
         });
@@ -70,10 +93,24 @@ class ChatApp extends Component {
     this.textareaRef.style.height = `${currentRows * lineHeight + 20}px`;
   }
 
+  handleUploadFileChange = e => {
+    var file = e.target.files[0];
+
+    this.setState({ file });
+
+    // if (file) {
+    //   if (/^image\//i.test(file.type)) {
+    //     this.readFile(file);
+    //   } else {
+    //     alert('Not a valid image!');
+    //   }
+    // }
+  }
+
   handleSubmit(event) {
     // newApi.deleteMessageWithChatGPT('64016b47a6ac015ad8772bfb');
     event.preventDefault();    
-    if (this.state.inputValue !== '') {
+    if (this.state.inputValue !== '' && this.state.file == null) {
       const newMessage = {
         message: this.state.inputValue,
         avatarUrl: this.props.userInfo.photoUrl,
@@ -108,16 +145,38 @@ class ChatApp extends Component {
           this.props.dispatch(handleError(error));
           this.props.dispatch(hideLoading());
         });
+    } else if (this.state.inputValue !== '' && this.state.file !== null) {
+      this.uploadFileAndAskQuestion(this.state.inputValue);
     }
   }
 
+  uploadFileAndAskQuestion = question => {
+    console.log('question', question);
+    console.log('file', this.state.file);
+    // return;
+    this.props.dispatch(requestContents(''));
+    newApi.chatGPTUpload(this.state.file)
+      .then(result => {
+        console.log('result', result);
+        this.setState({ file: null });
+        return newApi.getMessageWithChatGPTFile({ question });
+      })
+      .then(data => {
+        console.log('data', data);
+      })
+      .catch(error => {
+        this.props.dispatch(handleError(error));
+      })
+      .finally(() => {
+        this.props.dispatch(hideLoading());
+      });
+  }
+
   handleInputOnFocus = () => {
-    console.log('focus');
     this.setState({ virtualKeyboard: true });
   }
 
   handleInputOnBlur = () => {
-    console.log('blur');
     this.setState({ virtualKeyboard: false });
   }
 
@@ -144,9 +203,15 @@ class ChatApp extends Component {
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           <div className="form-container" style={{ position: 'relative' }}>
+            <div style={avatarContainerStyle}>
+              <img style={iconStyle} src="/images/plus.png" alt="" />
+              <div style={inputContainerStyle}>
+                <input style={inputStyle} id="file" name="upfile" type="file" onChange={this.handleUploadFileChange} />
+              </div>
+            </div>
             <textarea
               ref={el => this.textareaRef = el}
-              style={{ width: '100%', padding: 10, paddingRight: 44 }}
+              style={{ width: '100%', padding: 10, paddingRight: 44, paddingLeft: 6 }}
               rows={1}
               value={this.state.inputValue}
               onChange={this.handleInputChange}

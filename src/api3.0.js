@@ -314,6 +314,40 @@ export function qiniuUpload(bucket, file) {
   })
 }
 
+export function chatGPTUpload(file) {
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const userStr = localStorage.getItem('userInfo')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  var formData = new FormData()
+  formData.append('file', file)
+
+  return fetch( baseUrl + '/service/openai/file/embedding', {
+    headers,
+    method: 'POST',
+    body: formData,
+  }).then(response => {
+    return response.json()
+  }).then(data => {
+    return { data: data.result }
+  })
+}
+
 /**
  * 在使用环信发送图片或语音等消息时需要先把这些文件上传给环信
  * WebSDK好像有直接发送图片的接口，先放这儿吧
@@ -726,3 +760,5 @@ export const updateChatGPTTopic = (id, body) => r(`/mongolog/aichattopic/?id=${i
 
 export const postMessageToMidjourney = body => r('/mongolog/discordimage', 'POST', body);
 export const getMessageWithMidjourney = params => r('/mongolog/discordimage?' + qs.stringify(params));
+
+export const getMessageWithChatGPTFile = body => r('/service/openai/file/completions', 'POST', body); 
