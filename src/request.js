@@ -3,7 +3,7 @@ let prodUrl = 'https://api.investarget.com';
 
 let devUrl = "http://apitest.investarget.com";
 // devUrl = 'http://192.168.1.201:8000';
-devUrl = prodUrl;
+// devUrl = prodUrl;
 
 const baseUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
 export { baseUrl };
