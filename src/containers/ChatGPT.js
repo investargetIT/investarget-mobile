@@ -146,6 +146,20 @@ class ChatApp extends Component {
           this.props.dispatch(hideLoading());
         });
     } else if (this.state.inputValue !== '' && this.state.file !== null) {
+      const newMessage1 = {
+        message: this.state.file.name,
+        avatarUrl: this.props.userInfo.photoUrl,
+      };
+      const newMessage2 = {
+        message: this.state.inputValue,
+        avatarUrl: this.props.userInfo.photoUrl,
+      };
+      this.setState({
+        messages: [...this.state.messages, newMessage1, newMessage2],
+        inputValue: '',
+        file: null,
+      }, () => window.scrollTo({ top: document.body.scrollHeight }));
+      this.textareaRef.style.height = 'unset'; // Reset height
       this.uploadFileAndAskQuestion(this.state.inputValue);
     }
   }
@@ -153,16 +167,21 @@ class ChatApp extends Component {
   uploadFileAndAskQuestion = question => {
     console.log('question', question);
     console.log('file', this.state.file);
-    // return;
     this.props.dispatch(requestContents(''));
     newApi.chatGPTUpload(this.state.file)
       .then(result => {
         console.log('result', result);
-        this.setState({ file: null });
         return newApi.getMessageWithChatGPTFile({ question });
       })
       .then(data => {
         console.log('data', data);
+        const replyMessage = {
+          message: data.result.trim(),
+          avatarUrl: '/images/logo.jpg',
+        };
+        this.setState({
+          messages: [...this.state.messages, replyMessage],
+        }, () => window.scrollTo({ top: document.body.scrollHeight }));
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
@@ -202,6 +221,7 @@ class ChatApp extends Component {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
         </div>
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
+          {this.state.file && <div style={{ color: 'white', paddingBottom: 10 }}>{this.state.file.name}</div>}
           <div className="form-container" style={{ position: 'relative' }}>
             <div style={avatarContainerStyle}>
               <img style={iconStyle} src="/images/plus.png" alt="" />
