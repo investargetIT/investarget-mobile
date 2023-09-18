@@ -260,7 +260,7 @@ class User extends Component {
           </ul>
         </div>
 
-        {/* <NewTabBar /> */}
+        <NewTabBar />
 
         <Modal
           show={this.state.showModal}

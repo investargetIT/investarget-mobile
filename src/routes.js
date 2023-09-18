@@ -53,6 +53,7 @@ import ChatGPT from './containers/ChatGPT';
 import Midjourney from './containers/Midjourney';
 import AllChats from './containers/AllChats';
 import AllPictures from './containers/AllPictures';
+import ChatFile from './containers/ChatFile';
 
 const inWxApp = newApi.inWxApp;
 
@@ -222,6 +223,7 @@ class Routes extends React.Component {
           <Route path={api.baseUrl + "/midjourney/:id"} component={Midjourney} />
           <Route path={api.baseUrl + "/allchats"} component={AllChats} />
           <Route path={api.baseUrl + "/allpics"} component={AllPictures} />
+          <Route path={api.baseUrl + "/chatfile"} component={ChatFile} />
         </div>
       </Router>
     )

@@ -6,6 +6,7 @@ import { handleError, requestContents, hideLoading } from '../actions';
 import { isJsonString, requestAllData } from '../utils';
 import qs from 'qs';
 import NavigationBarForChatGPT from '../components/NavigationBarForChatGPT';
+import { ApiError } from '../request';
 
 const iconStyle = {
   width: 24
@@ -33,7 +34,7 @@ const inputStyle = {
   opacity: 0
 }
 
-class ChatApp extends Component {
+class ChatFile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,23 +51,25 @@ class ChatApp extends Component {
   }
 
   componentDidMount() {
-    const params = {
-      topic_id: this.topicID,
-    };
     this.props.dispatch(requestContents(''));
-    requestAllData(newApi.getMessageWithChatGPT, params, 100)
+    newApi.getFileChatHistory()
       .then(res => {
-        let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
-          .filter(f => !(f.isAI && !isJsonString(f.content)))
-          .map(m => {
+        if (!res.success) return;
+        const { chat_history } = res.result;
+        let allMessages = chat_history.split('\n').map(m => {
+          if (m.startsWith('Human')) {
+            const content = m.slice(7);
+            return { isAI: false, content };
+          }
+          return { isAI: true, content: m.slice(4) };
+        })
+        allMessages = allMessages.map(m => {
             let message = '';
             let avatarUrl = '/images/logo.jpg';
             if (m.isAI) {
-              let reply = JSON.parse(m.content);
-              message = reply.content.trim();
+              message = m.content.trim();
             } else {
-              const match = JSON.parse(m.content);
-              message = match[0].content;
+              message = m.content;
               avatarUrl = this.props.userInfo.photoUrl;
             }
             return { ...m, message, avatarUrl };
@@ -120,19 +123,12 @@ class ChatApp extends Component {
         inputValue: '',
       });
       this.textareaRef.style.height = 'unset'; // Reset height
-      const body = {
-        topic_id: this.topicID,
-        // prompt: this.state.inputValue,
-        messages: [{
-          role: 'user',
-          content: this.state.inputValue,
-        }],
-      };
+      const body = { question: this.state.inputValue };
       this.props.dispatch(requestContents(''));
-      newApi.postMessageToChatGPT(body)
+      newApi.getMessageWithChatGPTFile(body)
         .then(res => {
           const replyMessage = {
-            message: res.content.trim(),
+            message: res.result.trim(),
             avatarUrl: '/images/logo.jpg',
           };
           this.setState({
@@ -206,7 +202,7 @@ class ChatApp extends Component {
   render() {
     return (
       <div className="chat-container" ref="messageContainer">
-        <NavigationBarForChatGPT title={this.topicName} />
+        <NavigationBarForChatGPT title="文档解析" />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
@@ -223,12 +219,12 @@ class ChatApp extends Component {
         <form onSubmit={this.handleSubmit} className="input-form" style={{ paddingBottom: this.state.virtualKeyboard ? 10 : 'calc(10px + env(safe-area-inset-bottom)' }}>
           {this.state.file && <div style={{ color: 'white', paddingBottom: 10 }}>{this.state.file.name}</div>}
           <div className="form-container" style={{ position: 'relative' }}>
-            {/* <div style={avatarContainerStyle}>
+            <div style={avatarContainerStyle}>
               <img style={iconStyle} src="/images/plus.png" alt="" />
               <div style={inputContainerStyle}>
                 <input style={inputStyle} id="file" name="upfile" type="file" onChange={this.handleUploadFileChange} />
               </div>
-            </div> */}
+            </div>
             <textarea
               ref={el => this.textareaRef = el}
               style={{ width: '100%', padding: 10, paddingRight: 44, paddingLeft: 6 }}
@@ -254,4 +250,4 @@ function mapStateToProps(state) {
   const userInfo = state.userInfo
   return { isLogin, userInfo }
 }
-export default connect(mapStateToProps)(ChatApp);
+export default connect(mapStateToProps)(ChatFile);
