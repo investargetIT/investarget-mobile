@@ -762,4 +762,4 @@ export const postMessageToMidjourney = body => r('/mongolog/discordimage', 'POST
 export const getMessageWithMidjourney = params => r('/mongolog/discordimage?' + qs.stringify(params));
 
 export const getMessageWithChatGPTFile = body => r('/service/openai/file/completions', 'POST', body);
-export const getFileChatHistory = () => r('/service/openai/file/chathistory', 'POST'); 
+export const getFileChatHistory = () => r('/mongolog/aizillizchat'); 

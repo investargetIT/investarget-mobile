@@ -33,7 +33,7 @@ class TabBar extends Component {
         <div className="tab-bar" style={{ ...style, display: 'flex', paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <TabBarItem label="聊天" route={api.baseUrl + "/allchats"} isActive={this.props.location.pathname === (api.baseUrl + "/allchats")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/allchats") ? "/images/tabbar/news_hot_fill.png" : "/images/tabbar/news_hot.png")} />
           {/* <TabBarItem label="图片" route={api.baseUrl + "/allpics"} isActive={this.props.location.pathname === (api.baseUrl + "/allpics")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/allpics") ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png")} /> */}
-          <TabBarItem label="文档" route={api.baseUrl + "/chatfile"} isActive={this.props.location.pathname === (api.baseUrl + "/chatfile")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/chatfile") ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png")} />
+          <TabBarItem label="文档" route={api.baseUrl + "/alldocs"} isActive={this.props.location.pathname === (api.baseUrl + "/alldocs")} iconSrc={api.baseUrl + (this.props.location.pathname === (api.baseUrl + "/alldocs") ? "/images/tabbar/creative_fill.png" : "/images/tabbar/creative.png")} />
         </div>
       </div>
     );

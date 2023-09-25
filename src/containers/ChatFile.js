@@ -54,33 +54,37 @@ class ChatFile extends Component {
     this.props.dispatch(requestContents(''));
     newApi.getFileChatHistory()
       .then(res => {
-        if (!res.success) return;
-        const { chat_history } = res.result;
-        let allMessages = chat_history.split('\n').map(m => {
-          if (m.startsWith('Human')) {
-            const content = m.slice(7);
-            return { isAI: false, content };
-          }
-          return { isAI: true, content: m.slice(4) };
-        })
-        allMessages = allMessages.map(m => {
-            let message = '';
-            let avatarUrl = '/images/logo.jpg';
-            if (m.isAI) {
-              message = m.content.trim();
-            } else {
-              message = m.content;
-              avatarUrl = this.props.userInfo.photoUrl;
-            }
-            return { ...m, message, avatarUrl };
-          });
-        this.setState({
-          messages: allMessages,
-        });
-        this.props.dispatch(hideLoading());
+        console.log('res', res);
+        // TODO
+
+        // if (!res.success) return;
+        // const { chat_history } = res.result;
+        // let allMessages = chat_history.split('\n').map(m => {
+        //   if (m.startsWith('Human')) {
+        //     const content = m.slice(7);
+        //     return { isAI: false, content };
+        //   }
+        //   return { isAI: true, content: m.slice(4) };
+        // })
+        // allMessages = allMessages.map(m => {
+        //     let message = '';
+        //     let avatarUrl = '/images/logo.jpg';
+        //     if (m.isAI) {
+        //       message = m.content.trim();
+        //     } else {
+        //       message = m.content;
+        //       avatarUrl = this.props.userInfo.photoUrl;
+        //     }
+        //     return { ...m, message, avatarUrl };
+        //   });
+        // this.setState({
+        //   messages: allMessages,
+        // });
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
+      })
+      .finally(() => {
         this.props.dispatch(hideLoading());
       });
   }

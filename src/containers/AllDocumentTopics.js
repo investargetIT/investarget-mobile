@@ -46,7 +46,7 @@ var settingContainerStyle = {
   paddingBottom: 'env(safe-area-inset-bottom)',
 }
 
-class User extends Component {
+class AllDocumentTopics extends Component {
 
   constructor(props) {
     super(props)
@@ -59,8 +59,8 @@ class User extends Component {
 
     this.handleClick = this.handleClick.bind(this)
 
-    this.handleAvatarChange = this.handleAvatarChange.bind(this)
-    this.readFile = this.readFile.bind(this)
+    // this.handleAvatarChange = this.handleAvatarChange.bind(this)
+    // this.readFile = this.readFile.bind(this)
 
     this.userInfo = JSON.parse(localStorage.getItem("WXUSERINFO") || "{}")
   }
@@ -71,66 +71,65 @@ class User extends Component {
     }
   }
 
-  handleAvatarChange(e) {
-    var file = e.target.files[0];
+  // handleAvatarChange(e) {
+  //   var file = e.target.files[0];
 
-    if (file) {
-      if (/^image\//i.test(file.type)) {
-        this.readFile(file);
-      } else {
-        alert('Not a valid image!');
-      }
-    }
-  }
+  //   if (file) {
+  //     if (/^image\//i.test(file.type)) {
+  //       this.readFile(file);
+  //     } else {
+  //       alert('Not a valid image!');
+  //     }
+  //   }
+  // }
 
-  readFile(file) {
+  // readFile(file) {
 
-    var react = this
-    var reader = new FileReader();
+  //   var react = this
+  //   var reader = new FileReader();
 
-    reader.onloadend = function () {
+  //   reader.onloadend = function () {
 
-      react.setState({ avatar: reader.result });
+  //     react.setState({ avatar: reader.result });
 
-      newApi.qiniuUpload('image', file)
-      .then(result => {
-        react.props.dispatch(hideLoading())
-        react.props.dispatch(handleError(new Error('Please wait patient')))
+  //     newApi.qiniuUpload('image', file)
+  //     .then(result => {
+  //       react.props.dispatch(hideLoading())
+  //       react.props.dispatch(handleError(new Error('Please wait patient')))
 
-        const { key: photoKey, url: photoUrl } = result.data
-        const userId = utils.getCurrentUserId()
-        newApi.editUser([userId], { photoKey, photoUrl })
-          .then(data => {
-            const newUserInfo = { ...react.props.userInfo, photoKey, photoUrl }
-            react.props.dispatch(modifyUserInfo(newUserInfo))
-          })
-      })
-      .catch(error => {
-        react.props.dispatch(handleError(error))
-      })
+  //       const { key: photoKey, url: photoUrl } = result.data
+  //       const userId = utils.getCurrentUserId()
+  //       newApi.editUser([userId], { photoKey, photoUrl })
+  //         .then(data => {
+  //           const newUserInfo = { ...react.props.userInfo, photoKey, photoUrl }
+  //           react.props.dispatch(modifyUserInfo(newUserInfo))
+  //         })
+  //     })
+  //     .catch(error => {
+  //       react.props.dispatch(handleError(error))
+  //     })
 
-    }
+  //   }
       
 
-    reader.onerror = function () {
-      alert('There was an error reading the file!');
-    }
+  //   reader.onerror = function () {
+  //     alert('There was an error reading the file!');
+  //   }
 
-    reader.readAsDataURL(file);
-    this.props.dispatch(requestContents(''))
-  }
+  //   reader.readAsDataURL(file);
+  //   this.props.dispatch(requestContents(''))
+  // }
 
   handleSubmit = (event) => {
     event.preventDefault();
     if (!this.state.inputValue) return;
     const body = {
       topic_name: this.state.inputValue,
-      type: 2, // ChatGPT 类型为 1，Midjourney 类型为 2
+      type: 3, // ChatGPT 类型为 1，Midjourney 类型为 2, zilliz 类型为 3，pdffile chat 类型为 4
     };
     this.props.dispatch(requestContents(''));
     newApi.createChatGPTTopic(body)
       .then(res => {
-        console.log('res', res);
         this.props.dispatch(hideLoading());
         this.setState({ inputValue: '', allTopics: [res].concat(this.state.allTopics) })
       })
@@ -142,9 +141,8 @@ class User extends Component {
 
   componentDidMount() {
     this.props.dispatch(requestContents(''));
-    utils.requestAllData(newApi.getChatGPTTopic, { type: 2 }, 10)
+    utils.requestAllData(newApi.getChatGPTTopic, { type: 3 }, 10)
       .then(res => {
-        console.log('res', res);
         this.props.dispatch(hideLoading());
         this.setState({ allTopics: res.data });
       })
@@ -176,10 +174,9 @@ class User extends Component {
   }
 
   handleUpdateTopic = (topicID, topicName) => {
-    console.log('update topic id', topicID);
     const body = {
       topic_name: topicName,
-      type: 2,
+      type: 3,
     };
     this.props.dispatch(requestContents(''));
     newApi.updateChatGPTTopic(topicID, body)
@@ -201,7 +198,7 @@ class User extends Component {
 
 
   handleTopicClicked = (topicID, topicName) => {
-    this.props.history.push("/midjourney/" + topicID + "?topic_name=" + topicName);
+    this.props.history.push("/chatfile/" + topicID + "?topic_name=" + topicName);
   }
 
   render () {
@@ -221,7 +218,7 @@ class User extends Component {
             type="text"
             value={this.state.inputValue}
             onChange={this.handleInputChange}
-            placeholder="新图片类别"
+            placeholder="新文档话题"
             className="input-field"
           />
           <button type="submit" className="send-button" style={{ padding: 8 }}>
@@ -261,4 +258,4 @@ function mapStateToProps(state) {
   return { isLogin, userInfo }
 }
 
-export default connect(mapStateToProps)(User)
+export default connect(mapStateToProps)(AllDocumentTopics)
