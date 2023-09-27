@@ -51,8 +51,11 @@ class ChatFile extends Component {
   }
 
   componentDidMount() {
+    const params = {
+      topic_id: this.topicID,
+    };
     this.props.dispatch(requestContents(''));
-    newApi.getFileChatHistory()
+    requestAllData(newApi.getFileChatHistory, params, 100)
       .then(res => {
         console.log('res', res);
         // TODO
@@ -206,7 +209,7 @@ class ChatFile extends Component {
   render() {
     return (
       <div className="chat-container" ref="messageContainer">
-        <NavigationBarForChatGPT title="文档解析" />
+        <NavigationBarForChatGPT title={this.topicName} />
         <div className="messages" onScroll={this.handleMessageScroll} style={{ paddingBottom: this.state.virtualKeyboard ? 0 : 'env(safe-area-inset-bottom)' }}>
           {this.state.messages.map((message, index) => (
             <div key={index} className="message-container">
