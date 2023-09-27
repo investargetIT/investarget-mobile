@@ -193,6 +193,7 @@ class User extends Component {
     console.log('update topic id', topicID);
     const body = {
       topic_name: topicName,
+      type: 1,
     };
     this.props.dispatch(requestContents(''));
     newApi.updateChatGPTTopic(topicID, body)

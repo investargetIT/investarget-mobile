@@ -119,7 +119,7 @@ class ChatFile extends Component {
 
   handleSubmit(event) {
     // newApi.deleteMessageWithChatGPT('64016b47a6ac015ad8772bfb');
-    event.preventDefault();    
+    event.preventDefault();
     if (this.state.inputValue !== '' && this.state.file == null) {
       const newMessage = {
         message: this.state.inputValue,
@@ -130,12 +130,15 @@ class ChatFile extends Component {
         inputValue: '',
       });
       this.textareaRef.style.height = 'unset'; // Reset height
-      const body = { question: this.state.inputValue };
+      const body = {
+        question: this.state.inputValue,
+        topic_id: this.topicID,
+      };
       this.props.dispatch(requestContents(''));
       newApi.getMessageWithChatGPTFile(body)
         .then(res => {
           const replyMessage = {
-            message: res.result.trim(),
+            message: res.result.answer.trim(),
             avatarUrl: '/images/logo.jpg',
           };
           this.setState({
