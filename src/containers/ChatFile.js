@@ -57,32 +57,19 @@ class ChatFile extends Component {
     this.props.dispatch(requestContents(''));
     requestAllData(newApi.getFileChatHistory, params, 100)
       .then(res => {
-        console.log('res', res);
-        // TODO
-
-        // if (!res.success) return;
-        // const { chat_history } = res.result;
-        // let allMessages = chat_history.split('\n').map(m => {
-        //   if (m.startsWith('Human')) {
-        //     const content = m.slice(7);
-        //     return { isAI: false, content };
-        //   }
-        //   return { isAI: true, content: m.slice(4) };
-        // })
-        // allMessages = allMessages.map(m => {
-        //     let message = '';
-        //     let avatarUrl = '/images/logo.jpg';
-        //     if (m.isAI) {
-        //       message = m.content.trim();
-        //     } else {
-        //       message = m.content;
-        //       avatarUrl = this.props.userInfo.photoUrl;
-        //     }
-        //     return { ...m, message, avatarUrl };
-        //   });
-        // this.setState({
-        //   messages: allMessages,
-        // });
+        let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
+          .reduce((prev, curr) => {
+            const userAvatarUrl = this.props.userInfo.photoUrl;
+            const userMessage = curr.user_content;
+            const user = { message: userMessage, avatarUrl: userAvatarUrl };
+            const aiAvatarUrl = '/images/logo.jpg';
+            const aiMessage = curr.ai_content;
+            const ai = { message: aiMessage, avatarUrl: aiAvatarUrl };
+            return [...prev, user, ai];
+          }, []);
+        this.setState({
+          messages: allMessages,
+        });
       })
       .catch(error => {
         this.props.dispatch(handleError(error));

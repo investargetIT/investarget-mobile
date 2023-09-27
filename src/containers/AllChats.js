@@ -204,7 +204,7 @@ class User extends Component {
           }
           return m;
         });
-        this.setState({ allTopics: newTopics });
+        this.setState({ allTopics: newTopics.filter(f => f.type === 1) });
         this.props.dispatch(hideLoading());
       })
       .catch(error => {
