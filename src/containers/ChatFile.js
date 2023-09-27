@@ -108,7 +108,55 @@ class ChatFile extends Component {
   handleSubmit(event) {
     // newApi.deleteMessageWithChatGPT('64016b47a6ac015ad8772bfb');
     event.preventDefault();
-    if (this.state.inputValue !== '' && this.state.file == null) {
+    if (!this.state.inputValue) return;
+    if (this.state.file) {
+      const newMessage1 = {
+        message: this.state.file.name,
+        avatarUrl: this.props.userInfo.photoUrl,
+      };
+      const newMessage2 = {
+        message: this.state.inputValue,
+        avatarUrl: this.props.userInfo.photoUrl,
+      };
+      this.setState({
+        messages: [...this.state.messages, newMessage1, newMessage2],
+        inputValue: '',
+        file: null,
+      }, () => window.scrollTo({ top: document.body.scrollHeight }));
+      this.textareaRef.style.height = 'unset'; // Reset height
+      this.uploadFileAndAskQuestion(this.state.inputValue);
+    } else if (this.state.fileKey) {
+      const newMessage = {
+        message: this.state.inputValue,
+        avatarUrl: this.props.userInfo.photoUrl,
+      };
+      this.setState({
+        messages: [...this.state.messages, newMessage],
+        inputValue: '',
+      });
+      this.textareaRef.style.height = 'unset'; // Reset height
+      const body = {
+        question: this.state.inputValue,
+        file_key: this.state.fileKey,
+      };
+      this.props.dispatch(requestContents(''));
+      newApi.getMessageWithSingleFile(body)
+        .then(data => {
+          const replyMessage = {
+            message: data.result.trim(),
+            avatarUrl: '/images/logo.jpg',
+          };
+          this.setState({
+            messages: [...this.state.messages, replyMessage],
+            inputValue: '',
+          }, () => window.scrollTo({ top: document.body.scrollHeight }));
+          this.props.dispatch(hideLoading());
+        })
+        .catch(error => {
+          this.props.dispatch(handleError(error));
+          this.props.dispatch(hideLoading());
+        });
+    } else {
       const newMessage = {
         message: this.state.inputValue,
         avatarUrl: this.props.userInfo.photoUrl,
@@ -139,22 +187,6 @@ class ChatFile extends Component {
           this.props.dispatch(handleError(error));
           this.props.dispatch(hideLoading());
         });
-    } else if (this.state.inputValue !== '' && this.state.file !== null) {
-      const newMessage1 = {
-        message: this.state.file.name,
-        avatarUrl: this.props.userInfo.photoUrl,
-      };
-      const newMessage2 = {
-        message: this.state.inputValue,
-        avatarUrl: this.props.userInfo.photoUrl,
-      };
-      this.setState({
-        messages: [...this.state.messages, newMessage1, newMessage2],
-        inputValue: '',
-        file: null,
-      }, () => window.scrollTo({ top: document.body.scrollHeight }));
-      this.textareaRef.style.height = 'unset'; // Reset height
-      this.uploadFileAndAskQuestion(this.state.inputValue);
     }
   }
 
