@@ -160,36 +160,36 @@ class ChatApp extends Component {
         file: null,
       }, () => window.scrollTo({ top: document.body.scrollHeight }));
       this.textareaRef.style.height = 'unset'; // Reset height
-      this.uploadFileAndAskQuestion(this.state.inputValue);
+      // this.uploadFileAndAskQuestion(this.state.inputValue);
     }
   }
 
-  uploadFileAndAskQuestion = question => {
-    console.log('question', question);
-    console.log('file', this.state.file);
-    this.props.dispatch(requestContents(''));
-    newApi.chatGPTUpload(this.state.file)
-      .then(result => {
-        console.log('result', result);
-        return newApi.getMessageWithChatGPTFile({ question });
-      })
-      .then(data => {
-        console.log('data', data);
-        const replyMessage = {
-          message: data.result.trim(),
-          avatarUrl: '/images/logo.jpg',
-        };
-        this.setState({
-          messages: [...this.state.messages, replyMessage],
-        }, () => window.scrollTo({ top: document.body.scrollHeight }));
-      })
-      .catch(error => {
-        this.props.dispatch(handleError(error));
-      })
-      .finally(() => {
-        this.props.dispatch(hideLoading());
-      });
-  }
+  // uploadFileAndAskQuestion = question => {
+  //   console.log('question', question);
+  //   console.log('file', this.state.file);
+  //   this.props.dispatch(requestContents(''));
+  //   newApi.chatGPTUpload(this.state.file)
+  //     .then(result => {
+  //       console.log('result', result);
+  //       return newApi.getMessageWithChatGPTFile({ question });
+  //     })
+  //     .then(data => {
+  //       console.log('data', data);
+  //       const replyMessage = {
+  //         message: data.result.trim(),
+  //         avatarUrl: '/images/logo.jpg',
+  //       };
+  //       this.setState({
+  //         messages: [...this.state.messages, replyMessage],
+  //       }, () => window.scrollTo({ top: document.body.scrollHeight }));
+  //     })
+  //     .catch(error => {
+  //       this.props.dispatch(handleError(error));
+  //     })
+  //     .finally(() => {
+  //       this.props.dispatch(hideLoading());
+  //     });
+  // }
 
   handleInputOnFocus = () => {
     this.setState({ virtualKeyboard: true });

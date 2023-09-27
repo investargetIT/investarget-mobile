@@ -149,6 +149,10 @@ class HandleError extends Component {
           showError = true
           errMsg = error.message
           break
+        case 'third_party_api_error':
+          showError = true;
+          errMsg = error.message;
+          break;
         default:
           console.error(error)
       }

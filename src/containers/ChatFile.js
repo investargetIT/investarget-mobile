@@ -42,6 +42,7 @@ class ChatFile extends Component {
       inputValue: '',
       virtualKeyboard: false,
       file: null,
+      fileKey: null,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -158,23 +159,29 @@ class ChatFile extends Component {
   }
 
   uploadFileAndAskQuestion = question => {
-    console.log('question', question);
-    console.log('file', this.state.file);
     this.props.dispatch(requestContents(''));
     newApi.chatGPTUpload(this.state.file)
       .then(result => {
-        console.log('result', result);
-        return newApi.getMessageWithChatGPTFile({ question });
+        if (result.success) {
+          const fileKey = result.result;
+          this.setState({ fileKey });
+          return newApi.getMessageWithSingleFile({ question, file_key: fileKey });
+        } else {
+          throw new ApiError('third_party_api_error', result.errmsg);
+        }
       })
       .then(data => {
-        console.log('data', data);
-        const replyMessage = {
-          message: data.result.trim(),
-          avatarUrl: '/images/logo.jpg',
-        };
-        this.setState({
-          messages: [...this.state.messages, replyMessage],
-        }, () => window.scrollTo({ top: document.body.scrollHeight }));
+        if (data.success) {
+          const replyMessage = {
+            message: data.result.trim(),
+            avatarUrl: '/images/logo.jpg',
+          };
+          this.setState({
+            messages: [...this.state.messages, replyMessage],
+          }, () => window.scrollTo({ top: document.body.scrollHeight }));
+        } else {
+          throw new ApiError('third_party_api_error', data.errmsg);
+        }
       })
       .catch(error => {
         this.props.dispatch(handleError(error));

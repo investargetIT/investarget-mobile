@@ -344,7 +344,7 @@ export function chatGPTUpload(file) {
   }).then(response => {
     return response.json()
   }).then(data => {
-    return { data: data.result }
+    return data.result;
   })
 }
 
@@ -762,4 +762,5 @@ export const postMessageToMidjourney = body => r('/mongolog/discordimage', 'POST
 export const getMessageWithMidjourney = params => r('/mongolog/discordimage?' + qs.stringify(params));
 
 export const getMessageWithChatGPTFile = body => r('/service/openai/file/completions', 'POST', body);
-export const getFileChatHistory = params => r('/mongolog/aizillizchat?' + qs.stringify(params)); 
+export const getFileChatHistory = params => r('/mongolog/aizillizchat?' + qs.stringify(params));
+export const getMessageWithSingleFile = body => r('/service/openai/file/pdfchat', 'POST', body);
