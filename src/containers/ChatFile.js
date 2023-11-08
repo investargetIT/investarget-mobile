@@ -138,6 +138,7 @@ class ChatFile extends Component {
       const body = {
         question: this.state.inputValue,
         file_key: this.state.fileKey,
+        topic_id: this.topicID,
       };
       this.props.dispatch(requestContents(''));
       newApi.getMessageWithSingleFile(body)
@@ -197,7 +198,7 @@ class ChatFile extends Component {
         if (result.success) {
           const fileKey = result.result;
           this.setState({ fileKey });
-          return newApi.getMessageWithSingleFile({ question, file_key: fileKey });
+          return newApi.getMessageWithSingleFile({ question, file_key: fileKey, topic_id: this.topicID });
         } else {
           throw new ApiError('third_party_api_error', result.errmsg);
         }
