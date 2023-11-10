@@ -193,7 +193,7 @@ class ChatFile extends Component {
 
   uploadFileAndAskQuestion = question => {
     this.props.dispatch(requestContents(''));
-    newApi.chatGPTUpload(this.state.file)
+    newApi.chatGPTUpload(this.state.file, this.topicID)
       .then(result => {
         if (result.success) {
           const fileKey = result.result;

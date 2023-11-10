@@ -314,7 +314,7 @@ export function qiniuUpload(bucket, file) {
   })
 }
 
-export function chatGPTUpload(file) {
+export function chatGPTUpload(file, topicID) {
 
   const source = parseInt(localStorage.getItem('source'), 10)
   if (!source) {
@@ -336,6 +336,7 @@ export function chatGPTUpload(file) {
 
   var formData = new FormData()
   formData.append('file', file)
+  formData.append('topic_id', topicID)
 
   return fetch( baseUrl + '/service/openai/file/embedding', {
     headers,
