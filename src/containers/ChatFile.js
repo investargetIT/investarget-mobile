@@ -58,19 +58,36 @@ class ChatFile extends Component {
     this.props.dispatch(requestContents(''));
     requestAllData(newApi.getFileChatHistory, params, 100)
       .then(res => {
-        let allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
+        const allMessages = res.data.sort((a, b) => new Date(a.msgtime) - new Date(b.msgtime))
           .reduce((prev, curr) => {
             const userAvatarUrl = this.props.userInfo.photoUrl;
             const userMessage = curr.user_content;
-            const user = { message: userMessage, avatarUrl: userAvatarUrl };
+            const user = { message: userMessage, avatarUrl: userAvatarUrl, fileKey: curr.file_key };
             const aiAvatarUrl = '/images/logo.jpg';
             const aiMessage = curr.ai_content;
             const ai = { message: aiMessage, avatarUrl: aiAvatarUrl };
-            return [...prev, user, ai];
+            return [...prev, user, ai].filter(f => f.message);
           }, []);
         this.setState({
           messages: allMessages,
         });
+        return Promise.all(allMessages.map(async m => {
+          if (m.fileKey) {
+            const fileurl = await newApi.downloadUrl('file', m.fileKey);
+            return { ...m, fileurl };
+          }
+          return m;
+        }));
+      })
+      .then(msg => {
+        const newMessage = msg.map(m => {
+          let message = m.message;
+          if (m.fileurl) {
+            message = `<a href=${m.fileurl}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${message}</div></a>`;
+          }
+          return { ...m, message };
+        });
+        this.setState({ messages: newMessage });
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
@@ -248,7 +265,7 @@ class ChatFile extends Component {
                 alt="Avatar"
                 className="message-avatar"
               />
-              <div className="message">{message.message}</div>
+              <div className="message" dangerouslySetInnerHTML={{ __html: message.message }} />
             </div>
           ))}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 60, color: 'lightGray' }}>{this.state.messages.length === 0 ? 'Start chatting with me!' : 'Bottom of the conversation!'}</div>
