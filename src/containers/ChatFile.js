@@ -127,8 +127,9 @@ class ChatFile extends Component {
     event.preventDefault();
     if (!this.state.inputValue) return;
     if (this.state.file) {
+      const message = `<div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div>`;
       const newMessage1 = {
-        message: this.state.file.name,
+        message,
         avatarUrl: this.props.userInfo.photoUrl,
       };
       const newMessage2 = {
@@ -138,7 +139,6 @@ class ChatFile extends Component {
       this.setState({
         messages: [...this.state.messages, newMessage1, newMessage2],
         inputValue: '',
-        file: null,
       }, () => window.scrollTo({ top: document.body.scrollHeight }));
       this.textareaRef.style.height = 'unset'; // Reset height
       this.uploadFileAndAskQuestion(this.state.inputValue);
@@ -229,9 +229,20 @@ class ChatFile extends Component {
           this.setState({
             messages: [...this.state.messages, replyMessage],
           }, () => window.scrollTo({ top: document.body.scrollHeight }));
+          this.props.dispatch(hideLoading());
+
+          // Get file url
+          return newApi.downloadUrl('file', this.state.fileKey);
         } else {
           throw new ApiError('third_party_api_error', data.errmsg);
         }
+      })
+      .then(url => {
+        const newMsg = this.state.messages.slice();
+        const message = `<div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div>`;
+        const idx = newMsg.map(m => m.message).findLastIndex(e => e == message);
+        newMsg[idx].message = `<a href=${url}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div></a>`;
+        this.setState({ messages: newMsg, file: null });
       })
       .catch(error => {
         this.props.dispatch(handleError(error));
