@@ -83,7 +83,8 @@ class ChatFile extends Component {
         const newMessage = msg.map(m => {
           let message = m.message;
           if (m.fileurl) {
-            message = `<a href=${m.fileurl}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${message}</div></a>`;
+            const url = '/pdf_viewer.html?file=' + encodeURIComponent(m.fileurl);
+            message = `<a href=${url}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${message}</div></a>`;
           }
           return { ...m, message };
         });
@@ -241,7 +242,8 @@ class ChatFile extends Component {
         const newMsg = this.state.messages.slice();
         const message = `<div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div>`;
         const idx = newMsg.map(m => m.message).findLastIndex(e => e == message);
-        newMsg[idx].message = `<a href=${url}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div></a>`;
+        const newURL = '/pdf_viewer.html?file=' + encodeURIComponent(url);
+        newMsg[idx].message = `<a href=${newURL}><div style="display: flex;align-items: center; color: #333"><img style="width: 20px" src="/images/document.svg" />${this.state.file.name}</div></a>`;
         this.setState({ messages: newMsg, file: null });
       })
       .catch(error => {

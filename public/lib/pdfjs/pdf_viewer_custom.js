@@ -44,7 +44,7 @@ pdfViewer.eventBus.on('loaderror', function(e) {
 });
 pdfViewer.eventBus.on('pagerendered', function(e) {
   var ctx = e.source.canvas.getContext('2d');
-  drawWatermark(ctx, WATERMARK);
+  // drawWatermark(ctx, WATERMARK);
 });
 
 
