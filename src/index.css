@@ -28,8 +28,8 @@ body {
   font-size: 14px;
   font-family: ubuntu, helvetica, arial;
   width: 100%;
-  min-width: 320px;
-  max-width: 540px; /* 1080p屏幕2倍像素密度 */
+  /* min-width: 320px;
+  max-width: 540px; 1080p屏幕2倍像素密度 */
   height: 100%;
   color: #333;
 }
